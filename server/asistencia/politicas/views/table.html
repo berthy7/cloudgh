@@ -1,0 +1,18 @@
+{% for c in objects %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.empresa.nombre}}</td>
+    <td>{{ c.toleranciadia}}</td>
+    <td>{{ c.toleranciames}}</td>
+
+    <td align="center">
+    {% if 'politicas_update' in privileges %}
+        <div id="edit" data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+            <img src="/resources/iconos/editar.ico" class="icono-table"/>
+        </div>
+    {% end %}
+    </td>
+</tr>
+{% end %}
+
+

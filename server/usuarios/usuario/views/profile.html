@@ -1,0 +1,146 @@
+{%extends ../../../common/views/layout.html%}
+
+{%block style%}
+{%end%}
+
+{%block content%}
+    <div class="header">
+        <h2>PERFIL DE USUARIO</h2>
+    </div>
+
+    <div class="body">
+        <form class="form-horizontal">
+            <input type="hidden" value="{{id}}" id="user_id">
+            <div class="row clearfix">
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                    <label for="username_profile">Nombre de usuario</label>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                    <div class="form-group">
+                        <div class="form-line">
+                            <input type="text" id="username_profile" class="form-control" value="{{username}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row clearfix">
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                    <label for="rol_profilee">Rol</label>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                    <div class="form-group">
+                        <div class="form-line">
+                            <input type="text" id="rol_profile" class="form-control" value="{{rol}}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row clearfix">
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                    <label for="nombre_profile">Nombre</label>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                    <div class="form-group">
+                        <div class="form-line">
+                            <input type="text" id="nombre_profile" class="form-control" value="{{nombre}}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="row clearfix">
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                    <label for="correo_profile">Correo electrónico</label>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                    <div class="form-group">
+                        <div class="form-line">
+                            <input type="text" id="correo_profile" class="form-control" value="{{correo}}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row clearfix">
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                    <label for="correo_profile">Verficacion en 2 Pasos</label>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                    <div class="form-group">
+                        <div class="form-line">
+                             <input id="{{id}}" onClick="event.preventDefault();Modificar_Autenticacion(this)" data-id="{{id}}" type="checkbox"  class="module chk-col-deep-purple"  {%if autenticacion %} {{"checked"}} {% end %} />
+                             <label for="{{id}}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row clearfix">
+                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-4 col-xs-offset-5">
+                    <button type="button" class="btn bg-page-own m-t-15 waves-effect white-own" onclick="Modificar_Perfil();">Guardar</button>
+                    <button type="button" class="btn bg-page-own m-t-15 waves-effect white-own" onclick="Open_Modal_Pass();">Modificar contraseña</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="modal_modificar_password" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="perfil_tittle" class="modal-title">Modificar contraseña</h3>
+                <h4 id="perfil_enable" class=""></h4>
+            </div>
+
+            <div class="modal-body">
+                <div id="perfil_form_body" class="box-body">
+                    <div id="id_div" class="input-group">
+                        <div class="form-line">
+                            <input id="actual_pass" type="password" class="form-control" placeholder="Contraseña actual">
+                        </div>
+                        <span class="input-group-addon" id="see-pass" style="cursor: pointer;" title="Mostrar">
+                            <i class="material-icons" style="color: grey" id="ic-pass">visibility_off</i>
+                        </span>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="form-line">
+                            <input id="new_pass" type="password" class="form-control" placeholder="Nueva contraseña">
+                        </div>
+                        <span class="input-group-addon" id="see-pass-nc" style="cursor: pointer;" title="Mostrar">
+                            <i class="material-icons" style="color: grey" id="ic-pass-nc">visibility_off</i>
+                        </span>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="form-line">
+                            <input id="new_rpass" type="password" class="form-control" placeholder="Repita su contraseña">
+                        </div>
+                        <span class="input-group-addon" id="see-pass-ncr" style="cursor: pointer;" title="Mostrar">
+                            <i class="material-icons" style="color: grey" id="ic-pass-ncr">visibility_off</i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="modify_pass" type="button" class="btn bg-blue" data-dismiss="modal" onclick="Modificar_Password();"><i class="material-icons">save</i> Guardar</button>
+                <button id="close" type="button" class="btn btn-danger" data-dismiss="modal"><i class="material-icons">delete</i> Cancelar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+{%end%}
+
+{% block script %}
+    <script src="resources/js/functions.js"></script>
+    <script src="usuarios/usuario/assets/perfil.js"></script>
+{%end%}

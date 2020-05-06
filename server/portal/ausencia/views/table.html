@@ -1,0 +1,35 @@
+{% for c in ausencias_personales %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.persona.fullname }}</td>
+    <td>{{ c.descripcion }}</td>
+    <td>{{ c.fechai.strftime("%d/%m/%Y") }}</td>
+    <td>{{ c.fechaf.strftime("%d/%m/%Y") }}</td>
+    <td>{{ c.estado }}</td>
+    {% if c.fksuperior %}
+            <td>{{ c.superior.fullname }}</td>
+
+    {% else %}
+            <td>----</td>
+    {% end %}
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'portal_ausencia_update' in privileges %}
+                <div id="edit" data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+            {% if 'portal_ausencia_delete' in privileges %}
+                {% if c.estado != "Aceptado" and  c.estado != "Rechazado" %}
+                    <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">
+                        <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+                    </div>
+                {% end %}
+            {% end %}
+        </div>
+    </td>
+</tr>
+{% end %}
+
+

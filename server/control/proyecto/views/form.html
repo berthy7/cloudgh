@@ -1,0 +1,164 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg-own" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="proyecto_title" class="modal-title">Ingreso de proyecto</h3>
+                <h4 id="proyecto_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+                        <div id="id_div" class="form-group">
+                            <div class="form-line">
+                                {% module xsrf_form_html() %}
+                                <input id="id" type="text" class="form-control" disabled="disabled">
+                                <label for="id" class="form-label">Proyecto ID</label>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-sm-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input id="nombre" type="text" class="form-control text" required>
+                                        <label for="nombre" class="form-label">Nombre</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4" >
+                                    <p><b>Avance del Proyecto</b></p>
+                                    <div id="nouislider_basic_example"></div>
+                                    <div class="m-t-20 font-12"><b>Porcentaje: </b><span class="js-nouislider-value"></span></div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-sm-4">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <input id="descripcion" type="text" class="form-control text">
+                                        <label for="descripcion" class="form-label">Descripcion</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <h4 id="cliente_enable" class="p-t-15">Lista de Requisitos</h4>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-3">
+                            <button id="insert-task" type="button" class="btn bg-blue waves-effect" title="Agregar tarea">
+                                <i class="material-icons">note</i>
+                            </button>
+                        </div>
+                        <div class="col-sm-2 pt-col-own">
+                            <input type="checkbox" id="5" class="filled-in chk-col-teal" checked disabled/>
+                            <label for="5">Finalizadas</label>
+                        </div>
+                        <div class="col-sm-2 pt-col-own">
+                            <input type="checkbox" id="6" class="filled-in chk-col-grey" checked disabled/>
+                            <label for="6">Por realizar</label>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="table_tasks" class="table table-sm table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Descripción</th>
+                                    <th>Responsable</th>
+                                    <th>Prioridad</th>
+                                    <th>Estimación (h)</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Estado</th>
+                                    <th id="row-del">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cont_tasks">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="spn-addrv" class="loader-wrapper" style="display: none">
+                    <div class="loader loader-own">
+                        <div class="preloader preloader-own">
+                            <div class="spinner-layer pl-indigo">
+                                <div class="circle-clipper left"><div class="circle"></div></div>
+                                <div class="circle-clipper right"><div class="circle"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center inf-own">Guardando...</p>
+                </div>
+
+                <div class="modal-footer">
+                    {% if 'proyecto_insert' in privileges %}
+                        <button id="insert" type="button" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+                    {% end %}
+                    {% if 'proyecto_update' in privileges %}
+                        <button id="update" type="button" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                    {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="form-seg" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="mantenimiento_tittle" class="modal-title">Generar proyectos</h3>
+                <h4 id="mantenimiento_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+                    <div class="row clearfix">
+                        <div class="col-sm-12 select-cont">
+                            <label for="fkpersona">Persona</label>
+                            <select id="fkpersona" class="form-control">
+                                {% for p in personas %}
+                                    <option value="{{p.id}}">{{p.fullname}}</option>
+                                {% end %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-line">
+                            <label for="fechaini" class="form-label">Fecha Inicio</label>
+                            <input id="fechaini" name="Fecha de Mantenimiento" type="text" class="form-control date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-line">
+                            <label for="fechafin" class="form-label">Fecha Fin</label>
+                            <input id="fechafin" name="Fecha de Proximo Mantenimiento" type="text" class="form-control date" required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="spn-addsg" class="loader-wrapper" style="display: none">
+                    <div class="loader loader-own">
+                        <div class="preloader preloader-own">
+                            <div class="spinner-layer pl-indigo">
+                                <div class="circle-clipper left"><div class="circle"></div></div>
+                                <div class="circle-clipper right"><div class="circle"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center inf-own">Guardando...</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="save-seg" type="button" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

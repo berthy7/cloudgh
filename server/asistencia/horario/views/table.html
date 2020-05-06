@@ -1,0 +1,62 @@
+{% set cont = 0 %}
+{% for c in tabla_semanal %}
+<tr>
+    <td>{{ tabla_semanal[cont]['id'] }}</td>
+    <td>{{ tabla_semanal[cont]['nombre'] }}</td>
+    <td>
+        {% for hr in tabla_semanal[cont]['lunes'] %}
+            <p>{{ tabla_semanal[cont]['lunes'][hr]['hora'] }}</p>
+        {% end %}
+    </td>
+        <td>
+        {% for hr in tabla_semanal[cont]['martes'] %}
+            <p>{{ tabla_semanal[cont]['martes'][hr]['hora']}}</p>
+        {% end %}
+    </td>
+        <td>
+        {% for hr in tabla_semanal[cont]['miercoles'] %}
+            <p>{{ tabla_semanal[cont]['miercoles'][hr]['hora']}}</p>
+        {% end %}
+    </td>
+        <td>
+        {% for hr in tabla_semanal[cont]['jueves'] %}
+            <p>{{ tabla_semanal[cont]['jueves'][hr]['hora']}}</p>
+        {% end %}
+    </td>
+        <td>
+        {% for hr in tabla_semanal[cont]['viernes'] %}
+            <p>{{ tabla_semanal[cont]['viernes'][hr]['hora']}}</p>
+        {% end %}
+    </td>
+        <td>
+        {% for hr in tabla_semanal[cont]['sabado'] %}
+            <p>{{ tabla_semanal[cont]['sabado'][hr]['hora']}}</p>
+        {% end %}
+    </td>
+        <td>
+        {% for hr in tabla_semanal[cont]['domingo'] %}
+            <p>{{ tabla_semanal[cont]['domingo'][hr]['hora']}}</p>
+        {% end %}
+    </td>
+
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'horario_update' in privileges %}
+                <div id="edit" data-json="{{tabla_semanal[cont]['id']}}" class="caja-icono edit" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+            {% if 'horario_delete' in privileges %}
+{#                <div id="delete" data-json="{{tabla_semanal[cont]['id']}}" class="caja-icono delete" title="Eliminar">#}
+{#                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>#}
+{#                </div>#}
+            {% end %}
+        </div>
+    </td>
+</tr>
+{% set cont = cont + 1 %}
+{% end %}
+
+
+

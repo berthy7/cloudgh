@@ -1,0 +1,13 @@
+.button-green-own{
+    background-color: dodgerblue;
+}
+.loader-own{
+    text-align: center;
+}
+.preloader-own{
+    width: 40px;
+    height: 40px;
+}
+.inf-own{
+    font-size: 12px;
+}

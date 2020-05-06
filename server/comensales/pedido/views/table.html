@@ -1,0 +1,35 @@
+{% for c in pedidos_dia %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.fecha.strftime("%d/%m/%Y") }}</td>
+    <td>{{ c.fecha.strftime("%H:%M:%S") }}</td>
+    <td>{{ c.persona.fullname }}</td>
+    <td align="center">
+        <div>
+             <input  id="{{c.id}}" data-id="{{c.id}}" type="checkbox"  class="module chk-col-deep-purple" {%if c.sopa%} {{"checked"}} {% end %} disabled/>
+             <label for="{{c.id}}"></label>
+         </div>
+    </td>
+    {% if c.fkplato %}
+        <td>{{ c.plato.nombre }}</td>
+    {% else %}
+        <td>------</td>
+    {% end %}
+
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'pedido_update' in privileges %}
+                <div id="edit" data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+            {% if 'pedido_delete' in privileges %}
+                <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">
+                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+        </div>
+    </td>
+</tr>
+{% end %}

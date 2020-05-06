@@ -1,0 +1,23 @@
+{%extends ../common/views/layout.html %}
+
+{%block style%}
+    {%set usuario = user.rol.modulos%}
+    <link href="main/index.css" rel="stylesheet">
+{%end%}
+
+{%block content%}
+    <div class="header">
+        <h2>
+            <small>Sistema Web para la Gestión de Recursos Humanos </small>
+            Bienvenido
+        </h2>
+    </div>
+
+    <div class="body">
+
+    </div>
+{%end%}
+
+{% block script %}
+    <script src="/resources/js/functions.js"></script>
+{%end%}

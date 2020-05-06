@@ -1,0 +1,10 @@
+.accion {
+    cursor: pointer
+}
+.loader-own{
+    text-align: center;
+}
+.preloader-own{
+    width: 40px;
+    height: 40px;
+}

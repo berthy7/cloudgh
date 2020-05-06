@@ -1,0 +1,219 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="asistencia/autorizacionextra/assets/autorizacionextra.css">
+{% end %}
+
+{% block content %}
+    {% if 'autorizacion_extra_insert' in privileges or 'autorizacion_extra_update' in privileges %}
+        {% include form.html %}
+    {% end %}
+
+    <div class="header bg-page-own"><h2>Autorizacion de horas Extras</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div class="col-sm-3">
+                <div class="switch p-l-own">
+                   <h6>Activar Busqueda</h6>
+                   <label>
+                       Apagado
+                       <input id="switch" type="checkbox">
+                       <span class="lever"></span>
+                       Encendido
+                   </label>
+                </div>
+                     </br>
+            </div>
+        </div>
+        <div id="busqueda" hidden>
+            <div class="row clearfix">
+                <div class="col-sm-3">
+                    <label class="form-label">Fecha Inicio</label>
+                   <div class="form-group">
+                        <div class="form-line success">
+
+                            <input id="fechainicio" type="text" class="form-control date">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="form-label">Fecha Fin</label>
+                        <div class="form-line success">
+
+                            <input id="fechafin" type="text" class="form-control date">
+                        </div>
+                    </div>
+                </div>
+                    <div class="col-sm-1">
+                        <div id="filtrar" class="caja-icono" title="Filtrar">
+                            <img src="/resources/iconos/filtro.ico" class="icono" />
+                        </div>
+
+                    </div>
+
+            </div>
+            <div class="row clearfix">
+                <div class="col-sm-6">
+                    <div class="form-group form-float">
+                    <label>Personal</label>
+                        <div class="clearfix m-b-20">
+                            <div class="dd">
+                                <ol class="dd-list">
+                                    <li class="dd-item dd-nodrag" data-id="company">
+                                        <div class="dd-handle">
+                                            <input id="company" type="checkbox" class="module chk-col-deep-purple">
+                                            <label for="company">Todos</label>
+                                        </div>
+                                        <ol class="dd-list">
+                                            {% for empresa in admin %}
+                                            <li class="dd-item dd-nodrag " data-id="em{{empresa[0]}}">
+                                                <div class="dd-handle ">
+                                                    <input id="em{{empresa[0]}}" type="checkbox" class="module chk-col-deep-purple empresa" data-id="{{empresa[0]}}">
+                                                    <label for="em{{empresa[0]}}">{{empresa[1]}}</label>
+                                                </div>
+                                                <ol class="dd-list">
+                                                {% if isinstance(admin[empresa], dict) %}
+                                                    {% for sucursal in admin[empresa] %}
+                                                        <li class="dd-item dd-collapsed" data-id="suc{{sucursal[0]}}">
+                                                            <div class="dd-handle">
+                                                                <input id="suc{{sucursal[0]}}" type="checkbox" class="module chk-col-deep-purple sucursal" data-id="{{sucursal[0]}}" data-empr="{{empresa[0]}}">
+                                                                <label for="suc{{sucursal[0]}}">{{sucursal[1]}}</label>
+                                                            </div>
+                                                            <ol class="dd-list">
+                                                                {% if isinstance(admin[empresa][sucursal], dict) %}
+                                                                    {% for gerencia in admin[empresa][sucursal] %}
+                                                                        <li class="dd-item dd-nodrag dd-collapsed" data-id="ge{{gerencia[0]}}">
+                                                                            <div class="dd-handle">
+                                                                                <input id="ge{{gerencia[0]}}" type="checkbox" class="module chk-col-deep-purple gerencia" data-id="{{gerencia[0]}}" data-suc="{{sucursal[0]}}" data-empr="{{empresa[0]}}">
+                                                                                <label for="ge{{gerencia[0]}}">{{gerencia[1]}}</label>
+                                                                            </div>
+                                                                            <ol class="dd-list">
+                                                                                {% if isinstance(admin[empresa][sucursal][gerencia], dict) %}
+                                                                                    {% for grupo in admin[empresa][sucursal][gerencia] %}
+                                                                                        <li class="dd-item dd-nodrag" data-id="gr{{grupo[0]}}">
+                                                                                            <div class="dd-handle">
+                                                                                                <input id="gr{{grupo[0]}}" type="checkbox" class="module chk-col-deep-purple grupo" data-id="{{grupo[0]}}" data-ger="{{gerencia[0]}}" data-suc="{{sucursal[0]}}" data-empr="{{empresa[0]}}">
+                                                                                                <label for="gr{{grupo[0]}}">{{grupo[1]}}</label>
+                                                                                            </div>
+                                                                                            <ol class="dd-list">
+                                                                                                {% raw admin[empresa][sucursal][gerencia][grupo] %}
+                                                                                            </ol>
+                                                                                        </li>
+                                                                                    {% end %}
+                                                                                {% else %}
+                                                                                    {% raw admin[empresa][sucursal][gerencia] %}
+                                                                                {% end %}
+                                                                        </ol>
+                                                                        </li>
+                                                                    {% end %}
+                                                                {% else %}
+                                                                    {% raw admin[empresa][sucursal] %}
+                                                                {% end %}
+                                                        </ol>
+                                                        </li>
+                                                    {% end %}
+                                                {% else %}
+                                                    {% raw admin[empresa] %}
+                                                {% end %}
+                                            </ol>
+                                            </li>
+                                            {% end %}
+                                        </ol>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+
+                <div class="col-sm-4">
+                     <label>Buscar personas</label>
+                    <select id="personal" class="form-control">
+                        {% for s in personal %}
+                        <option value="{{ s.id }}">{{ s.fullname }}</option>
+                        {% end %}
+                    </select>
+                    </br>
+                    </br>
+                </div>
+                <div class="col-sm-6">
+                    <div id="personal" class="box-body">
+                        <div id="personal_div" class="clearfix">
+
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+        {% if 'autorizacion_extra_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Código</th>
+                            <th class="order_by_th" data-name="names">Nombre Completo</th>
+                            <th class="order_by_th" data-name="names">Fecha</th>
+                            <th class="order_by_th" data-name="names">Entrada</th>
+                            <th class="order_by_th" data-name="names">Salida</th>
+                            <th class="order_by_th" data-name="names">Marcación Entrada</th>
+                            <th class="order_by_th" data-name="names">Marcación Salida</th>
+                            <th class="order_by_th" data-name="names">Observación</th>
+                            <th class="order_by_th" data-name="names">Retraso</th>
+                            <th class="order_by_th" data-name="names">Extra</th>
+                            <th class="order_by_th" data-name="names">Autorizar extra</th>
+
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/js/functions.js"></script>
+    <script src="asistencia/autorizacionextra/assets/autorizacionextra.js"></script>
+    <script src="resources/plugins/jquery-countto/jquery.countTo.js"></script>
+    <script src="resources/js/functions.js"></script>
+
+    <script src="resources/js/dataTables.buttons.js"></script>
+    <script src="resources/js/pdfmake.js"></script>
+    <script src="resources/js/vfs_fonts.js"></script>
+    <script src="resources/js/buttons.bootstrap.js"></script>
+    <script src="resources/js/buttons.html5.js"></script>
+    <script src="resources/js/buttons.print.js"></script>
+    <script src="resources/js/buttons.colVis.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var data = [];
+            var horaextra = 0;
+
+            {% set cont = 0 %}
+            {% for c in horarios %}
+
+                data.push( [
+                    '{{ c.id }}', '{{ c.codigo }}', '{{ c.nombrecompleto }}',
+                    '{{ c.fecha.strftime("%d/%m/%Y") }}', '{{ c.entrada.strftime("%H:%M") }}',
+                    '{{ c.salida.strftime("%H:%M") }}', '{%if c.mentrada %}{{ c.mentrada.strftime("%H:%M") }}{%else%}------{%end%}',
+                    '{%if c.msalida %}{{ c.msalida.strftime("%H:%M") }}{%else%}------{%end%}', '{{ c.observacion }}', '{%if c.retraso %}{{ c.retraso.strftime("%H:%M") }}{%else%}------{%end%}',
+                    '{%if c.extra %}{{ c.extra.strftime("%H:%M") }}{%else%}------{%end%}',
+                    '<input id="{{ c.id }}" onClick="event.preventDefault();autorizarhoras(this)" data-id="{{ c.id }}" type="checkbox" class="module chk-col-deep-purple" {% if c.enabled %} {{"checked"}} {% end %} /><label for="{{c.id}}"></label>'
+                ]);
+            {% set cont = cont + 1 %}
+            {% end %}
+            cargar_tabla(data)
+
+        });
+
+
+    </script>
+{% end %}

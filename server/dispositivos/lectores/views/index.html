@@ -1,0 +1,70 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="dispositivos/lectores/assets/lectores.css">
+{% end %}
+
+{% block content %}
+{% include form.html %}
+
+    <div class="header bg-page-own"><h2>Lectores</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div class="col-xs-3 col-sm-2 col-md-6 col-lg-6">
+                <div class="contenedor">
+                    {% if 'lectores_insert' in privileges %}
+                    <div id="new" class="caja-icono" title="Nuevo">
+                        <img src="/resources/iconos/agregar.ico" class="icono" />
+                    </div>
+                    {% end %}
+                    <div id="crear" class="caja-icono" title="Crear dispositivos">
+                        <img src="/resources/iconos/biometrico.ico" class="icono" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="rproc-loader" class="loader-wrapper" style="display: none">
+            <div class="loader loader-own">
+                <div class="preloader preloader-own">
+                    <div class="spinner-layer pl-teal">
+                        <div class="circle-clipper left"><div class="circle"></div></div>
+                        <div class="circle-clipper right"><div class="circle"></div></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center inf-own">Extrayendo marcaciones del dispositivo...</p>
+        </div>
+
+        {% if 'lectores_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Dirección Ip</th>
+                            <th class="order_by_th" data-name="names">Puerto</th>
+                            <th class="order_by_th" data-name="names">Descripción</th>
+                            <th class="order_by_th" data-name="names">Sucursal</th>
+                            <th class="actions_header">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/js/functions.js"></script>
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="dispositivos/lectores/assets/lectores.js"></script>
+{% end %}

@@ -1,0 +1,5 @@
+---
+applications:
+ - name: asistenciacb
+   random-route: true
+   memory: 128M

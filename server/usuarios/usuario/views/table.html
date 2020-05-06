@@ -1,0 +1,26 @@
+{% for usuarios in objects %}
+<tr>
+    {% if usuarios.fkpersona %}
+            <td>{{ usuarios.persona.fullname }}</td>
+    {% else %}
+        <td> --------- </td>
+    {% end %}
+    <td>{{ usuarios.username }}</td>
+    <td>{{ usuarios.rol.nombre }}</td>
+    <td align="center">
+    {% if 'usuario_delete' in privileges %}
+        <div {%if usuarios.enabled%} title="Activo" {% else %} title="Inhabilitado" {% end %}>
+             <input id="{{usuarios.id}}" data-id="{{usuarios.id}}" type="checkbox" class="modulecheckbox chk-col-deep-purple delete" {%if usuarios.enabled%} {{"checked"}} {% end %} />
+             <label for="{{usuarios.id}}"></label>
+        </div>
+    {% end %}
+    </td>
+    <td align="center">
+    {% if 'usuario_update' in privileges %}
+        <div id="edit" data-json="{{usuarios.id}}" class="caja-icono edit" title="Editar">
+            <img src="/resources/iconos/editar.ico" class="icono-table"/>
+        </div>
+    {% end %}
+    </td>
+</tr>
+{% end %}

@@ -1,0 +1,26 @@
+{% for c in objects %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.nombre }}</td>
+    <td><img src="{{ c.foto1 }}" alt="" style="width: 100px; height: 33px;"/></td>
+    <td><img src="{{ c.foto2 }}" alt="" style="width: 100px; height: 33px;"/></td>
+    <td><img src="{{ c.foto3 }}" alt="" style="width: 100px; height: 33px;"/></td>
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'empresa_update' in privileges %}
+                <div id="edit" data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+            {% if 'empresa_delete' in privileges %}
+                <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">
+                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+        </div>
+    </td>
+</tr>
+{% end %}
+
+

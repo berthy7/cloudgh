@@ -1,0 +1,24 @@
+.header-own{
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 24px !important;
+    padding-bottom: 8px !important;
+}
+.bordesdiv {
+  border-top-color: #CC0000;
+  border-right-color: blue;
+  border-bottom-color: #00FF00;
+  border-left-color: #CCC;
+}
+.bordesdiv {
+  padding: 3px 10px;
+  border: #01579b 1px solid;
+  border-radius: 20px;
+}
+.modal-lg-person{
+    width: 90% !important;
+}
+#show_img{
+    height: 90px !important;
+    width: auto !important;
+}

@@ -1,0 +1,14 @@
+.accion {
+    cursor: pointer
+}
+.loader-own{
+    text-align: center;
+}
+.preloader-own{
+    width: 40px;
+    height: 40px;
+}
+
+.color_pdf{
+    background-color: #00bce7;  color: white; margin-top: 4px
+}

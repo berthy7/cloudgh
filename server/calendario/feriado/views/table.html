@@ -1,0 +1,52 @@
+{% for c in feriados %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.nombre }}</td>
+    <td>{{ c.fecha.strftime("%d/%m/%Y") }}</td>
+    <td>
+        {% if c.fijo %}
+            Feriado Fijo
+        {% end %}
+
+        {% if c.ciclico %}
+            Feriado Ciclico
+        {% end %}
+
+        {% if c.relativo %}
+            Feriado Relativo
+        {% end %}
+    </td>
+    <td>
+        {% if c.fkpais %}
+            {{ c.pais.nombre }}
+        {% end %}
+
+        {% if c.fkdepartamento %}
+            {{ c.departamento.nombre }}
+        {% end %}
+
+        {% if c.fkciudad %}
+           {{ c.ciudad.nombre }}
+        {% end %}
+        {% if c.fksucursal %}
+           {{ c.sucursal.nombre }}
+        {% end %}
+    </td>
+
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'feriado_update' in privileges %}
+                <div id="edit" data-json="{{c.id}}" class="caja-icono edit_tabla" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+            {% if 'feriado_delete' in privileges %}
+                <div id="delete" data-json="{{c.id}}" class="caja-icono delete_tabla" title="Eliminar">
+                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+        </div>
+    </td>
+</tr>
+{% end %}

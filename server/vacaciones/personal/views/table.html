@@ -1,0 +1,18 @@
+{% for c in objects %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.persona.fullname }}</td>
+    <td>{{ c.dias }}</td>
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'v_personal_historico' in privileges %}
+                <div id="historico" data-json="{{c.id}}" data-fkpersona="{{c.fkpersona}}" class="caja-icono historico" title="Historico">
+                    <img src="/resources/iconos/seguimiento.ico" class="icono-table"/>
+                </div>
+            {% end %}
+
+        </div>
+    </td>
+</tr>
+{% end %}

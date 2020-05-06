@@ -1,0 +1,34 @@
+{% for c in objects %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.ip}}</td>
+    <td>{{ c.puerto}}</td>
+    <td>{{ c.descripcion}}</td>
+    <td>{{ c.sucursal.nombre}}</td>
+
+    <td align="center">
+        <div class="contenedor">
+        {% if 'lectores_update' in privileges %}
+            <div id="edit" data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                <img src="/resources/iconos/editar.ico" class="icono-table"/>
+            </div>
+        {% end %}
+        {% if 'lectores_delete' in privileges %}
+            <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">
+                <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+            </div>
+        {% end %}
+        {% if c.tipo == "A" %}
+            <div id="extraer" data-json="{{c.id}}" type="button" class="caja-icono extraer" title="Marcaciones">
+                <img src="/resources/iconos/marcacion.ico" class="icono-table" />
+            </div>
+        {% end %}
+            <div id="ver_marcaciones" data-json="{{c.id}}" type="button" class="caja-icono extraer" title="Marcaciones">
+                <img src="/resources/iconos/ver_marcacion.ico" class="icono-table" />
+            </div>
+        </div>
+    </td>
+</tr>
+{% end %}
+
+

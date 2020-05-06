@@ -1,0 +1,10 @@
+.color-subtitulo{
+    background-color: #2980B9  !important;
+    color: #fff !important;
+    border-bottom: none !important;
+}
+.color-subtitulo h1, .color-subtitulo h2, .color-subtitulo h3, .color-subtitulo h4, .color-subtitulo h5, .color-subtitulo h6{
+    background-color: #2980B9  !important;
+    color: #fff !important;
+    border-bottom: none !important;
+}

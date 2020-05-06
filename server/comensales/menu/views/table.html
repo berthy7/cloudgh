@@ -1,0 +1,29 @@
+{% for c in platos %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.nombre }}</td>
+    <td align="center ">
+     {% if 'menu_plato_delete' in privileges %}
+        <div>
+             <input  id="{{c.id}}" data-id="{{c.id}}" type="checkbox"  class="module chk-col-deep-purple estado_platos"  {%if c.estado%} {{"checked"}} {% end %} />
+             <label for="{{c.id}}"></label>
+         </div>
+    {% end %}
+    </td>
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'menu_plato_update' in privileges %}
+                <div id="edit" data-json="{{c.id}}" class="caja-icono edit_platos" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+{#            {% if 'menu_plato_delete' in privileges %}#}
+{#                <div id="delete" data-json="{{c.id}}" class="caja-icono delete_platos" title="Eliminar">#}
+{#                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>#}
+{#                </div>#}
+{#            {% end %}#}
+        </div>
+    </td>
+</tr>
+{% end %}

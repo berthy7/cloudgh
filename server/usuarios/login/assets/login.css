@@ -1,0 +1,39 @@
+.login-page{ background-color: #0B1D50}
+.input-group .form-line::after{
+    border-bottom: 2px solid #0B1D50;
+}
+.card-own{
+    padding: 8px 10px 0px 10px;
+}
+.title-own{
+    font-family: sans-serif;
+    text-transform: uppercase;
+    color: #37474f;
+}
+.bgp-red{
+    background-color: #ef5350 !important;
+}
+.bgp-orange{
+    background-color: #ff9800 !important;
+}
+.col-owner {
+    padding-left: 30px;
+    margin-bottom: 0px;
+    padding-top: 10px;
+}
+.msg-owner{
+    font-style: normal !important;
+}
+.white-own{
+    color: white !important;
+}
+.button-blue-dark-own{
+    background-color: #0B1D50;
+}
+.titulo-verde-own{
+    color:  white  !important;
+}
+image-pg {
+    height: 194px !important;
+    width: auto !important;
+}

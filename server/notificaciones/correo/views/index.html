@@ -1,0 +1,110 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="notificaciones/correo/assets/correo.css">
+{% end %}
+
+{% block content %}
+    {% if 'correo_insert' in privileges or 'correo_update' in privileges %}
+        {% include form.html %}
+    {% end %}
+{% include form_correos.html %}
+
+    <div class="header bg-page-own"><h2>Envio Email de Reportes</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div class="col-xs-3 col-sm-2 col-md-6 col-lg-4">
+                <div class="contenedor">
+                    {% if 'correo_insert' in privileges %}
+                    <div id="new" type="button" class="caja-icono" title="Agregar correos">
+                        <img src="/resources/iconos/correo_personal.ico" class="icono" />
+                    </div>
+                    {% end %}
+
+                    {% if 'correo_update' in privileges %}
+                    <div  id="edit" type="button" class="caja-icono" title="Actualizar Servidor">
+                        <img src="/resources/iconos/servidor_correo.ico" class="icono" />
+                    </div>
+                    {% end %}
+                </div>
+            </div>
+            <div class="col-xs-3 col-sm-2 col-md-6 col-lg-7">
+                <div class="contenedor">
+                    <div class="col-sm-3">
+                        <div class="body table-responsive">
+                            <table id="data_table_hora" class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="order_by_th" data-name="name">Hora de Correo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table_content">
+                                    <tr>
+                                        <td><input id="hora_correo" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ hora_notificacion.hora.strftime("%H:%M")}}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        {% if 'correo_update' in privileges %}
+                        <div  id="edit_hora" type="button" class="caja-icono" title="Actualizar Hora">
+                            <img src="/resources/iconos/actualizar_hora.ico" class="icono" />
+                        </div>
+                        {% end %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {% if 'correo_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table_dias" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="name">Lunes</th>
+                            <th class="order_by_th" data-name="email">Martes</th>
+                            <th class="order_by_th" data-name="enabled">Miércoles</th>
+                            <th class="order_by_th" data-name="enabled">Jueves</th>
+                            <th class="order_by_th" data-name="enabled">Viernes</th>
+                            <th class="order_by_th" data-name="enabled">Sábado</th>
+                            <th class="order_by_th" data-name="enabled">Domingo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table_dias.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">Codigo</th>
+                            <th class="order_by_th" data-name="names">Nombre</th>
+                            <th class="order_by_th" data-name="names">Correo</th>
+                            <th class="actions_header">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/js/functions.js"></script>
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="notificaciones/correo/assets/correo.js"></script>
+{% end %}

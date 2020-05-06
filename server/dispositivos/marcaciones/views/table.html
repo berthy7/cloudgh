@@ -1,0 +1,14 @@
+{% set cont = 0 %}
+{% for c in marcaciones %}
+<tr>
+    <td>{{ marcaciones[cont]['id'] }}</td>
+    <td>{{ marcaciones[cont]['codigo'] }}</td>
+    <td>{{ marcaciones[cont]['nombre'] }}</td>
+    <td>{{ marcaciones[cont]['fecha'] }}</td>
+    <td>{{ marcaciones[cont]['hora'] }}</td>
+    <td>{{ marcaciones[cont]['dispositivo'] }}</td>
+</tr>
+{% set cont = cont + 1 %}
+{% end %}
+
+

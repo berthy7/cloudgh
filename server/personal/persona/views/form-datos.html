@@ -1,0 +1,241 @@
+<div id="dato_form_body" class="box-body">
+    <div class="bordesdiv">
+        </br>
+        <div class="modal-header header-own">
+            <h4 id="dato_title" class="modal-title">Datos Generales</h4>
+        </div>
+
+        <div id="id_div" class="form-group">
+            <div class="form-line">
+                {% module xsrf_form_html() %}
+                <input id="id" type="text" class="form-control persona hidden" disabled="disabled">
+                <label for="id" class="form-label">Persona ID</label>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-8">
+                <div class="form-group"align="center">
+                    <img id='show_img' src='/resources/images/no_photo.png' width='70px'>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="select-cont">
+                    <label for="foto" class="form-label">Nueva Fotografia: </label>
+                    <input id="foto" name="foto" type="file" class="file form-control"width='300px' />
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div id="apellidopDIV" class="form-line">
+                        <input id="apellidop" name="Apellido Paterno" type="text" class="form-control name persona" required>
+                        <label for="apellidop" class="form-label">Apellido Paterno</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <input id="apellidom" name="Apellido Materno" type="text" class="form-control name persona" required>
+                        <label for="apellidom" class="form-label">Apellido Materno</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div id="nombresDIV" class="form-line">
+                        <input id="nombres" name="nombre" name="Nombre" type="text" class="form-control name persona" required>
+                        <label for="nombres" class="form-label">Nombres</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div id="ciDIV" class="form-line">
+                        <input id="ci" type="text" name="Carnet de Identidad" class="form-control persona" required>
+                        <label for="ci" class="form-label">CI</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <input id="telefonodt" type="text" name="Teléfono" class="form-control text persona" required>
+                        <label for="telefonodt" class="form-label">Teléfono</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <div id="fechanacimientoDIV" class="form-line">
+                        <label for="fechanacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input id="fechanacimiento" name="Fecha de Nacimiento" type="text" class="form-control date persona" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-4">
+                <div class="form-line">
+                    <select id="sexo" name="Género" class="form-control show-tick persona" required>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <input id="domicilio" name="Domicilio" type="text" class="form-control text persona" required>
+                        <label for="domicilio" class="form-label">Domicilio</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <input id="idemp" type="hidden" class="empleado" required>
+                        <input id="email" type="email" name="Email" class="form-control text empleado" required>
+                        <label for="email" class="form-label">Email</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </br>
+    </div>
+    </br>
+    <div class="bordesdiv">
+        </br>
+
+        <div class="modal-header header-own">
+            <h4 id="dato_title" class="modal-title">Datos Administrativos</h4>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <label for="codigo" class="form-label">Código de Empleado</label>
+                    <div class="form-line">
+                        <input id="codigo" name="Código de empleado" type="text" class="form-control name empleado" required>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 select-cont">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label for="fkpais">País</label>
+                        <select id="fkpais" name="fkpais" class="form-control show-tick empleado" data-live-search="true" required>
+                        {% for p in pais %}
+                            <option value="{{p.id}}">{{p.nombre}}</option>
+                        {% end %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 select-cont">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label for="fkdepartamento">Departamento</label>
+                        <select id="fkdepartamento" name="fkdepartamento" class="form-control show-tick empleado" data-live-search="true" required>
+                        {% for d in departamentos %}
+                            <option value="{{d.id}}">{{d.nombre}}</option>
+                        {% end %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-4 select-cont">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label for="fkciudad">Ciudad</label>
+                        <select id="fkciudad" name="fkciudad" class="form-control show-tick empleado" data-live-search="true" required>
+                        {% for c in ciudades %}
+                            <option value="{{c.id}}">{{c.nombre}}</option>
+                        {% end %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 select-cont">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label for="fksucursal">Sucursal</label>
+                        <select id="fksucursal" name="fksucursal" class="form-control show-tick empleado" data-live-search="true" required>
+                        {% for s in sucursales %}
+                            <option value="{{s.id}}">{{s.nombre}}</option>
+                        {% end %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 select-cont">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label for="fkoficina">Oficina</label>
+                        <select id="fkoficina" name="fkoficina" class="form-control show-tick empleado" data-live-search="true">
+                        {% for o in oficinas %}
+                            <option value="{{o.id}}">{{o.nombre}}</option>
+                        {% end %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-4 select-cont">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label for="fkgerencia">Área de Trabajo</label>
+                        <select id="fkgerencia" name="fkgerencia" class="form-control show-tick empleado" data-live-search="true" required>
+                        {% for g in gerencias %}
+                            <option value="{{g.id}}">{{g.nombre}}</option>
+                        {% end %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 select-cont">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label for="fkcargo">Cargo</label>
+                        <select id="fkcargo" name="fkcargo" class="form-control show-tick empleado" data-live-search="true" required>
+                        {% for ce in cargos %}
+                            <option value="{{ce.id}}">{{ce.nombre}}</option>
+                        {% end %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 select-cont">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label for="fkcentro">Centro de Costos</label>
+                        <select id="fkcentro" name="fkcentro" class="form-control show-tick empleado" data-live-search="true" required>
+                        {% for cc in centros %}
+                            <option value="{{cc.id}}">{{cc.nombre}}</option>
+                        {% end %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </br>
+    </div>
+</div>

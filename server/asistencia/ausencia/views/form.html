@@ -1,0 +1,113 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="ausencia_title" class="modal-title">Ingreso de Ausencia</h3>
+                <h4 id="ausencia_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+                    <div id="id_div" class="form-group">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input id="id" type="text" class="form-control" disabled="disabled">
+                            <label for="id" class="form-label">Ausencias ID</label>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <label >Tipo de Ausencia</label>
+                            <select id="fktipoausencia" class="form-control" required>
+                            {% for s in ausencias %}
+                                <option value="{{s.id}}">{{s.nombre}}</option >
+                            {% end %}
+                            </select>
+                            </br>
+                            </br>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                           <label>Persona</label>
+                            <select id="fkpersona" class="form-control" required>
+                                {% for s in personal %}
+                                <option value="{{ s.id }}">{{ s.fullname }}</option>
+                                {% end %}
+                            </select>
+                            </br>
+                            </br>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <label class="form-label">Descripcion</label>
+                                <div class="form-line">
+                                    <textarea id="descripcion" name="descripcion" class="md-textarea form-control txta-own text" required>  </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="row clearfix">
+                        <div class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Fecha Inicio</label>
+                                    <input id="fechai" name="Fecha Inicio" type="text" class="form-control date" required>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Hora Inicio</label>
+                                    <input id="horai" name="Hora Inicio" type="text" class="form-control hr">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="row clearfix">
+                         <div class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Fecha Fin</label>
+                                    <input id="fechaf" name="Fecha Fin" type="text" class="form-control date" required>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Hora Fin</label>
+                                    <input id="horaf" name="Hora Fin" type="text" class="form-control hr">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                           <label>Estado</label>
+                            <select id="estado" class="form-control">
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Aceptado">Aceptado</option>
+                                <option value="Rechazado">Rechazado</option>
+                            </select>
+                            </br>
+                            </br>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                {% if 'ausencia_insert' in privileges %}
+                    <button id="insert" type="button" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+                {% end %}
+                {% if 'ausencia_update' in privileges %}
+                    <button id="update" type="button" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

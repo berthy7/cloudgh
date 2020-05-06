@@ -1,0 +1,88 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="usuarios/ajustes/assets/ajustes.css">
+{% end %}
+
+{% block content %}
+    {% if 'ajustes_insert' in privileges or 'ajustes_update' in privileges %}
+        {% include form.html %}
+    {% end %}
+
+    <div class="header bg-page-own"><h2>Ajustes de Sistema</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+
+        </div>
+        <div class="row clearfix">
+
+             <div class="col-sm-2">
+                 <div class="header color-subtitulo" ><h2>Bases de datos</h2></div>
+                 </br>
+                    <div>
+                        <input type="radio" name="bases" id="checkMysql" class="regular-checkbox big-checkbox" />
+                        <label for="checkMysql">Mysql</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="bases" id="checkPostgres" class="regular-checkbox big-checkbox"/>
+                        <label for="checkPostgres">Postgres</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="bases" id="checkOracle" class="regular-checkbox big-checkbox" />
+                        <label for="checkOracle">Oracle</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="bases" id="checkSqlServer" class="regular-checkbox big-checkbox" />
+                        <label for="checkSqlServer">SqlServer</label>
+                    </div>
+            </div>
+
+            <div class="col-sm-2">
+                 <div class="header color-subtitulo" ><h2>Dominio del sistema</h2></div>
+                 </br>
+                <div class="form-line">
+                    <input id="dominio" name="Dominio" class=" form-control" value="{{ ajuste.dominio }}">
+                </div>
+            </div>
+            <div class="col-sm-1">
+                {% if 'ajustes_update' in privileges %}
+                <div  id="actualizar" type="button" class="caja-icono" title="Actualizar Ajustes">
+                    <img src="/resources/iconos/actualizar_hora.ico" class="icono" />
+                </div>
+                {% end %}
+            </div>
+        </div>
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/js/functions.js"></script>
+    <script src="usuarios/ajustes/assets/ajustes.js"></script>
+<script>
+        $(document).ready(function () {
+
+            {% if ajuste.mysql %}
+                document.getElementById('checkMysql').checked=true
+            {% end %}
+
+            {% if  ajuste.postgres %}
+                document.getElementById('checkPostgres').checked=true
+            {% end %}
+
+            {% if ajuste.oracle %}
+                document.getElementById('checkOracle').checked=true
+            {% end %}
+
+            {% if ajuste.sqlserver %}
+                document.getElementById('checkSqlServer').checked=true
+            {% end %}
+
+        });
+</script>
+{% end %}
+
+
+
+

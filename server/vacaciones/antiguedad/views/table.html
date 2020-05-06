@@ -1,0 +1,27 @@
+{% for c in objects %}
+<tr>
+    <td>{{ c.id }}</td>
+    {% if c.añoi ==1 %}
+        <td>{{ c.añoi}} año</td>
+    {% else %}
+        <td>{{ c.añoi}} años</td>
+    {% end %}
+    <td>{{ c.añof}} años</td>
+    <td>{{ c.dias}} dias</td>
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'v_antiguedad_update' in privileges %}
+                <div id="edit" data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+            {% if 'v_antiguedad_delete' in privileges %}
+                <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">
+                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+        </div>
+    </td>
+</tr>
+{% end %}

@@ -1,0 +1,228 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="calendario/feriado/assets/feriado.css">
+{% end %}
+
+{% block content %}
+    {% include form.html %}
+
+    <div class="header bg-page-own"><h2>Feriados</h2></div>
+    <ul class="nav nav-tabs tab-nav-right" id="myTab" role="tablist">
+        <li class="nav-item" >
+            <a id="primero" class="nav-link active" id="home-tab" data-toggle="tab" href="#body-cont" role="tab"
+               aria-controls="profile" aria-selected="true">Calendario</a>
+        </li>
+        <li class="nav-item">
+            <a id='segundo' class="nav-link" id="profile-tab" data-toggle="tab" href="#body-elfec" role="tab"
+               aria-controls="profile" aria-selected="false">Feriados</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade body" id="body-cont" role="tabpanel" aria-labelledby="home-tab">
+            <div class="body">
+                <div id='calendar' style="max-width: 900px; margin: 0 auto">
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade body" id="body-elfec" style="display:none;" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="body">
+                <div class="row clearfix">
+                    <div class="col-xs-3 col-sm-2 col-md-6 col-lg-6">
+                        <div class="contenedor">
+                        {% if 'feriado_insert' in privileges %}
+                            <div id="new" class="caja-icono" title="Nuevo">
+                                <img src="/resources/iconos/agregar.ico" class="icono" />
+                            </div>
+                        {% end %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if 'feriado_query' in privileges %}
+                <div class="row">
+                    <div class="body table-responsive">
+                        <table id="data_table" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="order_by_th" data-name="names">Nro</th>
+                                    <th class="order_by_th" data-name="names">Nombre</th>
+                                    <th class="order_by_th" data-name="names">Fecha</th>
+                                    <th class="order_by_th" data-name="names">Tipo</th>
+                                    <th class="order_by_th" data-name="names">Aplicado para</th>
+                                    <th class="actions_header">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_content">
+                                {% include 'table.html' %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+                {% end %}
+            </div>
+        </div>
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/js/functions.js"></script>
+    <script src="calendario/feriado/assets/feriado.js"></script>
+    <link href="resources/plugins/full-calendar/css/fullcalendar.css" rel="stylesheet">
+    <link href="resources/plugins/full-calendar/css/fullcalendar.print.css" rel="stylesheet" media='print'>
+    <!-- Calendar Js -->
+    <script src="resources/plugins/full-calendar/js/moment.min.js"></script>
+    <script src="resources/plugins/full-calendar/js/fullcalendar.min.js"></script>
+    <script src='resources/plugins/full-calendar/js/es.js'></script>
+    <script>
+    $(document).ready(function() {
+		eventos = []
+		calendario = $('#calendar')
+        {% for feriado in feriados %}
+            eventos.push(
+                {
+                    id: "{{feriado.id}}",
+                    className: "evento-c",
+                    title: "{{feriado.nombre}}",
+                    ciclico: "{{feriado.ciclico}}",
+                    fijo: "{{feriado.fijo}}",
+                    relativo: "{{feriado.relativo}}",
+
+                    pais: "{{feriado.fkpais}}",
+                    departamento: "{{feriado.fkdepartamento}}",
+                    ciudad: "{{feriado.fkciudad}}",
+                    sucursal: "{{feriado.fksucursal}}",
+
+
+                    fecha: "{{feriado.fecha.strftime('%d/%m/%Y')}}",
+                    start: moment("{{feriado.fecha.day}}/{{feriado.fecha.month}}/"+ new Date().getFullYear() ,"DD/MM/YYYY").format("YYYY-MM-DD"),
+                }
+            )
+
+		{% end %}
+		calendario.fullCalendar({
+			customButtons: {
+				previous_year: {
+					text: 'Año anterior',
+					click: function() {
+						calendario.fullCalendar('prevYear');
+					}
+				},
+				next_year: {
+					text: 'Año siguiente',
+					click: function() {
+						calendario.fullCalendar('nextYear');
+					}
+				}
+			},
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'previous_year,next_year'
+			},
+			defaultDate: new Date(),
+            locale: 'es',
+			weekends: true,
+			selectable: true,
+			editable: false,
+			eventLimit: true,
+			events: eventos,
+			select: function(start, end) {
+				if (start.month() == calendario.fullCalendar('getDate').month() && end.month() == calendario.fullCalendar('getDate').month()) {
+                    $('#id_div').hide()
+
+                    $('#nombre').val('')
+                    $('#fkpais').val('')
+                    $('#fkpais').selectpicker('refresh')
+
+                    $('#fkdepartamento').val('')
+                    $('#fkdepartamento').selectpicker('refresh')
+                    $('#fkciudad').val('')
+                    $('#fkciudad').selectpicker('refresh')
+                    $('#fksucursal').val('')
+                    $('#fksucursal').selectpicker('refresh')
+
+                    $('#ciclico').prop('checked', false)
+                    $('#fijo').prop('checked', true)
+                    $('#relativo').prop('checked', false)
+
+                    $('#insert').show()
+                    $('#delete').hide()
+                    $('#update').hide()
+
+				    $('#form').modal('show')
+                    $('#fecha').attr("disabled", true)
+
+					$('#fecha').val(start.format("DD/MM/YYYY"))
+					$('#fecha_fin').val(end.subtract(1,'days').format("DD/MM"))
+
+                    fecha_inicial = start
+					fecha_final = end
+				}
+			},
+			eventClick: function(event) {
+			    console.log("event", event)
+				if (event.className == "evento" || event.className == "evento-c" ) {
+					if (event.end == null){
+						fecha_fin = moment(event.start.format("DD/MM/YYYY"), "DD/MM/YYYY")
+					}else{
+						fecha_fin = moment(event.end.format("DD/MM/YYYY"), "DD/MM/YYYY").subtract(1,'days')
+					}
+
+                    $('#id').val(event.id)
+                    $('#nombre').val(event.title)
+                    $('#fecha').val(event.fecha)
+                    if(event.ciclico == "True"){
+					    $('#ciclico').prop('checked', true)
+                    }
+
+                    if(event.fijo == "True"){
+					    $('#fijo').prop('checked', true)
+                    }
+
+                    if(event.relativo == "True"){
+					    $('#relativo').prop('checked', true)
+                    }
+
+
+                    $('#fkpais').val(event.pais)
+                    $('#fkpais').selectpicker('refresh')
+
+                    $('#fkdepartamento').val(event.departamento)
+                    $('#fkdepartamento').selectpicker('refresh')
+                    $('#fkciudad').val(event.ciudad)
+                    $('#fkciudad').selectpicker('refresh')
+                    $('#fksucursal').val(event.sucursal)
+                    $('#fksucursal').selectpicker('refresh')
+
+                    $('#id_div').hide()
+                    $('#insert').hide()
+                    $('#delete').show()
+                    $('#update').show()
+                    $('#form').modal('show')
+                    $('#fecha').attr("disabled", true)
+
+
+				}
+
+			},
+			viewRender: function (view, element) {
+				newYear = calendario.fullCalendar('getDate').year()
+				$.each(calendario.fullCalendar('clientEvents'), function (index, evento) {
+					if (evento.start.year != newYear && evento.className[0]=='evento-c'){
+						evento.start.year(newYear)
+						calendario.fullCalendar('updateEvent', evento)
+					}
+				})
+		 	}
+		});
+	});
+
+
+    </script>
+{% end %}

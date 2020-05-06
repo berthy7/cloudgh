@@ -1,0 +1,26 @@
+.modal-lg-own{
+    width: 98% !important;
+}
+.tb-txta-own{
+    padding: 8px !important;
+    min-height: 36px !important;
+    max-height: 144px !important;
+    min-width: 215px !important;
+    max-width: 360px !important;
+}
+.placeholder-own::placeholder {
+  color: rgba(64, 64, 64, .5);
+  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 13px;
+}
+.done-item{
+    background-color: #b2dfdb !important;
+}
+.offset-own{
+    padding-left: 30px !important;
+    padding-top: 10px !important;
+    padding-bottom: 16px !important;
+}
+.pt-col-own{
+    padding-top: 15px !important;
+}

@@ -1,0 +1,50 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width:65vw; max-width: 1000px" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="correo_rrhh_title" class="modal-title">Ingreso de Correos Electronicos de RRHH</h3>
+                <h4 id="correo_rrhh_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+                    <div id="id_div" class="form-group">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input id="id" type="text" class="form-control" disabled="disabled">
+                            <label for="id" class="form-label">Correos Electronicos ID</label>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                            <div class="col-sm-6">
+                               <label>Buscar personas</label>
+                                <select id="personal" class="form-control">
+                                    {% for s in personal %}
+                                    <option value="{{ s.id }}">{{ s.fullname }}</option>
+                                    {% end %}
+                                </select>
+                                </br>
+                                </br>
+                            </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-10">
+                            <div id="personal" class="box-body">
+                                <div id="personal_div" class="clearfix">
+
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                {% if 'correo_rrhh_insert' in privileges %}
+                    <button id="insert" type="button" class="btn bg-page-own waves-effect">Agregar <i class="material-icons">save</i></button>
+                {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

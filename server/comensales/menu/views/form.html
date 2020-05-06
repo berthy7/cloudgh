@@ -1,0 +1,86 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width:50vw; max-width: 1000px" >
+        <div class="modal-content">
+            <form id="form_submit" class="new" enctype="multipart/form-data" novalidate>
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 id="menu_tittle" class="modal-title">Ingreso de Menú</h3>
+                    <h4 id="menu_enable" class=""></h4>
+                    <div class="col-sm-6">
+                        <div id="fechaDIV" class="form-line" >
+                            <input id="fecha" type="text" class="form-control date" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div id="menu_form_body" class="box-body">
+                        <div id="id_div" class="form-group">
+                            <div class="form-line">
+                                {% module xsrf_form_html() %}
+                                <input id="id" type="text" class="form-control" disabled="disabled">
+                                <label for="id" class="form-label">Menú ID</label>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-6">
+                                <label>Platos</label>
+                                <div id="plato" class="box-body">
+                                    <div id="plato_div" class="clearfix">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="nfoto" >
+                                <div class="col-sm-6">
+                                    <label>Foto Actual</label>
+                                    <div id="imagen_archivo" class="row m-b-20">
+                                        <div class="text-center">
+                                            <img id='imagen_show_img' src='' width='450px'>
+                                            </br>
+                                            </br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-6">
+
+                            </div>
+
+
+                            <div class="col-sm-6">
+                                <label class="form-label">Ingresar Foto: </label>
+                                    <input id="foto" name="archivo" type="file" class="file form-control"width='600px' />
+                                    </br>
+                                    </br>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                    {% if 'menu_delete' in privileges %}
+                        <button id="delete" type="submit" class="btn bg-red waves-effect">Eliminar <i class="material-icons">clear</i></button>
+                    {% end %}
+                    {% if 'menu_insert' in privileges %}
+                        <button id="insert" type="submit" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+                    {% end %}
+                    {% if 'menu_update' in privileges %}
+                        <button id="update" type="submit" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                    {% end %}
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

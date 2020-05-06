@@ -1,0 +1,13 @@
+{% for c in objects %}
+    <tr>
+        <td>{{ c.fkpersona}}</td>
+        <td>{{ c.persona.fullname}}</td>
+        <td>{{ c.persona.empleado[0].email}}</td>
+
+        <td align="center">
+            <input id="enabled{{c.fkpersona}}" type="checkbox" class="module chk-col-deep-purple enabled" data-id="{{c.fkpersona}}" {% if c.enabled %} {{"checked"}} {% end %} {% if 'correo_rrhh_delete' not in privileges %} {{"disabled"}} {% end %}>
+            <label for="enabled{{c.fkpersona}}"></label>
+        </td>
+
+    </tr>
+{% end %}

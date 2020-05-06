@@ -1,0 +1,276 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="comensales/menu/assets/menu.css">
+{% end %}
+
+{% block content %}
+    {% include form.html %}
+    {% include form_platos.html %}
+
+    <div class="header bg-page-own"><h2>Menús</h2></div>
+    <ul class="nav nav-tabs tab-nav-right" id="myTab" role="tablist">
+        <li class="nav-item" >
+            <a id="primero" class="nav-link active" id="home-tab" data-toggle="tab" href="#body-cont" role="tab"
+               aria-controls="profile" aria-selected="true">Calendario de Menus</a>
+        </li>
+        <li class="nav-item">
+            <a id='segundo' class="nav-link" id="profile-tab" data-toggle="tab" href="#body-elfec" role="tab"
+               aria-controls="profile" aria-selected="false">Gestion de Platos</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade body" id="body-cont" role="tabpanel" aria-labelledby="home-tab">
+            <div class="body">
+                <div class="row clearfix">
+                    <div class="col-xs-3 col-sm-2 col-md-6 col-lg-7">
+                        <div class="col-sm-6">
+                            <div class="body table-responsive">
+                                <table id="data_table_hora" class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="order_by_th" data-name="name">Hora Limite de Pedidos</th>
+                                            <th class="order_by_th" data-name="name">Hora Inicio del Almuerzo</th>
+                                            <th class="order_by_th" data-name="name">Hora Fin del Almuerzo</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody id="table_content">
+                                        <tr>
+                                            <td><input id="horaLimite" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaLimite.strftime("%H:%M")}}"></td>
+                                            <td><input id="horaInicio" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaInicio.strftime("%H:%M")}}"></td>
+                                            <td><input id="horaFin" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaFin.strftime("%H:%M")}}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div  id="edit_hora" type="button" class="caja-icono" title="Actualizar Hora">
+                                <img src="/resources/iconos/actualizar_hora.ico" class="icono" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div id='calendar' style="max-width: 900px; margin: 0 auto">
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade body" id="body-elfec" style="display:none;" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="body">
+                <div class="row clearfix">
+                    <div class="col-xs-3 col-sm-2 col-md-6 col-lg-6">
+                        <div class="contenedor">
+                        {% if 'menu_plato_insert' in privileges %}
+                            <div id="new" class="caja-icono" title="Nuevo">
+                                <img src="/resources/iconos/agregar.ico" class="icono" />
+                            </div>
+                        {% end %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if 'menu_plato_query' in privileges %}
+                <div class="row">
+                    <div class="body table-responsive">
+                        <table id="data_table" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="order_by_th" data-name="names">Nro</th>
+                                    <th class="order_by_th" data-name="names">Nombre de Plato</th>
+                                    <th class="order_by_th" data-name="names">Habilitado</th>
+                                    <th class="actions_header">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_content">
+                                {% include 'table.html' %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+                {% end %}
+            </div>
+        </div>
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/js/functions.js"></script>
+    <script src="comensales/menu/assets/menu.js"></script>
+    <link href="resources/plugins/full-calendar/css/fullcalendar.css" rel="stylesheet">
+    <link href="resources/plugins/full-calendar/css/fullcalendar.print.css" rel="stylesheet" media='print'>
+    <!-- Calendar Js -->
+    <script src="resources/plugins/full-calendar/js/moment.min.js"></script>
+    <script src="resources/plugins/full-calendar/js/fullcalendar.min.js"></script>
+    <script src='resources/plugins/full-calendar/js/es.js'></script>
+    <script>
+        $(document).ready(function() {
+		eventos = []
+		calendario = $('#calendar')
+        {% for menu in menus %}
+            eventos.push(
+                {
+                    id: "{{menu.id}}",
+                    className: "evento-c",
+                    title: "{{menu.nombre}}",
+                    foto: "{{menu.foto}}",
+                    fecha: "{{menu.fecha.strftime('%d/%m/%Y')}}",
+                    platos: "{{menu.menuplato}}",
+                    start: moment("{{menu.fecha.day}}/{{menu.fecha.month}}/"+ new Date().getFullYear() ,"DD/MM/YYYY").format("YYYY-MM-DD"),
+                }
+            )
+
+		{% end %}
+		calendario.fullCalendar({
+			customButtons: {
+				previous_year: {
+					text: 'Año anterior',
+					click: function() {
+						calendario.fullCalendar('prevYear');
+					}
+				},
+				next_year: {
+					text: 'Año siguiente',
+					click: function() {
+						calendario.fullCalendar('nextYear');
+					}
+				}
+			},
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'previous_year,next_year'
+			},
+			defaultDate: new Date(),
+            locale: 'es',
+			weekends: true,
+			selectable: true,
+			editable: false,
+			eventLimit: true,
+			events: eventos,
+			select: function(start, end) {
+				if (start.month() == calendario.fullCalendar('getDate').month() && end.month() == calendario.fullCalendar('getDate').month()) {
+                    $('#id_div').hide()
+                    $('#insert').show()
+                    $('#delete').hide()
+                    $('#update').hide()
+                    $('#foto').fileinput('clear');
+                    $('.nfoto').hide()
+                    $('#plato_div').empty()
+				    $('#form').modal('show')
+
+                    {% for plato in platos_habilitados %}
+
+                        append_input_plato({{ plato.id }})
+                        $('#fkpla_'+{{ plato.id }}).val({{ plato.id }})
+                        $('#pla_'+{{ plato.id }}).val('{{ plato.nombre }}')
+
+                    {% end %}
+
+
+
+					$('#fecha').val(start.format("DD/MM/YYYY"))
+					$('#fecha_fin').val(end.subtract(1,'days').format("DD/MM"))
+                    fecha_inicial = start
+					fecha_final = end
+				}
+			},
+			eventClick: function(event) {
+			    console.log("event", event)
+                append_input_plato('')
+				if (event.className == "evento" || event.className == "evento-c" ) {
+					if (event.end == null){
+						fecha_fin = moment(event.start.format("DD/MM/YYYY"), "DD/MM/YYYY")
+					}else{
+						fecha_fin = moment(event.end.format("DD/MM/YYYY"), "DD/MM/YYYY").subtract(1,'days')
+					}
+
+                    if (event.foto != "None" && event.foto != "") {
+                        document.getElementById("imagen_show_img").src = event.foto;
+                    } else {
+                        document.getElementById("imagen_show_img").src = "/resources/images/sinImagen.jpg";
+                    }
+
+                    obj = JSON.stringify({
+                        'id': parseInt(event.id)
+                    })
+                    ajax_call_get('menu_plato_obtener', {
+                        _xsrf: getCookie("_xsrf"),
+                        object: obj
+                    }, function (response) {
+                        var plato = response;
+                        $('#plato_div').empty();
+                        for(i in plato){
+
+                            append_input_plato(plato[i]['id'])
+                            $('#id'+plato[i]['id']).val(plato[i]['id'])
+                            $('#fkpla_'+plato[i]['id']).val(plato[i]['fkplato'])
+                            $('#pla_'+plato[i]['id']).val(plato[i]['plato']['nombre'])
+                        }
+
+                        $('#id').val(event.id)
+                        $('#nombre').val(event.tittle)
+                        $('#fecha').val(event.fecha)
+                        $('#foto').fileinput('clear');
+                        $('.nfoto').show()
+                        $('#id_div').hide()
+                        $('#insert').hide()
+                        $('#delete').show()
+                        $('#update').show()
+                        $('#form').modal('show')
+                    })
+
+				}
+
+			},
+			viewRender: function (view, element) {
+				newYear = calendario.fullCalendar('getDate').year()
+				$.each(calendario.fullCalendar('clientEvents'), function (index, evento) {
+					if (evento.start.year != newYear && evento.className[0]=='evento-c'){
+						evento.start.year(newYear)
+						calendario.fullCalendar('updateEvent', evento)
+					}
+				})
+		 	}
+		});
+	});
+        function append_input_plato(pla) {
+            $('#plato_div').append(
+                '<div class="row">\
+                    <div class="col-md-2" hidden>\
+                        <div class="form-line">\
+                            <input id="id'+pla+'" class="form-control plato" readonly>\
+                        </div>\
+                    </div>\
+                    <div class="col-md-2" hidden>\
+                        <div class="form-line">\
+                            <input id="fkpla_'+pla+'" class="form-control plato" readonly>\
+                        </div>\
+                    </div>\
+                    <div class="col-md-8">\
+                        <div class="form-line">\
+                            <input id="pla_'+pla+'" class="form-control" readonly>\
+                        </div>\
+                    </div>\
+                    <div class="col-md-1">\
+                        <button type="button" class="btn bg-red waves-effect clear_plato">\
+                            <i class="material-icons">clear</i>\
+                        </button>\
+                    </div>\
+                </div>'
+            )
+
+            $('.clear_plato').last().click(function () {
+                $(this).parent().parent().remove()
+            })
+        }
+
+    </script>
+{% end %}

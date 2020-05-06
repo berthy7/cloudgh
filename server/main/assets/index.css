@@ -1,0 +1,30 @@
+.accion{
+    cursor:pointer
+}
+.bg-light-green-own{
+    background-color: #689f38;
+}
+.bg-lime-own{
+    background-color: #afb42b;
+}
+.bg-orange-own{
+    background-color: #f57c00;
+}
+.bg-yellow-own{
+    background-color: #f9a825;
+}
+.textlight-own{
+    color: white !important;
+}
+.info-box-2 {
+    min-height: 92px;
+}
+.text-size-own{
+    font-size: 22px !important;
+}
+.ics-own{
+    padding-left: 10px;
+}
+.box-infom{
+    cursor: pointer !important;
+}

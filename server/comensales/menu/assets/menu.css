@@ -1,0 +1,9 @@
+.evento{
+    cursor: pointer;
+}
+.evento-c{
+    cursor: pointer;
+    background-color: #ffa200;
+}
+.fc-other-month {background-color: #A4A4A4; cursor: not-allowed}
+.fc-other-month .fc-day-number {color: white}

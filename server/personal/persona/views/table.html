@@ -1,0 +1,30 @@
+{% for c in personas %}
+<tr>
+    <td>{{ c.empleado[0].codigo }}</td>
+    <td>{{ c.ci }}</td>
+    <td>{{ c.nombres }}</td>
+    <td>{{ c.apellidopaterno }}</td>
+    <td>{{ c.apellidomaterno }}</td>
+    <td align="center ">
+        <div>
+             <input id="{{c.id}}" data-id="{{c.id}}" type="checkbox"  class="module chk-col-deep-purple estado_platos"  {%if c.enabled%} {{"checked"}} {% end %} disabled />
+             <label for="{{c.id}}"></label>
+         </div>
+    </td>
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'persona_update' in privileges %}
+                <div id="edit" data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+            {% if 'persona_delete' in privileges %}
+                <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">
+                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+        </div>
+    </td>
+</tr>
+{% end %}

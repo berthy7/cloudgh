@@ -1,0 +1,27 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width:60vw; max-width: 500px" >
+        <div class="modal-content">
+              <form id="importar-form" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h3 id="importxls_title" class="modal-title">Importar</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div id="importxls_form_body" class="box-body">
+                        <label class="control-label">Excel o Texto</label>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input id="archivo" name="archivo" type="file" class="form-control file xlsfl" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button id="insert_importar" type="submit" class="btn btn-primary">Importar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

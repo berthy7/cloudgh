@@ -1,0 +1,110 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="cliente_tittle" class="modal-title">Ingreso de Asignacion Horarios</h3>
+                <h4 id="cliente_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+                    <div id="id_div" class="form-group">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input id="id" type="text" class="form-control" disabled="disabled">
+                            <label class="form-label">asignacion ID</label>
+                        </div>
+                    </div>
+                    <div class="form-group form-float">
+                        <p><b>Horario</b></p>
+                        <select id="fksemanal" class="form-control show-tick detail" title="Seleccione Horario" required>
+                            {% for semanal in select_semanal  %}
+                                <option value="{{semanal.id}}">{{ semanal.nombre}}</option>
+                            {% end %}
+                        </select>
+                    </div>
+                    <div class="form-group form-float">
+                            <label>Empleados</label>
+                                <div class="clearfix m-b-20">
+                                    <div class="dd">
+                                        <ol class="dd-list">
+                                            <li class="dd-item dd-nodrag" data-id="company">
+                                                <div class="dd-handle">
+                                                    <input id="company" type="checkbox" class="module chk-col-deep-purple">
+                                                    <label for="company">Todos</label>
+                                                </div>
+                                                <ol class="dd-list">
+                                                    {% for empresa in admin %}
+                                                    <li class="dd-item dd-nodrag " data-id="em{{empresa[0]}}">
+                                                        <div class="dd-handle ">
+                                                            <input id="em{{empresa[0]}}" type="checkbox" class="module chk-col-deep-purple empresa" data-id="{{empresa[0]}}">
+                                                            <label for="em{{empresa[0]}}">{{empresa[1]}}</label>
+                                                        </div>
+                                                        <ol class="dd-list">
+                                                        {% if isinstance(admin[empresa], dict) %}
+                                                            {% for sucursal in admin[empresa] %}
+                                                                <li class="dd-item dd-collapsed" data-id="suc{{sucursal[0]}}">
+                                                                    <div class="dd-handle">
+                                                                        <input id="suc{{sucursal[0]}}" type="checkbox" class="module chk-col-deep-purple sucursal" data-id="{{sucursal[0]}}" data-empr="{{empresa[0]}}">
+                                                                        <label for="suc{{sucursal[0]}}">{{sucursal[1]}}</label>
+                                                                    </div>
+                                                                    <ol class="dd-list">
+                                                                        {% if isinstance(admin[empresa][sucursal], dict) %}
+                                                                            {% for gerencia in admin[empresa][sucursal] %}
+                                                                                <li class="dd-item dd-nodrag dd-collapsed" data-id="ge{{gerencia[0]}}">
+                                                                                    <div class="dd-handle">
+                                                                                        <input id="ge{{gerencia[0]}}" type="checkbox" class="module chk-col-deep-purple gerencia" data-id="{{gerencia[0]}}" data-suc="{{sucursal[0]}}" data-empr="{{empresa[0]}}">
+                                                                                        <label for="ge{{gerencia[0]}}">{{gerencia[1]}}</label>
+                                                                                    </div>
+                                                                                    <ol class="dd-list">
+                                                                                        {% if isinstance(admin[empresa][sucursal][gerencia], dict) %}
+                                                                                            {% for grupo in admin[empresa][sucursal][gerencia] %}
+                                                                                                <li class="dd-item dd-nodrag" data-id="gr{{grupo[0]}}">
+                                                                                                    <div class="dd-handle">
+                                                                                                        <input id="gr{{grupo[0]}}" type="checkbox" class="module chk-col-deep-purple grupo" data-id="{{grupo[0]}}" data-ger="{{gerencia[0]}}" data-suc="{{sucursal[0]}}" data-empr="{{empresa[0]}}">
+                                                                                                        <label for="gr{{grupo[0]}}">{{grupo[1]}}</label>
+                                                                                                    </div>
+                                                                                                    <ol class="dd-list">
+                                                                                                        {% raw admin[empresa][sucursal][gerencia][grupo] %}
+                                                                                                    </ol>
+                                                                                                </li>
+                                                                                            {% end %}
+                                                                                        {% else %}
+                                                                                            {% raw admin[empresa][sucursal][gerencia] %}
+                                                                                        {% end %}
+                                                                                </ol>
+                                                                                </li>
+                                                                            {% end %}
+                                                                        {% else %}
+                                                                            {% raw admin[empresa][sucursal] %}
+                                                                        {% end %}
+                                                                </ol>
+                                                                </li>
+                                                            {% end %}
+                                                        {% else %}
+                                                            {% raw admin[empresa] %}
+                                                        {% end %}
+                                                    </ol>
+                                                    </li>
+                                                    {% end %}
+                                                </ol>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    {% if 'asignacion_insert' in privileges %}
+                    <button id="insert" type="button" class="btn bg-page-own waves-effect">Guardar<i class="material-icons">save</i></button>
+                    {% end %}
+                    {% if 'asignacion_update' in privileges %}
+                    <button id="update" type="button" class="btn bg-page-own waves-effect">Guardar<i class="material-icons">save</i></button>
+                    {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

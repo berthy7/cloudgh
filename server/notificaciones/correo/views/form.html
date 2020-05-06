@@ -1,0 +1,55 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="correo_title" class="modal-title">Ingreso de Servidor de correo</h3>
+                <h4 id="correo_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+                    <div id="id_div" class="form-group">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input id="id" type="text" class="form-control" disabled="disabled">
+                            <label for="id" class="form-label">Servidor de correo ID</label>
+                        </div>
+                    </div>
+                    <div class="form-group form-float">
+                        <div class="form-line">
+                            <input id="servidor" type="text" class="form-control text" required>
+                            <label class="form-label">Servidor</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-float">
+                        <div class="form-line">
+                            <input id="puerto" name="puerto" type="text" class="form-control text" required>
+                            <label class="form-label">Puerto</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-float">
+                        <div class="form-line">
+                            <input id="correo" name="correo" type="text" class="form-control text" required>
+                            <label class="form-label">Correo</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-float">
+                        <div class="form-line">
+                            <input id="password" name="password" type="password" class="form-control text" required>
+                            <label class="form-label">Contraseña</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                {% if 'correo_update' in privileges %}
+                    <button id="update" type="button" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

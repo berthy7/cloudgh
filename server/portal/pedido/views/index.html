@@ -1,0 +1,147 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="portal/pedido/assets/pedido.css">
+{% end %}
+
+{% block content %}
+    {% if 'portal_pedido_insert' in privileges or 'portal_pedido_update' in privileges %}
+        {% include form.html %}
+    {% end %}
+
+    <div class="header bg-page-own"><h2>Almuerzo</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div class="col-xs-3 col-sm-2 col-md-6 col-lg-6">
+                <div class="contenedor">
+                    {% if 'portal_pedido_insert' in privileges %}
+                        <div id="new" class="caja-icono" title="Nuevo">
+                            <img src="/resources/iconos/agregar.ico" class="icono" />
+                        </div>
+                    {% end %}
+                </div>
+            </div>
+            <div class="col-xs-3 col-sm-2 col-md-6 col-lg-7">
+                <div class="col-sm-6">
+                    <div class="body table-responsive">
+                        <table id="data_table_hora" class="table table-bordered table-striped table-hover" readonly>
+                            <thead>
+                                <tr>
+                                    <th class="order_by_th" data-name="name">Hora Limite de Pedidos</th>
+                                    <th class="order_by_th" data-name="name">Hora Inicio del Almuerzo</th>
+                                    <th class="order_by_th" data-name="name">Hora Fin del Almuerzo</th>
+                                </tr>
+
+                            </thead>
+                            <tbody id="table_content">
+                                <tr>
+                                    <td><input id="horaLimite" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaLimite.strftime("%H:%M")}}" readonly></td>
+                                    <td><input id="horaInicio" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaInicio.strftime("%H:%M")}}" readonly></td>
+                                    <td><input id="horaFin" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaFin.strftime("%H:%M")}}" readonly></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        {% if 'portal_pedido_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Fecha</th>
+                            <th class="order_by_th" data-name="names">Hora</th>
+                            <th class="order_by_th" data-name="names">Nombre</th>
+                            <th class="order_by_th" data-name="names">Sopa</th>
+                            <th class="order_by_th" data-name="names">Segundo</th>
+                            <th class="actions_header">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/js/functions.js"></script>
+    <script src="portal/pedido/assets/pedido.js"></script>
+    <script>
+        function append_input_pedido(pe) {
+            cont = pe + cont
+
+            $('#pedido_div').append(
+                '<div class="row">\
+                    <div class="col-md-1" hidden>\
+                        <div class="input-group">\
+                            <input id="id'+pe+'" class="form-control pedido readonly">\
+                        </div>\
+                    </div>\
+                    <div class="col-md-5">\
+                        <div class="input-group">\
+                            <select id="per_'+pe+'" class="form-control pedido personas">\
+                                {% for s in personas %} \
+                                    <option value="{{s.id}}">{{s.fullname}}</option> \
+                                {% end %} \
+                            </select>\
+                        </div>\
+                    </div>\
+                    <div class="col-sm-2">\
+                        <input id="b_'+cont+'" type="checkbox" class="module chk-col-deep-purple pedido" data-id="1" >\
+                        <label for="b_'+cont+'"></label>\
+                    </div>\
+                    <div class="col-md-3">\
+                        <div class="input-group">\
+                            <select id="seg_'+pe+'" class="form-control pedido platos">\
+                                <option value="0">---------</option> \
+                                {% for s in platos %} \
+                                <option value="{{s.id}}">{{s.nombre}}</option> \
+                                {% end %} \
+                            </select>\
+                        </div>\
+                    </div>\
+                    <div class="col-md-1">\
+                        <button type="button" class="btn bg-red waves-effect clear_pedido">\
+                            <i class="material-icons">clear</i>\
+                        </button>\
+                    </div>\
+                </div>'
+            )
+
+            $('.clear_pedido').last().click(function () {
+                $(this).parent().parent().remove()
+            })
+
+            $('.personas').selectpicker({
+               size: 10,
+               liveSearch: true,
+               liveSearchPlaceholder: 'Buscar Persona',
+               title: 'Seleccione una Persona.'
+            })
+            $('.platos').selectpicker({
+               size: 10,
+               liveSearch: true,
+               liveSearchPlaceholder: 'Buscar Plato',
+               title: 'Seleccione un plato.'
+            })
+            cont = cont + 1
+        }
+
+
+    </script>
+{% end %}

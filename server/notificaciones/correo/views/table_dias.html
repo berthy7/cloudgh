@@ -1,0 +1,35 @@
+{% for objeto in objects %}
+<tr>
+    <td>
+        <input id="lunes{{objeto.id}}" type="checkbox" class="module chk-col-deep-purple enabled_dias" data-id="1" {% if objeto.lunes%} {{"checked"}} {% end %}>
+        <label for="lunes{{objeto.id}}"></label>
+    </td>
+    <td>
+        <input id="martes{{objeto.id}}" type="checkbox" class="module chk-col-deep-purple enabled_dias" data-id="2" {% if objeto.martes%} {{"checked"}} {% end %}>
+        <label for="martes{{objeto.id}}"></label>
+    </td>
+    <td>
+        <input id="miercoles{{objeto.id}}" type="checkbox" class="module chk-col-deep-purple enabled_dias" data-id="3" {% if objeto.miercoles%} {{"checked"}} {% end %}>
+        <label for="miercoles{{objeto.id}}"></label>
+    </td>
+    <td>
+        <input id="jueves{{objeto.id}}" type="checkbox" class="module chk-col-deep-purple enabled_dias" data-id="4" {% if objeto.jueves%} {{"checked"}} {% end %}>
+        <label for="jueves{{objeto.id}}"></label>
+    </td>
+    <td>
+        <input id="viernes{{objeto.id}}" type="checkbox" class="module chk-col-deep-purple enabled_dias" data-id="5" {% if objeto.viernes%} {{"checked"}} {% end %}>
+        <label for="viernes{{objeto.id}}"></label>
+    </td>
+    <td>
+        <input id="sabado{{objeto.id}}" type="checkbox" class="module chk-col-deep-purple enabled_dias" data-id="6" {% if objeto.sabado%} {{"checked"}} {% end %}>
+        <label for="sabado{{objeto.id}}"></label>
+    </td>
+    <td>
+        <input id="domingo{{objeto.id}}" type="checkbox" class="module chk-col-deep-purple enabled_dias" data-id="7" {% if objeto.domingo%} {{"checked"}} {% end %}>
+        <label for="domingo{{objeto.id}}"></label>
+    </td>
+
+</tr>
+{% end %}
+
+

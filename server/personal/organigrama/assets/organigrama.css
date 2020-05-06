@@ -1,0 +1,16 @@
+#pluginsorg {
+    position: relative;
+    display: inline-block;
+    top: 10px;
+    left: 15px;
+    width: calc(100% - 24px);
+    border: 1px dashed #aaa;
+    border-radius: 5px;
+    overflow: auto;
+    text-align: center;
+    background-color: #fff;
+    height: 100%;
+}
+.orgchart {
+    background: #fff;
+}

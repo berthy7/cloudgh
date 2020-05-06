@@ -1,0 +1,37 @@
+{%extends ../../../common/views/layout.html%}
+
+{%block style%}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="operaciones/bitacora/assets/bitacora.css">
+{%end%}
+
+{%block content%}
+    <div class="header"><h2 class="title-rg-own">BITÁCORA</h2></div>
+
+    <div class="body">
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">ID </th>
+                            <th class="order_by_th" data-name="phone">Usuario </th>
+                            <th class="order_by_th" data-name="phone">Acción </th>
+                            <th class="order_by_th" data-name="phone">Dirección IP </th>
+                            <th class="order_by_th" data-name="phone">Fecha </th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{%end%}
+
+{% block script %}
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/js/functions.js"></script>
+    <script src="operaciones/bitacora/assets/bitacora.js"></script>
+{% end %}

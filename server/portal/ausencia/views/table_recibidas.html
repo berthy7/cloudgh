@@ -1,0 +1,28 @@
+{% for c in ausencias_recibidas %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.persona.fullname }}</td>
+    <td>{{ c.descripcion }}</td>
+    <td>{{ c.fechai.strftime("%d/%m/%Y") }}</td>
+    <td>{{ c.fechaf.strftime("%d/%m/%Y") }}</td>
+    <td>{{ c.estado }}</td>
+    {% if c.fksuperior %}
+            <td>{{ c.superior.fullname }}</td>
+
+    {% else %}
+            <td>----</td>
+    {% end %}
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'portal_ausencia_update' in privileges %}
+                <div id="edit_recibidas" data-json="{{c.id}}" class="caja-icono edit_recibidas" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+        </div>
+    </td>
+</tr>
+{% end %}
+
+

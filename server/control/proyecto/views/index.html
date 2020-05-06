@@ -1,0 +1,207 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="control/proyecto/assets/proyecto.css">
+{% end %}
+
+{% block content %}
+    {% include form.html %}
+
+    <div class="header bg-page-own"><h2 class="title-rg-own">proyectos</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div class="col-xs-3 col-sm-2 col-md-6 col-lg-6">
+                <div class="contenedor">
+                    {% if 'proyecto_insert' in privileges %}
+                        <div id="new" class="caja-icono" title="Nuevo">
+                            <img src="/resources/iconos/agregar.ico" class="icono" />
+                        </div>
+                    {% end %}
+                </div>
+            </div>
+        </div>
+
+        {% if 'proyecto_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">Nº</th>
+                            <th class="order_by_th" data-name="names">Nombre</th>
+                            <th class="order_by_th" data-name="names">Descripcion</th>
+                            <th class="actions_header">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/js/functions.js"></script>
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/plugins/nouislider/nouislider.js"></script>
+    <script src="control/proyecto/assets/proyecto.js"></script>
+    <script>
+        $('#insert-task').click(function () {
+            var datos_field = [];
+            append_field_task(datos_field)
+
+        })
+
+        function append_field_task(idin) {
+            var table = $('#table_tasks').DataTable();
+
+            i_task++;
+            if(idin.length === 0) varid = 0;
+            else varid = idin[0];
+
+            var descripcion = '<input id="id'+i_task+'" value="'+varid+'" type="hidden" class="tasks">'+
+                              '<textarea id="descripcion'+i_task+'" class="materialize-textarea tb-txta-own placeholder-own tasks" placeholder="Descripción">';
+
+            var combo_proy = '<select id="proyecto'+i_task+'" name="proyectos" class="proyectos show-tick tasks" data-width="auto">';
+                            {% for seg in personas %}
+                                combo_proy += "<option value='"+"{{seg.id}}"+"'>"+"{{seg.fullname}}"+"</option>";
+                            {% end %}
+                            combo_proy += '</select>';
+
+
+            var combo_pri = '<select id="prioridad'+i_task+'" name="prioridades" class="prioridades show-tick tasks" data-width="auto">'+
+                                '<option value="Normal">Normal</option>'+
+                                '<option value="Media">Media</option>'+
+                                '<option value="Alta">Alta</option>'+
+                            '</select>';
+
+            var estimacion = '<input id="estimacion'+i_task+'" type="number" class="form-control placeholder-own tasks" placeholder="Estimación (h)">';
+
+            var fechaini = '<input id="fechaInicio'+i_task+'" type="text" class="form-control placeholder-own tasks" placeholder="Fecha inicio">';
+
+            var fechafin = '<input id="fechaFin'+i_task+'" type="text" class="form-control placeholder-own tasks" placeholder="Fecha fin">';
+
+            var combo_est = '<select id="estado'+i_task+'" name="estados" class="estados show-tick tasks" data-width="auto">'+
+                                '<option value="Iniciado">Iniciado</option>'+
+                                '<option value="En proceso">En proceso</option>'+
+                                '<option value="Terminado">Terminado</option>'+
+                            '</select>';
+
+            var accion = '<div class="col-sm-1">'+
+                        '<button id="bd'+i_task+'" type="button" name="change-vl" class="btn bg-red waves-effect clear_task" data-id="'+i_task+'" tsk-id="'+varid+'" title="Eliminar">'+
+                            '<i class="material-icons">clear</i>'+
+                        '</button>'+
+                    '</div>';
+
+            table.row.add([
+                descripcion,
+                combo_proy,
+                combo_pri,
+                estimacion,
+                fechaini,
+                fechafin,
+                combo_est,
+                accion
+            ]).draw(false);
+
+            $('#proyecto'+i_task).selectpicker({
+                size: 10,
+                liveSearch: true,
+                liveSearchPlaceholder: 'Buscar persona',
+                title: 'Seleccione una persona.'
+            })
+
+            $('#prioridad'+i_task).selectpicker({
+                size: 4,
+                liveSearch: true,
+                liveSearchPlaceholder: 'Buscar opción.',
+                title: 'Seleccione una opción..'
+            })
+
+            $('#estado'+i_task).selectpicker({
+                size: 4,
+                liveSearch: true,
+                liveSearchPlaceholder: 'Buscar estado.',
+                title: 'Seleccione un estado.'
+            })
+
+            $('#fechaInicio'+i_task).bootstrapMaterialDatePicker({
+                format: 'YYYY-MM-DD HH:mm',
+                cancelText: 'Descartar',
+                clearText: 'Limpiar',
+                lang: 'pt-br'
+            })
+
+            $('#fechaFin'+i_task).bootstrapMaterialDatePicker({
+                format: 'YYYY-MM-DD HH:mm',
+                cancelText: 'Descartar',
+                clearText: 'Limpiar',
+                lang: 'pt-br'
+            });
+
+            $('#estado'+i_task).on('change', function() {
+                if(this.value === 'Terminado') $(this).parent().parent().parent().addClass('done-item');
+                else $(this).parent().parent().parent().removeClass('done-item');
+            });
+
+            if(idin.length > 0){
+                $('#proyecto'+i_task).val(idin[1]);
+                $('#proyecto'+i_task).selectpicker('render');
+
+                $('#descripcion'+i_task).val(idin[2]);
+
+                $('#prioridad'+i_task).val(idin[3]);
+                $('#prioridad'+i_task).selectpicker('render');
+
+                if(idin[4] === null){
+                    $('#estimacion'+i_task).val('')
+                }else{
+                    $('#estimacion'+i_task).val(idin[4]);
+                }
+
+
+                if(idin[5] === null){
+                    $('#fechaInicio'+i_task).val('')
+                }else{
+                    var initDate = moment(idin[5], 'YYYY-MM-DD HH:mm')
+                    $('#fechaInicio'+i_task).bootstrapMaterialDatePicker('setDate', initDate);
+                }
+
+                if(idin[5] === null){
+                   $('#fechaFin'+i_task).val('')
+                }else{
+                    var endDate = moment(idin[6], 'YYYY-MM-DD HH:mm')
+                    $('#fechaFin'+i_task).bootstrapMaterialDatePicker('setDate', endDate);
+                }
+
+
+                $('#estado'+i_task).val(idin[7]);
+                $('#estado'+i_task).selectpicker('render');
+                $('#estado'+i_task).change();
+            }else{
+                $('#prioridad'+i_task).val('Normal');
+                $('#prioridad'+i_task).selectpicker('render');
+
+                $('#estado'+i_task).val('Iniciado');
+                $('#estado'+i_task).selectpicker('render');
+            }
+
+            $('#bd'+i_task).parent().parent().parent().attr('id', 'tr'+i_task)
+            $('#table_tasks').on( 'click', 'tbody tr td div.col-sm-1 button.clear_task', function () {
+                if($(this).attr("tsk-id")){
+                    if(!del_task.includes($(this).attr("tsk-id")) && $(this).attr("tsk-id") !== '0') del_task.push($(this).attr("tsk-id"))
+                }
+
+                idrmv = $(this).attr('data-id');
+                var dltable = $('#table_tasks').DataTable();
+                dltable.row('#tr'+idrmv).remove().draw(false);
+            });
+        }
+    </script>
+{% end %}

@@ -1,0 +1,51 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="personal/organigrama/assets/organigrama.css">
+    <link rel="stylesheet" href="resources/plugins/orgchart/css/jquery.orgchart.css">
+{% end %}
+
+{% block content %}
+    {% if 'organigrama_insert' in privileges or 'organigrama_update' in privileges %}
+        {% include form.html %}
+    {% end %}
+
+    <div class="header bg-page-own"><h2>Organigrama</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+                {% if 'organigrama_insert' in privileges %}
+                <button id="new" type="button" class="btn bg-page-own waves-effect" title="Nuevo">
+                    <i class="material-icons">add</i>
+                </button>
+                {% end %}
+                <button id="edit" title="Editar" type="button" class="btn bg-teal waves-effect">
+                    <i class="material-icons">edit</i>
+                </button>
+                <button id="delete" title="Eliminar Nodo" type="button" class="btn bg-blue waves-effect">
+                    <i class="material-icons">cancel</i>
+                </button>
+            </div>
+        </div>
+
+        {% if 'organigrama_query' in privileges %}
+        <div id="pluginsorg">
+
+        </div>
+        <div id="ul-render">
+
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/js/functions.js"></script>
+    <script src="personal/organigrama/assets/organigrama.js"></script>
+    <script type="text/javascript" src="resources/plugins/orgchart/js/html2canvas.min.js"></script>
+    <script type="text/javascript" src="resources/plugins/orgchart/js/jquery.orgchart.js"></script>
+{% end %}

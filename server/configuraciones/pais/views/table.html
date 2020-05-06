@@ -1,0 +1,21 @@
+{% for c in objects %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.nombre }}</td>
+
+    <td align="center">
+        <div class="contenedor">
+            {% if 'pais_update' in privileges %}
+                <div id="edit" data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                    <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+            {% if 'pais_delete' in privileges %}
+                <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">
+                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+                </div>
+            {% end %}
+        </div>
+    </td>
+</tr>
+{% end %}

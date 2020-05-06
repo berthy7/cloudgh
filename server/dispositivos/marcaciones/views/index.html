@@ -1,0 +1,160 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="dispositivos/marcaciones/assets/marcaciones.css">
+    <link rel="stylesheet" href="resources/css/buttons.bootstrap.css">
+    <link rel="stylesheet" href="resources/css/buttons.dataTables.css">
+    <link rel="stylesheet" href="resources/css/buttons.bootstrap4.css">
+{% end %}
+
+{% block content %}
+{% include form.html %}
+
+    <div class="header bg-page-own"><h2>Marcaciones</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div id="importar_marcaciones" class="caja-icono" title="Importar Excel">
+                <img src="/resources/iconos/importar.ico" class="icono" />
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-sm-2">
+                <label class="form-label">Fecha Inicio</label>
+               <div class="form-group">
+                    <div id="fechaDIVinicio" class="form-line success">
+
+                        <input id="fechainicio" type="text" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label class="form-label">Fecha Fin</label>
+                    <div id="fechaDIVfin" class="form-line success">
+
+                        <input id="fechafin" type="text" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div id="filtrar" class="caja-icono" title="Filtrar">
+                    <img src="/resources/iconos/filtro.ico" class="icono" />
+                </div>
+            </div>
+        </div>
+
+{#        <div class="row clearfix">#}
+{#            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">#}
+{#                <button id="new" type="button" class="btn btn-default btn-circle "  style='width:35px; height:60px; padding-right:50px' title="Nuevo">#}
+{#                    <img src="/resources/iconos/agregar.ico" style="width: 45px;height: 45px" />#}
+{#                </button>#}
+{#            </div>#}
+{#            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">#}
+{#                <button id="extraer" type="button" class="btn bg-page-own waves-effect" title="Crear dispositivos">#}
+{#                        <i class="material-icons">add</i>#}
+{#                </button>#}
+{#            </div>#}
+{#        </div>#}
+
+        <div id="rgm-loader" class="loader-wrapper" style="display: none">
+            <div class="loader loader-own">
+                <div class="preloader preloader-own">
+                    <div class="spinner-layer pl-indigo">
+                        <div class="circle-clipper left"><div class="circle"></div></div>
+                        <div class="circle-clipper right"><div class="circle"></div></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center inf-own">Cargando datos...</p>
+        </div>
+
+        {% if 'marcaciones_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Código</th>
+                            <th class="order_by_th" data-name="names">Nombre</th>
+                            <th class="order_by_th" data-name="names">Fecha</th>
+                            <th class="order_by_th" data-name="names">Hora</th>
+                            <th class="order_by_th" data-name="names">Dispositivo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/js/functions.js"></script>
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="dispositivos/marcaciones/assets/marcaciones.js"></script>
+    <script src="resources/plugins/jquery-countto/jquery.countTo.js"></script>
+    <script src="resources/js/functions.js"></script>
+
+    <script src="resources/js/dataTables.buttons.js"></script>
+    <script src="resources/js/pdfmake.js"></script>
+    <script src="resources/js/vfs_fonts.js"></script>
+    <script src="resources/js/buttons.bootstrap.js"></script>
+    <script src="resources/js/buttons.html5.js"></script>
+    <script src="resources/js/buttons.print.js"></script>
+    <script src="resources/js/buttons.colVis.js"></script>
+    <script>
+        $(document).ready(function () {
+            var data = [];
+            {% set cont = 0 %}
+            {% for c in marcaciones %}
+                data.push( [
+                    '{{ marcaciones[cont]['id'] }}', '{{ marcaciones[cont]['codigo'] }}', '{{ marcaciones[cont]['nombre'] }}',
+                    '{{ marcaciones[cont]['fecha'] }}', '{{ marcaciones[cont]['hora'] }}',
+                    '{{ marcaciones[cont]['dispositivo'] }}'
+                ]);
+            {% set cont = cont + 1 %}
+            {% end %}
+
+            $('#data_table').DataTable({
+                data:           data,
+                deferRender:    true,
+                scrollCollapse: true,
+                scroller:       true,
+
+                dom: "Bfrtip" ,
+                buttons: [
+                    {  extend : 'excelHtml5',
+                       exportOptions : { columns : [0, 1, 2, 3, 4, 5]},
+                        sheetName: 'Marcaciones Registradas',
+                       title: 'ELFEC - Marcaciones Registradas'  },
+                    {  extend : 'pdfHtml5',
+                       customize: function(doc) {
+                            doc.styles.tableBodyEven.alignment = 'center';
+                            doc.styles.tableBodyOdd.alignment = 'center';
+                       },
+                       exportOptions : {
+                            columns : [0, 1, 2, 3, 4, 5]
+                        },
+                       title: 'ELFEC - Marcaciones Registradas'
+                    }
+                ],
+                initComplete: function () {
+                    $("#rgm-loader").fadeOut('800');
+                    document.getElementById("filtrar").disabled = false
+                },
+                "order": [[ 1, "desc" ]],
+                language : {
+                    'url': '/resources/js/spanish.json',
+                },
+                "pageLength": 50
+            });
+        });
+    </script>
+{% end %}

@@ -1,0 +1,148 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="asistencia/asistenciapersonal/assets/asistenciapersonal.css">
+{% end %}
+
+{% block content %}
+    {% include form.html %}
+    {% include form-boleta.html %}
+
+
+    <div class="header bg-page-own"><h2>Asistencia Personal</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+                <div class="contenedor">
+                    {% if 'asistenciapersonal_insert' in privileges %}
+                        <div id="new" class="caja-icono" title="Nuevo">
+                            <img src="/resources/iconos/agregar.ico" class="icono" />
+                        </div>
+                    {% end %}
+                    <div id="actualizar_marcaciones" class="caja-icono" title="Actualizar Marcaciones">
+                        <img src="/resources/iconos/marcacion.ico" class="icono" />
+                    </div>
+
+                    <div id="boleta" class="caja-icono" title="Boleta de Asistencia">
+                        <img src="/resources/iconos/boleta.ico" class="icono" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-sm-2">
+                <label class="form-label">Fecha Inicio</label>
+               <div class="form-group">
+                    <div id="fechaDIVinicio" class="form-line success">
+
+                        <input id="fechainicio" type="text" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label class="form-label">Fecha Fin</label>
+                    <div id="fechaDIVfin" class="form-line success">
+
+                        <input id="fechafin" type="text" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div id="filtrar" class="caja-icono" title="Filtrar">
+                    <img src="/resources/iconos/filtro.ico" class="icono" />
+                </div>
+            </div>
+        </div>
+
+        <div id="rproc-loader" class="loader-wrapper" style="display: none">
+            <div class="loader loader-own">
+                <div class="preloader preloader-own">
+                    <div class="spinner-layer pl-teal">
+                        <div class="circle-clipper left"><div class="circle"></div></div>
+                        <div class="circle-clipper right"><div class="circle"></div></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center inf-own">Creando Horarios de Asistencia...</p>
+        </div>
+
+        <div id="rproc-loader-marcas" class="loader-wrapper" style="display: none">
+            <div class="loader loader-own">
+                <div class="preloader preloader-own">
+                    <div class="spinner-layer pl-teal">
+                        <div class="circle-clipper left"><div class="circle"></div></div>
+                        <div class="circle-clipper right"><div class="circle"></div></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center inf-own">Actualizando Marcaciones de Asistencia...</p>
+        </div>
+
+        {% if 'asistenciapersonal_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Código</th>
+                            <th class="order_by_th" data-name="names">Nombre Completo</th>
+                            <th class="order_by_th" data-name="names">Fecha</th>
+                            <th class="order_by_th" data-name="names">Entrada</th>
+                            <th class="order_by_th" data-name="names">Salida</th>
+                            <th class="order_by_th" data-name="names">Marcación Entrada</th>
+                            <th class="order_by_th" data-name="names">Marcación Salida</th>
+                            <th class="order_by_th" data-name="names">Observación</th>
+                            <th class="order_by_th" data-name="names">Retraso</th>
+                            <th class="order_by_th" data-name="names">Extra</th>
+
+
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/js/functions.js"></script>
+    <script src="asistencia/asistenciapersonal/assets/asistenciapersonal.js"></script>
+    <script src="resources/plugins/jquery-countto/jquery.countTo.js"></script>
+    <script src="resources/js/functions.js"></script>
+
+    <script src="resources/js/dataTables.buttons.js"></script>
+    <script src="resources/js/pdfmake.js"></script>
+    <script src="resources/js/vfs_fonts.js"></script>
+    <script src="resources/js/buttons.bootstrap.js"></script>
+    <script src="resources/js/buttons.html5.js"></script>
+    <script src="resources/js/buttons.print.js"></script>
+    <script src="resources/js/buttons.colVis.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var data = [];
+            {% set cont = 0 %}
+            {% for c in horarios %}
+                data.push( [
+                    '{{ c.id }}', '{{ c.codigo }}', '{{ c.nombrecompleto }}',
+                    '{{ c.fecha.strftime("%d/%m/%Y") }}', '{{ c.entrada.strftime("%H:%M") }}',
+                    '{{ c.salida.strftime("%H:%M") }}', '{%if c.mentrada %}{{ c.mentrada.strftime("%H:%M") }}{%else%}------{%end%}',
+                    '{%if c.msalida %}{{ c.msalida.strftime("%H:%M") }}{%else%}------{%end%}', '{{ c.observacion }}', '{%if c.retraso %}{{ c.retraso.strftime("%H:%M") }}{%else%}------{%end%}',
+                    '{%if c.extra %}{{ c.extra.strftime("%H:%M") }}{%else%}------{%end%}'
+                ]);
+            {% set cont = cont + 1 %}
+            {% end %}
+            cargar_tabla(data)
+        });
+
+
+    </script>
+{% end %}

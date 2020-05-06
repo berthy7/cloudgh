@@ -1,0 +1,73 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="asistencia/politicas/assets/politicas.css">
+{% end %}
+
+{% block content %}
+    {% if 'politicas_insert' in privileges or 'politicas_update' in privileges %}
+        {% include form.html %}
+    {% end %}
+
+    <div class="header bg-page-own"><h2>Politicas</h2></div>
+    <div class="body">
+
+        <div id="rproc-loader-marcas" class="loader-wrapper" style="display: none">
+            <div class="loader loader-own">
+                <div class="preloader preloader-own">
+                    <div class="spinner-layer pl-teal">
+                        <div class="circle-clipper left"><div class="circle"></div></div>
+                        <div class="circle-clipper right"><div class="circle"></div></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center inf-own">Actualizando Marcaciones de Asistencia...</p>
+        </div>
+
+        {% if 'politicas_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Empresa</th>
+                            <th class="order_by_th" data-name="names">Tolerancia Dia</th>
+                            <th class="order_by_th" data-name="names">Tolerancia Mes</th>
+                            <th class="actions_header">Acciones</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="resources/js/functions.js"></script>
+    <script src="asistencia/politicas/assets/politicas.js"></script>
+    <script src="resources/plugins/jquery-countto/jquery.countTo.js"></script>
+    <script src="resources/js/functions.js"></script>
+
+    <script src="resources/js/dataTables.buttons.js"></script>
+    <script src="resources/js/pdfmake.js"></script>
+    <script src="resources/js/vfs_fonts.js"></script>
+    <script src="resources/js/buttons.bootstrap.js"></script>
+    <script src="resources/js/buttons.html5.js"></script>
+    <script src="resources/js/buttons.print.js"></script>
+    <script src="resources/js/buttons.colVis.js"></script>
+    <script>
+        $(document).ready(function () {
+        });
+
+    </script>
+{% end %}

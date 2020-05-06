@@ -1,0 +1,123 @@
+<div id="dato_form_body" class="box-body">
+
+    <div class="modal-header header-own">
+        <h4 id="dato_title" class="modal-title">Contratos</h4>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+            <button id="new-contrato" type="button" class="btn bg-page-own waves-effect" title="Ver">
+                <i class="material-icons">description</i>
+            </button>
+            <button id="force-contrato" type="button" class="btn bg-teal waves-effect" title="Retiro forzado">
+                <i class="material-icons">event_busy</i>
+            </button>
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            <button id="close-contrato" type="button" class="btn bg-blue waves-effect m-l-15" title="Ocultar">
+                <i class="material-icons">keyboard_capslock</i>
+            </button>
+        </div>
+    </div>
+
+    <div class="" id="content-contrato">
+
+        <hr width="100%" style="height: 3px; background-color: #01579b" noshade>
+
+        <div id="idctr_div" class="form-group">
+            <div class="form-line">
+                {% module xsrf_form_html() %}
+                <input id="idctr" type="text" class="form-control hidden contrato" disabled="disabled">
+                <label for="idctr" class="form-label">Contrato ID</label>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <input id="nrocontrato" name="Nro de Contrato" type="text" class="form-control name contrato" required>
+                        <label for="nrocontrato" class="form-label">N° Contrato</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-line">
+                    <label for="tipocont">Tipo</label>
+                    <select id="tipocont" name="Tipo de Contrato" class="form-control show-tick contrato" required>
+                        <option value="PLAZO FIJO">PLAZO FIJO</option>
+                        <option value="INDEFINIDO">INDEFINIDO</option>
+                        <option value="PASANTE">PASANTE</option>
+                        <option value="CONSULTOR">CONSULTOR</option>
+                        <option value="FREELANCER">FREELANCER</option>
+                        <option value="POR PROYECTO">POR PROYECTO</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <input id="sueldo" name="sueldo" type="text" class="form-control contrato" required>
+                        <label for="sueldo" class="form-label">Sueldo</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <div class="form-line">
+                        <label for="fechaingreso" class="form-label">Fecha de Ingreso</label>
+                        <input id="fechaingreso" name="Fecha de Ingreso" type="text" class="form-control date contrato" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <div class="form-line">
+                        <label for="fechafin" class="form-label">Fecha de Retiro</label>
+                        <input id="fechafin" name="Fecha de Retiro" type="text" class="form-control date contrato" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="form-line">
+                        <label for="fechaforzado" class="form-label">Fecha de Retiro Forzado</label>
+                        <input id="fechaforzado" name="Fecha de Retiro Forzado" type="text" class="form-control date contrato">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group form-float">
+                    <label for="descripcionc">Descripción</label>
+                    <div class="form-line">
+                        <textarea id="descripcionc" name="descripción" class="md-textarea form-control txta-own contrato"></textarea>
+                        <input id="enable_cont" name="enable_cont" class="contrato" type="hidden">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer"></div>
+    </div>
+
+    <hr width="100%" style="height: 3px; background-color: #01579b" noshade>
+
+    <div class="modal-header header-own">
+        <h4 id="list_title" class="modal-title">Lista de Contratos</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12"><label class="modal-title">Contratos </label></div>
+        <div id="tabla" class="box-body">
+            <div id="box_contrato" class="clearfix">
+
+            </div>
+        </div>
+    </div>
+</div>

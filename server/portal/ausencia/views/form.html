@@ -1,0 +1,162 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="portal_ausencia_title" class="modal-title">Solicitar Ausencia</h3>
+                <h4 id="portal_ausencia_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+
+                    <div id="id_div" class="form-group">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input id="id" type="text" class="form-control" disabled="disabled">
+                            <label for="id" class="form-label">portal_ausencias ID</label>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-line">
+                                <label class="form-label">Nombre</label>
+                                <input id="nombre" name="Nombre" class=" form-control" readonly>
+                            </div>
+                            <input type="hidden" id="pnombre" value="{{nombrepersona}}">
+                            <input type="hidden" id="pid" value="{{idpersona}}">
+                        </div>
+                    </div>
+                    </br>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <label >Tipo de Ausencia</label>
+                            <select id="fktipoausencia" class="form-control" required>
+                            {% for s in ausencias %}
+                                <option value="{{s.id}}">{{s.nombre}}</option >
+                            {% end %}
+                            </select>
+                            </br>
+                            </br>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <label class="form-label">Descripcion</label>
+                                <div class="form-line">
+                                    <textarea id="descripcion" class="md-textarea form-control txta-own"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Fecha Inicio</label>
+                                    <input id="fechai" name="Fecha Inicio" type="text" class="form-control date" required>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Hora Inicio</label>
+                                    <input id="horai" name="Hora Inicio" type="text" class="form-control hr">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                         <div class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Fecha Fin</label>
+                                    <input id="fechaf" name="Fecha Fin" type="text" class="form-control date" required>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Hora Fin</label>
+                                    <input id="horaf" name="Hora Fin" type="text" class="form-control hr">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-line">
+                                <label class="form-label">Estado</label>
+                                <input id="estado" name="estado" class=" form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    </br>
+                    </br>
+                    <div id="respuesta_superior">
+                        <div class="bordesdiv">
+                            </br>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <label >Autorizar</label>
+                                    </br>
+                                    </br>
+
+                                </div>
+                            </div>
+                            <div class="row clearfix botones_autorizacion">
+                                <div class="col-sm-2">
+                                     <div id="aceptado" class="caja-icono" title="Aceptado">
+                                        <img src="/resources/iconos/aceptado.png" class="icono" />
+                                     </div>
+                                    </br>
+                                    </br>
+                                </div>
+                                <div class="col-sm-2">
+                                     <div id="pendiente" class="caja-icono" title="Pendiente">
+                                        <img src="/resources/iconos/pendiente.png" class="icono" />
+                                     </div>
+                                    </br>
+                                    </br>
+                                </div>
+                                <div class="col-sm-2">
+                                     <div id="rechazado" class="caja-icono" title="Rechazado">
+                                        <img src="/resources/iconos/rechazado.png" class="icono" />
+                                     </div>
+                                    </br>
+                                    </br>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div class="form-group form-float">
+                                        <label class="form-label">Respuesta</label>
+                                        <div class="form-line">
+                                            <textarea id="respuesta" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </br>
+                        </div>
+                    </div>
+                    </br>
+                </div>
+
+                <div class="modal-footer">
+                {% if 'portal_ausencia_insert' in privileges %}
+                    <button id="insert" type="button" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+                {% end %}
+                {% if 'portal_ausencia_update' in privileges %}
+                    <button id="update" type="button" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                {% end %}
+                {% if 'portal_ausencia_update' in privileges %}
+                    <button id="update_superior" type="button" class="btn bg-page-own waves-effect">Actualizar <i class="material-icons">refresh</i></button>
+                {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

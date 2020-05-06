@@ -1,0 +1,147 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" >
+        <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 id="feriado_tittle" class="modal-title">Ingreso del Feriado</h3>
+                    <h4 id="feriado_enable" class=""></h4>
+                    <div class="col-sm-4">
+                        <div id="fechaDIV" class="form-line" >
+                            <input id="fecha" type="text" name="fecha" class="form-control date" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div id="feriado_form_body" class="box-body">
+                        <div id="id_div" class="form-group">
+                            <div class="form-line">
+                                {% module xsrf_form_html() %}
+                                <input id="id" type="text" class="form-control" disabled="disabled">
+                                <label for="id" class="form-label">Feriado ID</label>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-line">
+                                    <label class="form-label">Nombre</label>
+                                    <input id="nombre" type="text" name="Nombre de feriado" class=" form-control" required>
+                                </div>
+                                </br>
+                                </br>
+                            </div>
+
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12 demo-radio-button">
+                                <input name="group1" type="radio" class="with-gap radio-col-deep-purple" id="fijo" checked />
+                                <label for="fijo">Feriado Fijo</label>
+                                <input name="group1" type="radio" class="with-gap radio-col-deep-purple" id="ciclico" />
+                                <label for="ciclico">Fecha Cíclico</label>
+                                <input name="group1" type="radio" class="with-gap radio-col-deep-purple" id="relativo" />
+                                <label for="relativo">Fecha Relativa</label>
+                            </div>
+                            </br>
+                            </br>
+                            </br>
+
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-sm-3">
+                                <label>Aplicado para: </label>
+                            </div>
+
+                        </div>
+                            </br>
+                            </br>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="col-sm-3">
+                                    <label>Pais :</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select id="fkpais" name=Pais" class="form-control show-tick" data-live-search="true" title="Seleccionar...">
+                                        {% for pais in paises%}
+                                        <option value="{{pais.id}}">{{pais.nombre}} </option>
+                                        {% end %}
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                            </br>
+                            </br>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="col-sm-3">
+                                    <label>Departamento :</label>
+                                </div>
+                                <div class="col-sm-6">
+                                   <select id="fkdepartamento" name=Departamento" class="form-control show-tick" data-live-search="true" title="Seleccionar...">
+                                        {% for departamento in departamentos%}
+                                        <option value="{{departamento.id}}">{{departamento.nombre}} </option>
+                                        {% end %}
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                            </br>
+                            </br>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="col-sm-3">
+                                    <label>Ciudad :</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select id="fkciudad" name=Ciudad" class="form-control show-tick" data-live-search="true" title="Seleccionar...">
+                                        {% for ciudad in ciudades%}
+                                        <option value="{{ciudad.id}}">{{ciudad.nombre}} </option>
+                                        {% end %}
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                            </br>
+                            </br>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="col-sm-3">
+                                    <label>Sucursal :</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select id="fksucursal" name=Sucursal" class="form-control show-tick" data-live-search="true" title="Seleccionar...">
+                                        {% for sucursal in sucursales%}
+                                        <option value="{{sucursal.id}}">{{sucursal.nombre}} </option>
+                                        {% end %}
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                            </br>
+                            </br>
+                    </div>
+
+                    <div class="modal-footer">
+                    {% if 'feriado_delete' in privileges %}
+                        <button id="delete" type="button" class="btn bg-red waves-effect">Eliminar <i class="material-icons">clear</i></button>
+                    {% end %}
+                    {% if 'feriado_insert' in privileges %}
+                        <button id="insert" type="button" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+                    {% end %}
+                    {% if 'feriado_update' in privileges %}
+                        <button id="update" type="button" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                    {% end %}
+
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+<div id="form_platos" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="plato_tittle" class="modal-title">Ingreso de Plato</h3>
+                <h4 id="plato_enable" class=""></h4>
+            </div>
+
+            <div class="modal-body">
+                <div id="plato_form_body" class="box-body">
+                    <div id="id_div_platos" class="form-group">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input id="id_platos" type="text" class="form-control" disabled="disabled">
+                            <label for="id_platos" class="form-label">plato ID</label>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-12 select-cont">
+                            <div class="form-line">
+                                <label for="tipo_platos">Tipo</label>
+                                <select id="tipo_platos" name="tipo" class="form-control show-tick" required>
+                                    <option value="Sopa">Sopa</option>
+                                    <option value="Segundo">Segundo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input id="nombre_platos" name="Nombre de plato" type="text" class="form-control text" required>
+                                    <label for="nombre_platos" class="form-label">Nombre</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                {% if 'menu_plato_insert' in privileges %}
+                    <button id="insert_platos" type="button" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+                {% end %}
+                {% if 'menu_plato_update' in privileges %}
+                    <button id="update_platos" type="button" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

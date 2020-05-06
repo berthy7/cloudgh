@@ -1,0 +1,74 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="portal_marcaciones_title" class="modal-title">Ingreso de portal_marcaciones</h3>
+                <h4 id="portal_marcaciones_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+                    <div id="id_div" class="form-group">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input id="id" type="text" class="form-control" disabled="disabled">
+                            <label for="id" class="form-label"></label>
+                        </div>
+                    </div>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Direccion IP</label>
+                                <input id="ip" name="nombre" type="text" class="form-control" data-inputmask-alias="ip" required>
+                            </div>
+                        </div>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Puerto</label>
+                                <input id="puerto" name="nombre" type="text" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Descripcion</label>
+                                <input id="descripcion" name="nombre" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Responsable</label>
+                                <input id="email" name="nombre" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <select id="tipo" name="type" class="form-control show-tick">
+                                    <option value="A">Asistencia</option>
+                                    <option value="C">Comedor</option>
+                                    <option value="M">Molinete</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <select id="fksucursal" name="sucursal" class="form-control show-tick" data-live-search="true" title="Seleccione una sucursal">
+                                    {% for sucursal in sucursales%}
+                                    <option value="{{sucursal.id}}">{{sucursal.nombre}}</option>
+                                    {% end %}
+                                </select>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button id="insert" type="button" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+
+                {% if 'portal_marcaciones_update' in privileges %}
+                    <button id="update" type="button" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

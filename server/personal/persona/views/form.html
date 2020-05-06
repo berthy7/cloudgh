@@ -1,0 +1,109 @@
+<div id="form"  class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg-person" role="document">
+        
+        <div class="modal-content">
+            <form id="submit_form" class="new" enctype="multipart/form-data" novalidate>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 id="cliente_title" class="modal-title">Ingreso de Personas</h3>
+                    <h4 id="cliente_enable" class=""></h4>
+                </div>
+                
+                <div class="modal-body">
+                    {% module xsrf_form_html() %}
+                    <ul class="nav nav-tabs tab-nav-right" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="tab-dtpersonal" data-toggle="tab" href="#body-dtpersonal" role="tab"
+                            aria-controls="profile" aria-selected="true">DATOS PERSONALES</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-dtadmin" data-toggle="tab" href="#body-dtadmin" role="tab"
+                            aria-controls="profile" aria-selected="false">FORMULARIOS</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-instruccion" data-toggle="tab" href="#body-instruccion" role="tab"
+                            aria-controls="profile" aria-selected="false">INSTRUCCIÓN</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-becas" data-toggle="tab" href="#body-becas" role="tab"
+                            aria-controls="profile" aria-selected="false">EXPERIENCIAS</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-padres" data-toggle="tab" href="#body-padres" role="tab"
+                            aria-controls="profile" aria-selected="false">PADRES</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-conyuge" data-toggle="tab" href="#body-conyuge" role="tab"
+                            aria-controls="profile" aria-selected="false">CÓNYUGE E HIJOS</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-contrato" data-toggle="tab" href="#body-contrato" role="tab"
+                            aria-controls="profile" aria-selected="false">CONTRATO</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade body" id="body-dtpersonal" role="tabpanel" aria-labelledby="tab-dtpersonal">
+                            {% include 'form-datos.html' %}
+                        </div>
+                        <div class="tab-pane fade body" id="body-dtadmin" role="tabpanel" aria-labelledby="tab-dtadmin">
+                            {% include 'form-administrativo.html' %}
+                        </div>
+                        <div class="tab-pane fade body" id="body-instruccion" role="tabpanel" aria-labelledby="tab-instruccion">
+                            {% include 'form-educacion.html' %}
+                            {% include 'form-capacitacion.html' %}
+                            {% include 'form-estudio.html' %}
+                        </div>
+                        <div class="tab-pane fade body" id="body-becas" role="tabpanel" aria-labelledby="tab-becas">
+                            {% include 'form-memo.html' %}
+                            {% include 'form-idioma.html' %}
+                            {% include 'form-experiencia.html' %}
+                        </div>
+                        <div class="tab-pane fade body" id="body-padres" role="tabpanel" aria-labelledby="tab-padres">
+                            {% include 'form-padres.html' %}
+                        </div>
+                        <div class="tab-pane fade body" id="body-conyuge" role="tabpanel" aria-labelledby="tab-conyuge">
+                            {% include 'form-conyuge.html' %}
+                            {% include 'form-hijos.html' %}
+                        </div>
+                        <div class="tab-pane fade body" id="body-contrato" role="tabpanel" aria-labelledby="tab-contrato">
+                            {% include 'form-contrato.html' %}
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <div class="modal-footer">
+                            <button id="cancelar_insert" type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            {% if 'persona_insert' in privileges %}
+                                <button id="boton-submit" type="submit" class="btn btn-primary">Guardar</button>
+                            {% end %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-rep-xls">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="title-form" class="modal-title">Exportar Empleados</h3>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <label class="link-own"><i class="material-icons">cloud_download</i> Descargar:</label>
+                    <a href="" id="link_excel"></a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-orange waves-effect" data-dismiss="modal">
+                    <i class="material-icons">close</i> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

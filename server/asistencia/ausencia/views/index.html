@@ -1,0 +1,57 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="asistencia/ausencia/assets/ausencia.css">
+{% end %}
+
+{% block content %}
+    {% if 'ausencia_insert' in privileges or 'ausencia_update' in privileges %}
+        {% include form.html %}
+    {% end %}
+
+    <div class="header bg-page-own"><h2>Administracion de Ausencias</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+                {% if 'ausencia_insert' in privileges %}
+                    <div id="new" class="caja-icono" title="Nuevo">
+                        <img src="/resources/iconos/agregar.ico" class="icono" />
+                    </div>
+                {% end %}
+            </div>
+        </div>
+
+        {% if 'ausencia_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Ausencia</th>
+                            <th class="order_by_th" data-name="names">Personal</th>
+                            <th class="order_by_th" data-name="names">Descripcion</th>
+                            <th class="order_by_th" data-name="names">Fecha Inicio</th>
+                            <th class="order_by_th" data-name="names">Fecha FIn</th>
+                            <th class="order_by_th" data-name="names">Estado</th>
+                            <th class="actions_header">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/js/functions.js"></script>
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="asistencia/ausencia/assets/ausencia.js"></script>
+{% end %}

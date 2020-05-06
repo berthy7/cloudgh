@@ -1,0 +1,26 @@
+{% if contratos != None %}
+    {% for ct in contratos %}
+    <tr>
+        <td>{{ ct.nroContrato }}</td>
+        <td>{{ ct.persona.nombres }} {{ ct.persona.apellidopaterno }} {{ ct.persona.apellidomaterno }}</td>
+        <td>{{ ct.tipo }}</td>
+        {% if ct.fechaIngreso != None %}
+            <td>{{ ct.fechaIngreso.strftime('%d/%m/%Y') }}</td>
+        {% else %}
+            <td>Ninguno</td>
+        {% end %}
+
+        {% if ct.fechaForzado != None %}
+            <td>{{ ct.fechaIngreso.strftime('%d/%m/%Y') }}</td>
+        {% else %}
+            <td>Ninguno</td>
+        {% end %}
+
+        {% if ct.fechaFin != None %}
+            <td>{{ ct.fechaFin.strftime('%d/%m/%Y') }}</td>
+        {% else %}
+            <td>Ninguno</td>
+        {% end %}
+    </tr>
+    {% end %}
+{% end %}

@@ -1,0 +1,8 @@
+.text-own{
+    font-size: 12px !important;
+}
+.txta-own-obj{
+    max-width: 100% !important;
+    background-color: rgba(40, 40, 40, .02);
+    padding: 4px !important;
+}
