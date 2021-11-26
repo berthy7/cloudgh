@@ -1,33 +1,31 @@
-
-{% for c in objects %}
+{% set cont = 0 %}
+{% for c in tabla_turnos %}
 <tr>
-    <td>{{ c.id }}</td>
-    <td>{{ c.nombre }}</td>
-    <td>
-    {% set aux = '' %}
-    {% for hr in c.hora %}
-        {% set aux+= ' | '+hr.entrada.strftime("%H:%M")+' - '+hr.salida.strftime("%H:%M") %}
-    {% end %}
-
-    {{aux.replace(' | ', '', 1)}}
-    </td>
+    <td>{{ tabla_turnos[cont]['id'] }}</td>
+    <td>{{ tabla_turnos[cont]['codigo'] }}</td>
+    <td>{{ tabla_turnos[cont]['nombre'] }}</td>
+    <td>{{ tabla_turnos[cont]['hora'] }}</td>
 
 
     <td align="center">
         <div class="contenedor">
             {% if 'turno_update' in privileges %}
-                <div id="edit" data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                <div id="edit" data-json="{{ tabla_turnos[cont]['id'] }}" class="caja-icono edit" title="Editar">
                     <img src="/resources/iconos/editar.ico" class="icono-table"/>
                 </div>
             {% end %}
-            {% if 'turno_delete' in privileges %}
-{#                <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">#}
-{#                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>#}
-{#                </div>#}
+            {% if tabla_turnos[cont]['eliminar'] %}
+                {% if 'turno_delete' in privileges %}
+                    <div id="delete" data-json="{{tabla_turnos[cont]['id']}}" class="caja-icono delete" title="Eliminar">
+                        <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+                    </div>
+                {% end %}
             {% end %}
+
         </div>
     </td>
 </tr>
+{% set cont = cont + 1 %}
 {% end %}
 
 

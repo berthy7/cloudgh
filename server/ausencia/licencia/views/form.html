@@ -1,0 +1,276 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="licencia_title" class="modal-title">Ingreso de licencia</h3>
+                <h4 id="licencia_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+                    <div id="id_div" class="form-group">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input id="id" type="text" class="form-control" disabled="disabled">
+                            <label for="id" class="form-label">Licencia ID</label>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <label >Tipo de licencias</label>
+                            <select id="fktipoausencia" class="form-control" required>
+                            {% for s in tipoausencia %}
+                                <option value="{{s.id}}">{{s.nombre}}</option >
+                            {% end %}
+                            </select>
+                            </br>
+                            </br>
+                        </div>
+                        <div class="col-sm-6" hidden>
+                            <div class="form-group form-float">
+                                <label class="form-label">Disponibilidad</label>
+                                <div class="form-line">
+                                    <input id="disponibilidad" name="Disponibilidad" type="text" class="form-control text" readonly>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <label class="form-label">Duracion</label>
+                                <div class="form-line">
+                                    <input id="duracion" name="Duracion" type="text" class="form-control text"readonly>
+                                    <input  type="hidden" id="tiempo" name="Tiempo" type="text" class="form-control text" readonly>
+                                    <input  type="hidden" id="tiempo_duracion" name="Tiempo Duracion" type="text" class="form-control text" readonly>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                           <label>Persona</label>
+                            <select id="fkpersona" class="form-control" required>
+                                {% for s in personal %}
+                                <option value="{{ s.id }}">{{ s.fullname }}</option>
+                                {% end %}
+                            </select>
+                            </br>
+                            </br>
+                        </div>
+{#                        <div class="col-sm-6">#}
+{#                            <div class="form-group form-float">#}
+{#                                <label class="form-label">Duracion</label>#}
+{#                                <div class="form-line">#}
+{#                                    <input id="duracion" name="Duracion" type="text" class="form-control text"readonly>#}
+{##}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <label class="form-label">Descripcion</label>
+                                <div class="form-line">
+                                    <textarea id="descripcion" name="descripcion" class="md-textarea form-control" required>  </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="row clearfix">
+                        <div class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Fecha Inicio</label>
+                                    <input id="fechai" name="Fecha Inicio" type="text" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                         <div id="div_horai" class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Hora Inicio</label>
+                                    <input id="horai" name="Hora Inicio" type="text" class="form-control hr">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="row clearfix">
+                         <div class="col-sm-12 div-calendar">
+                            <div id="dtini"></div>
+                        </div>
+                    </div>
+                     <div class="row clearfix">
+                        <div class="col-sm-3">
+                            <div class="form-line">
+                                <label class="form-label">Estado Autorización</label>
+                                <input  id="estadoautorizacion" name="estadoautorizacion" class=" form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="row clearfix" style="margin-top: 30px !important;">
+                         <div id="div_fechaf" class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Fecha Fin</label>
+                                    <input id="fechaf" name="Fecha Fin" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                         <div id="div_horaf" class="col-sm-3">
+                             <div class="form-group">
+                                <div class="form-line">
+                                    <label class="form-label">Hora Fin</label>
+                                    <input id="horaf" name="Hora Fin" type="text" class="form-control hr">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="row clearfix">
+                         <div class="col-sm-12 div-calendar">
+                            <div id="dtfin"></div>
+                        </div>
+                    </div>
+                     <div class="row clearfix">
+                        <div class="col-sm-3">
+                            <div class="form-line">
+                                <label class="form-label">Estado Aprobación</label>
+                                <input id="estadoaprobacion" name="estadoaprobacion" class=" form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                         <div class="col-sm-5">
+
+                        </div>
+                         <div class="col-sm-5">
+                            <div id="respuesta_autorizacion">
+                        <div class="bordesdiv">
+                            </br>
+                            <div class="row clearfix">
+                                <div class="col-sm-3">
+                                    <label >Autorizar</label>
+                                    </br>
+                                    </br>
+
+                                </div>
+                            </div>
+                            <div class="row clearfix botones_autorizacion">
+                                <div class="col-sm-2">
+                                     <div id="aceptado" class="caja-icono" title="Aceptado">
+                                        <img src="/resources/iconos/aceptado.png" class="icono" />
+                                     </div>
+                                    </br>
+                                    </br>
+                                </div>
+                                <div class="col-sm-2">
+                                     <div id="pendiente" class="caja-icono" title="Pendiente">
+                                        <img src="/resources/iconos/pendiente.png" class="icono" />
+                                     </div>
+                                    </br>
+                                    </br>
+                                </div>
+                                <div class="col-sm-2">
+                                     <div id="rechazado" class="caja-icono" title="Rechazado">
+                                        <img src="/resources/iconos/rechazado.png" class="icono" />
+                                     </div>
+                                    </br>
+                                    </br>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-sm-7">
+                                    <div class="form-group form-float">
+                                        <label class="form-label">Respuesta</label>
+                                        <div class="form-line">
+                                            <textarea id="respuestaautorizacion" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </br>
+                        </div>
+                    </div>
+                            </br>
+
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                         <div class="col-sm-5">
+
+                        </div>
+                         <div class="col-sm-5">
+                            <div id="respuesta_aprobacion">
+                                <div class="bordesdiv">
+                                    </br>
+                                    <div class="row clearfix">
+                                        <div class="col-sm-6">
+                                            <label >Aprobar</label>
+                                            </br>
+                                            </br>
+
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix botones_aprobacion">
+                                        <div class="col-sm-2">
+                                             <div id="aceptado_aprobacion" class="caja-icono" title="Aceptado">
+                                                <img src="/resources/iconos/aceptado.png" class="icono" />
+                                             </div>
+                                            </br>
+                                            </br>
+                                        </div>
+                                        <div class="col-sm-2">
+                                             <div id="pendiente_aprobacion" class="caja-icono" title="Pendiente">
+                                                <img src="/resources/iconos/pendiente.png" class="icono" />
+                                             </div>
+                                            </br>
+                                            </br>
+                                        </div>
+                                        <div class="col-sm-2">
+                                             <div id="rechazado_aprobacion" class="caja-icono" title="Rechazado">
+                                                <img src="/resources/iconos/rechazado.png" class="icono" />
+                                             </div>
+                                            </br>
+                                            </br>
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-sm-7">
+                                            <div class="form-group form-float">
+                                                <label class="form-label">Respuesta</label>
+                                                <div class="form-line">
+                                                    <textarea id="respuestaaprobacion" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </br>
+                                </div>
+                            </div>
+                            </br>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                {% if 'licencia_insert' in privileges %}
+                    <button id="insert" type="button" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+                {% end %}
+                {% if 'licencia_update' in privileges %}
+                    <button id="update" type="button" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                {% end %}
+                {% if 'licencia_autorizacion' in privileges %}
+                    <button id="autorizacion" type="button" class="btn bg-page-own waves-effect">Autorizar <i class="material-icons">save</i></button>
+                {% end %}
+                {% if 'licencia_aprobacion' in privileges %}
+                    <button id="aprobacion" type="button" class="btn bg-page-own waves-effect">Aprobar <i class="material-icons">save</i></button>
+                {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

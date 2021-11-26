@@ -20,6 +20,7 @@ import os
 import re
 import platform
 import psutil
+import asyncio
 
 # import logging
 
@@ -78,6 +79,9 @@ def create_app():
     connection.db_url = config['Database']['url']
     puerto = config['Server']['port']
     vaciar_puerto(puerto)
+
+    # if sys.platform == 'win32':
+    #     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     settings = get_settings(config)
     Thread(target=launch_schedule).start()

@@ -11,11 +11,103 @@ import string
 import random
 import hashlib
 
+from openpyxl import load_workbook
+from openpyxl import Workbook
+from openpyxl.styles import Font
+from openpyxl.styles import Border, Side
 
 class UsuarioManager(SuperManager):
 
     def __init__(self, db):
         super().__init__(Usuario, db)
+
+    def usuario_excel(self, ):
+        cname = "Usuarios.xlsx"
+
+        usuarios = self.db.query(self.entity).filter(self.entity.username != "admin").order_by(self.entity.id.asc()).all()
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'a'
+
+        indice = 1
+
+        ws['A' + str(indice)] = 'ID'
+        ws['B' + str(indice)] = 'USERNAME'
+        ws['C' + str(indice)] = 'PASSWORD'
+        ws['D' + str(indice)] = 'TOKEN'
+        ws['E' + str(indice)] = 'AUTENTICACION'
+        ws['F' + str(indice)] = 'ROL'
+        ws['G' + str(indice)] = 'PERSONAL'
+        ws['H' + str(indice)] = 'ESTADO'
+
+
+        for i in usuarios:
+            indice = indice + 1
+
+            codigo = ""
+
+            if i.fkpersona:
+                codigo = i.persona.empleado[0].codigo
+
+            ws['A' + str(indice)] = i.id
+            ws['B' + str(indice)] = i.username
+            ws['C' + str(indice)] = i.password
+            ws['D' + str(indice)] = i.token
+            ws['E' + str(indice)] = i.autenticacion
+            ws['F' + str(indice)] = i.rol.nombre
+            ws['G' + str(indice)] = codigo
+            ws['H' + str(indice)] = i.enabled
+
+        wb.save("server/common/resources/downloads/" + cname)
+        return cname
+
+    def importar_excel(self, cname, user, ip):
+        try:
+            wb = load_workbook(filename="server/common/resources/uploads/" + cname)
+            ws = wb.active
+            colnames = ['ID', 'USERNAME', 'PASSWORD', 'TOKEN', 'AUTENTICACION', 'ROL', 'PERSONAL', 'ESTADO']
+            indices = {cell[0].value: n - 1 for n, cell in enumerate(ws.iter_cols(min_row=1, max_row=1), start=1) if
+                       cell[0].value in colnames}
+            if len(indices) == len(colnames):
+                for row in ws.iter_rows(min_row=2):
+
+                    if row[indices['USERNAME']].value is not None:
+
+                        query = self.db.query(Usuario).filter(Usuario.username == row[indices['USERNAME']].value).first()
+
+                        if not query:
+                            fkpersona = None
+                            if row[indices['PERSONAL']].value != "":
+                                query_persona = self.db.query(Empleado).filter(Empleado.codigo == row[indices['PERSONAL']].value).first()
+                                if query_persona:
+                                    fkpersona = query_persona.fkpersona
+
+                            query_rol = self.db.query(Rol).filter(Rol.nombre == row[indices['ROL']].value).first()
+
+                            user = Usuario(username=row[indices['USERNAME']].value, password=row[indices['PASSWORD']].value, token=row[indices['TOKEN']].value,
+                                            autenticacion=row[indices['AUTENTICACION']].value, fkrol=query_rol.id, fkpersona=fkpersona,
+                                            enabled=row[indices['ESTADO']].value)
+
+                            self.db.merge(user)
+                            self.db.flush()
+
+                    else:
+
+                        self.db.rollback()
+                        return {'message': 'Hay Columnas vacias', 'success': False}
+
+                self.db.commit()
+                return {'message': 'Importado Todos Correctamente.', 'success': True}
+            else:
+                return {'message': 'Columnas Faltantes', 'success': False}
+        except Exception as e:
+            self.db.rollback()
+            if 'UNIQUE constraint' in str(e):
+                return {'message': 'duplicado', 'success': False}
+            if 'UNIQUE constraint failed' in str(e):
+                return {'message': 'codigo duplicado', 'success': False}
+            return {'message': str(e), 'success': False}
 
     def obtener_administrador(self):
         return self.db.query(Usuario).filter(Usuario.nombre == "Administrador").one()
@@ -35,7 +127,12 @@ class UsuarioManager(SuperManager):
         user = self.db.query(Usuario).filter(Usuario.username == usuario.username).first()
 
         if user:
-            return dict(respuesta=False, Mensaje="Ya se le creo un usuario al personal "+ user.persona.fullname)
+
+            if user.fkpersona:
+
+                return dict(respuesta=False, Mensaje="Ya se le creo un usuario al personal "+ user.persona.fullname)
+            else:
+                return dict(respuesta=False, Mensaje="Ingrese otro Nombre de usuario")
 
         else:
             usuario.password = hashlib.sha512(usuario.password.encode()).hexdigest()
@@ -57,7 +154,7 @@ class UsuarioManager(SuperManager):
                
             else:
                 persona = self.db.query(Persona).filter(Persona.id == usuario['id_persona']).first()
-                password = "Cloudbit123."
+                password = "personal2021"
 
                 if persona.empleado[0].email:
                     correo = persona.empleado[0].email
@@ -146,7 +243,7 @@ class UsuarioManager(SuperManager):
         return privileges
 
     def list_all(self):
-        return dict(objects=self.db.query(Usuario).filter(Usuario.fkrol == Rol.id).filter(Rol.nombre != "Super Administrador").distinct())
+        return dict(objects=self.db.query(Usuario).filter(Usuario.fkrol == Rol.id).filter(Rol.nombre != "SUPER ADMINISTRADOR").distinct())
 
     def has_access(self, id, route):
         aux = self.db.query(Usuario.id).\
@@ -186,6 +283,19 @@ class UsuarioManager(SuperManager):
     def update_password(self, Usuario):
         Usuario.password = hashlib.sha512(Usuario.password.encode()).hexdigest()
         return super().update(Usuario)
+
+    def modificar_contraseña(self, id, new_pass, idUsuario,ip):
+        user = self.db.query(Usuario).filter(Usuario.id == id).first()
+
+        if user:
+            user.password = hashlib.sha512(new_pass.encode()).hexdigest()
+
+
+            fecha = BitacoraManager(self.db).fecha_actual()
+            b = Bitacora(fkusuario=idUsuario, ip=ip, accion="Se modifico contraseña de usuario.", fecha=fecha)
+            super().insert(b)
+            u = super().insert(user)
+            return dict(respuesta=True, Mensaje="Modificado Correctamente")
 
     def get_by_password(self, Usuario_id, password):
         return self.db.query(Usuario).filter(Usuario.id == Usuario_id). \
@@ -247,5 +357,14 @@ class ModuloManager:
     def __init__(self, db):
         self.db = db
 
-    def list_all(self):
-        return self.db.query(Modulo).filter(Modulo.fkmodulo==None)
+    def list_all(self,Usuario):
+
+        if Usuario.username == "admin":
+            x = self.db.query(Modulo).filter(Modulo.fkmodulo == None).all()
+        else:
+            x = Usuario.rol.modulos
+
+        return x
+
+
+

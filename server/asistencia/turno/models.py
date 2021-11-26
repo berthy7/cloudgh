@@ -12,8 +12,10 @@ class Dia(Serializable, Base):
     __tablename__ = 'cb_asistencia_dia'
     __table_args__ = ({"schema": "ASISTENCIA"})
     id = Column(Integer, Sequence('id'), primary_key=True)
-    nombre = Column(String(80), nullable=False, unique=True)
+    codigo = Column(String(80), nullable=True)
+    nombre = Column(String(80), nullable=False)
     normal = Column(Boolean, nullable=False, default=True)
+    enabled = Column(Boolean, default=True)
 
     hora = relationship('Hora', cascade="save-update, merge, delete, delete-orphan")
 
@@ -28,10 +30,6 @@ class Hora(Serializable, Base):
     fkdia = Column(Integer, ForeignKey("ASISTENCIA.cb_asistencia_dia.id"))
     entrada = Column(DateTime, nullable=False)
     salida = Column(DateTime, nullable=False)
-    entradamin = Column(DateTime, nullable=False)
-    entradamax = Column(DateTime, nullable=False)
-    salidamin = Column(DateTime, nullable=False)
-    salidamax = Column(DateTime, nullable=False)
 
     dia = relationship('Dia')
 
@@ -39,9 +37,5 @@ class Hora(Serializable, Base):
         aux = super().get_dict(way)
         aux['entrada'] = self.entrada.strftime('%H:%M')
         aux['salida'] = self.salida.strftime('%H:%M')
-        aux['entradamin'] = self.entradamin.strftime('%H:%M')
-        aux['entradamax'] = self.entradamax.strftime('%H:%M')
-        aux['salidamin'] = self.salidamin.strftime('%H:%M')
-        aux['salidamax'] = self.salidamax.strftime('%H:%M')
 
         return aux

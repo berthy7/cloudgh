@@ -1,0 +1,102 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/css/ol.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+      .map {
+        width: 100%;
+        height:400px;
+      }
+
+    </style>
+</head>
+<body>
+
+    <div style="width:100%; height:100%" id="map"></div>
+    <div id="popup" >
+      <i class=" Large material-icons">home</i>
+    </div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/build/ol.js"></script>
+{#    <script>#}
+{#        window.onload = cargar_mapa;#}
+{#        function cargar_mapa() {#}
+{##}
+{#            var container = document.getElementById('popup');#}
+{#            var content = document.getElementById('popup-content');#}
+{##}
+{##}
+{#            var principal = new ol.layer.Tile({#}
+{#                source: new ol.source.OSM(),#}
+{#                visible: true,#}
+{#                title: 'principal'#}
+{#            })#}
+{##}
+{#            var nueva = new ol.layer.Tile({#}
+{#                source: new ol.source.OSM({#}
+{#                    url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'#}
+{#                }),#}
+{#                visible: false,#}
+{#                title: 'nueva'#}
+{#            })#}
+{##}
+{##}
+{##}
+{#             var layer_marker = new ol.layer.Vector({#}
+{#                 source: new ol.source.Vector({#}
+{#                     features: [#}
+{#                         new ol.Feature({#}
+{#                             geometry: new ol.geom.Point([-7033398.011117033,-2012163.10110405])#}
+{#                         })#}
+{#                     ]#}
+{#                 }),#}
+{#                 title: 'marker'#}
+{#             });#}
+{##}
+{#            var overlay = new ol.Overlay({#}
+{#              element: container,#}
+{#              autoPan: true,#}
+{#              positioning: 'bottom-center',#}
+{#              autoPanAnimation: {#}
+{#                duration: 250#}
+{#              }#}
+{#            });#}
+{##}
+{##}
+{#           var map = new ol.Map({#}
+{##}
+{#           view: new ol.View({#}
+{#             center: ol.proj.fromLonLat([-17.7796749,-63.1446052]),#}
+{#             zoom: 14#}
+{#           }),#}
+{#           layers: [principal,nueva#}
+{#           ],#}
+{#           overlays: [overlay],#}
+{#            target: document.getElementById('map')#}
+{#            });#}
+{##}
+{##}
+{##}
+{##}
+{#             map.addLayer(layer_marker);#}
+{##}
+{##}
+{##}
+{#            map.on('click', function (evt) {#}
+{#                  var coordinate = evt.coordinate;#}
+{##}
+{#                  overlay.setPosition(coordinate);#}
+{##}
+{#                console.log(evt.coordinate);#}
+{##}
+{#            })#}
+{##}
+{##}
+{##}
+{#        }#}
+{##}
+{##}
+{##}
+{#    </script>#}
+
+</body>

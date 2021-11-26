@@ -1,0 +1,44 @@
+{% for c in regularizaciones %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.persona.fullname }}</td>
+
+
+    {% if c.fkautorizacion %}
+        <td>{{ c.autorizacion.fullname }}</td>
+    {% else %}
+        <td> ------ </td>
+    {% end %}
+
+    <td> {% if c.persona.empleado[0].autorizacion %} {% if 'regularizacion_autorizacion' in privileges %} <div class="contenedor"><div data-json="{{c.id}}" class="caja-icono autorizacion" title="Editar"><img src="/resources/iconos/editar3.png" class="icono-table"/></div></div>{% end %}{% end %} {{ c.estadoautorizacion }}</td>
+
+    {% if c.fkaprobacion %}
+        <td>{{ c.aprobacion.fullname }}</td>
+    {% else %}
+        <td> ------ </td>
+    {% end %}
+
+    <td> {% if c.persona.empleado[0].aprobacion %} {% if 'regularizacion_aprobacion' in privileges %} <div class="contenedor"><div data-json="{{c.id}}" class="caja-icono aprobacion" title="Editar"><img src="/resources/iconos/editar3.png" class="icono-table"/></div></div>{% end %}{% end %} {{ c.estadoaprobacion }}</td>
+
+    {% if 'regularizacion_update' in privileges %}
+    <td align="center">
+        <div class="contenedor">
+            <div data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                <img src="/resources/iconos/editar.ico" class="icono-table"/>
+            </div>
+        </div>
+    </td>
+    {% end %}
+
+    {% if 'regularizacion_imprimir' in privileges %}
+    <td align="center">
+        <div class="contenedor">
+            <div data-json="{{c.id}}" class="caja-icono imprimir" title="Imprimir">
+                <img src="/resources/iconos/seguimiento.ico" class="icono-table"/>
+            </div>
+        </div>
+    </td>
+    {% end %}
+</tr>
+{% end %}
+

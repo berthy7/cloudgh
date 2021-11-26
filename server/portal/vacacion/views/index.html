@@ -1,0 +1,143 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="portal/vacacion/assets/vacacion.css">
+{% end %}
+
+{% block content %}
+    {% if 'portal_vacacion_insert' in privileges or 'portal_vacacion_update' in privileges %}
+        {% include form.html %}
+    {% end %}
+
+    <div class="header bg-page-own"><h2>Solicitud de Vacaciones</h2></div>
+    <ul class="nav nav-tabs tab-nav-right" id="myTab" role="tablist">
+        <li class="nav-item" >
+            <a id="primero" class="nav-link active" id="home-tab" data-toggle="tab" href="#body-cont" role="tab"
+               aria-controls="profile" aria-selected="true">Enviadas</a>
+        </li>
+        <li class="nav-item">
+            <a id='segundo' class="nav-link" id="profile-tab" data-toggle="tab" href="#body-elfec" role="tab"
+               aria-controls="profile" aria-selected="false">Recibidas</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade body" id="body-cont" role="tabpanel" aria-labelledby="home-tab">
+            <div class="body">
+        <div class="row clearfix">
+            <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+                {% if 'portal_vacacion_insert' in privileges %}
+                    <div id="new" class="caja-icono" title="Nuevo">
+                        <img src="/resources/iconos/agregar.ico" class="icono" />
+                    </div>
+                {% end %}
+            </div>
+        </div>
+        <div class="row clearfix">
+                <div class="contenedor">
+                    <div class="col-sm-6">
+                        <div class="body table-responsive">
+                            <table id="data_table_hora" class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="order_by_th" data-name="name" width="70">Gestion</th>
+                                        <th class="order_by_th" data-name="name" width="70">Dias Vacacion</th>
+                                        <th class="order_by_th" data-name="name" width="70">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table_content">
+                                    {% for c in total_vacacion %}
+                                        <tr>
+                                            <td>{{ c.gestion }}</td>
+                                            <td>{{ c.dias }}</td>
+                                            <td>{{ c.estado }}</td>
+
+                                        </tr>
+                                    {% end %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        {% if 'correo_update' in privileges %}
+                        <div  id="edit_hora" type="button" class="caja-icono" title="Actualizar Hora">
+                            <img src="/resources/iconos/actualizar_hora.png" class="icono" />
+                        </div>
+                        {% end %}
+                    </div>
+
+                </div>
+
+        </div>
+
+        {% if 'portal_vacacion_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Vacacion</th>
+                            <th class="order_by_th" data-name="names">Personal</th>
+                            <th class="order_by_th" data-name="names">Fecha Inicio</th>
+                            <th class="order_by_th" data-name="names">Fecha Fin</th>
+                            <th COLSPAN="2" class="order_by_th" data-name="names">Autorizacion estado</th>
+                            <th COLSPAN="2" class="order_by_th" data-name="names">Aprobacion estado</th>
+                            <th class="actions_header">Editar</th>
+                            <th class="actions_header">Reporte</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+        </div>
+        <div class="tab-pane fade body" id="body-elfec" style="display:none;" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="body">
+
+                {% if 'portal_vacacion_query' in privileges %}
+                <div class="row">
+                    <div class="body table-responsive">
+                        <table id="data_table_recibidas" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="order_by_th" data-name="names">N°</th>
+                                    <th class="order_by_th" data-name="names">Vacacion</th>
+                                    <th class="order_by_th" data-name="names">Personal</th>
+                                    <th class="order_by_th" data-name="names">Fecha Inicio</th>
+                                    <th class="order_by_th" data-name="names">Fecha Fin</th>
+                                    <th COLSPAN="2" class="order_by_th" data-name="names">Autorizacion estado</th>
+                                    <th COLSPAN="2" class="order_by_th" data-name="names">Aprobacion estado</th>
+                                    <th class="actions_header">Editar</th>
+                                    <th class="actions_header">Reporte</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_content">
+                                {% include 'table_recibidas.html' %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+                {% end %}
+             </div>
+        </div>
+    </div>
+
+
+{% end %}
+
+{% block script %}
+    <script src="resources/js/functions.js"></script>
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="portal/vacacion/assets/vacacion.js"></script>
+{% end %}

@@ -3,7 +3,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 id="cliente_tittle" class="modal-title">Descargar Boleta de Asistencia</h3>
+                <h3 id="cliente_title" class="modal-title">Descargar Boleta de Asistencia</h3>
+                <small id="aclaracion">Los registros con horas extras autorizadas no pueden darse de baja.</small>
                 <h4 id="cliente_enable" class=""></h4>
             </div>
             <div class="modal-body">
@@ -14,7 +15,7 @@
                            <div class="form-group">
                                 <div id="fechaDIVinicioboleta" class="form-line success">
 
-                                    <input id="fechainicioboleta" type="text" class="form-control datepicker">
+                                    <input id="fechaiboleta" type="text" class="form-control dateiboleta">
                                 </div>
                             </div>
                         </div>
@@ -23,7 +24,7 @@
                                 <label class="form-label">Fecha Fin</label>
                                 <div id="fechaDIVfinboleta" class="form-line success">
 
-                                    <input id="fechafinboleta" type="text" class="form-control datepicker">
+                                    <input id="fechafboleta" type="text" class="form-control datefboleta">
                                 </div>
                             </div>
                         </div>
@@ -33,7 +34,7 @@
                         </div>
                     </div>
                     <div class="row clearfix">
-                        <div class="col-sm-6">
+                        <div id="desplegable" class="col-sm-6">
                             <div class="form-group form-float">
                             <label>Personal</label>
                                 <div class="clearfix m-b-20">
@@ -70,7 +71,7 @@
                                                                                     <ol class="dd-list">
                                                                                         {% if isinstance(admin[empresa][sucursal][gerencia], dict) %}
                                                                                             {% for grupo in admin[empresa][sucursal][gerencia] %}
-                                                                                                <li class="dd-item dd-nodrag" data-id="gr{{grupo[0]}}">
+                                                                                                <li class="dd-item dd-collapsed" data-id="gr{{grupo[0]}}">
                                                                                                     <div class="dd-handle">
                                                                                                         <input id="gr{{grupo[0]}}" type="checkbox" class="module chk-col-deep-purple grupo" data-id="{{grupo[0]}}" data-ger="{{gerencia[0]}}" data-suc="{{sucursal[0]}}" data-empr="{{empresa[0]}}">
                                                                                                         <label for="gr{{grupo[0]}}">{{grupo[1]}}</label>
@@ -106,31 +107,44 @@
                             </div>
                          </div>
 
-                        <div class="col-sm-4">
-                             <label>Buscar personas</label>
-                            <select id="personal" class="form-control">
-                                {% for s in personal %}
-                                <option value="{{ s.id }}">{{ s.fullname }}</option>
-                                {% end %}
-                            </select>
-                            </br>
-                            </br>
-                        </div>
-                        <div class="col-sm-6">
-                            <div id="personal" class="box-body">
-                                <div id="personal_div" class="clearfix">
 
-                                </div>
-                             </div>
-                        </div>
+
+{#                        <div class="col-sm-4">#}
+{#                             <label>Buscar personas</label>#}
+{#                            <select id="personal" class="form-control">#}
+{#                                {% for s in personal %}#}
+{#                                <option value="{{ s.id }}">{{ s.fullname }}</option>#}
+{#                                {% end %}#}
+{#                            </select>#}
+{#                            </br>#}
+{#                            </br>#}
+{#                        </div>#}
+{#                        <div class="col-sm-6">#}
+{#                            <div id="personal" class="box-body">#}
+{#                                <div id="personal_div" class="clearfix">#}
+{##}
+{#                                </div>#}
+{#                             </div>#}
+{#                        </div>#}
 
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button id="generar_pdf" type="button" class="btn bg-red waves-effect" title="Boleta Pdf">
-                    <i class="material-icons">picture_as_pdf</i>
-                    </button>
+                    <div class="row">
+                        <div class="col-sm-9"></div>
+                        <div class="col-sm-1">
+                            <button id="generar_pdf" type="button" class="btn bg-red waves-effect" data-toggle="tooltip" data-placement="top" title="Boleta PDF">
+                                <i class="material-icons">picture_as_pdf</i>
+                            </button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button id="generar_rep" type="button" class="btn bg-blue waves-effect" data-toggle="tooltip" data-placement="top" title="Reporte de Horas/Días Totales">
+                                <i class="material-icons">timer</i>
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

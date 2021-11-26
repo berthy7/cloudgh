@@ -3,6 +3,8 @@
 {% block style %}
     {% set user = usuario %}
     <link rel="stylesheet" href="configuraciones/ciudad/assets/ciudad.css">
+
+
 {% end %}
 
 {% block content %}
@@ -14,11 +16,11 @@
     <div class="body">
         <div class="row clearfix">
             <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2">
-            {% if 'ciudad_insert' in privileges %}
-                <div id="new" class="caja-icono" title="Nuevo">
-                    <img src="/resources/iconos/agregar.ico" class="icono" />
-                </div>
-            {% end %}
+                {% if 'ciudad_insert' in privileges %}
+                    <div id="new" class="caja-icono" title="Nuevo">
+                        <img src="/resources/iconos/agregar.ico" class="icono" />
+                    </div>
+                {% end %}
             </div>
         </div>
 

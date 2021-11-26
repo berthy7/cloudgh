@@ -18,7 +18,12 @@ class RolController(CrudController):
 
     def get_extra_data(self):
         aux = super().get_extra_data()
-        aux['modulos'] = ModuloManager(self.db).list_all()
+        us = self.get_user()
+
+        aux['roles'] = RolManager(self.db).listar_usuario(us)
+        aux['modulos'] = ModuloManager(self.db).list_all(us)
+
+
         return aux
 
     def insert(self):

@@ -15,7 +15,7 @@ class LectoresController(CrudController):
         '/lectores_insert': {'POST': 'insert'},
         '/lectores_update': {'PUT': 'edit', 'POST': 'update'},
         '/lectores_delete': {'POST': 'delete'},
-        '/lectores_crear': {'POST': 'crear'},
+        '/lectores_extraer_marcaciones': {'POST': 'extraer_marcaciones'},
         '/lectores_obtener_marcaciones': {'POST': 'obtener_marcaciones'},
     }
 
@@ -25,9 +25,9 @@ class LectoresController(CrudController):
 
         return aux
 
-    def crear(self):
+    def extraer_marcaciones(self):
         self.set_session()
-        LectoresManager(self.db).crear_dispositivos()
+        LectoresManager(self.db).preparar_dispositivos()
         self.respond(success=True, message='Insertado correctamente.')
 
     def insert(self):

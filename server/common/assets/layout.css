@@ -4,7 +4,7 @@
     width: auto;
 }
 .nav-noimg {
-    height: 30px;
+    height: 40px;
     padding: 0px;
     width: auto;
 }
@@ -80,3 +80,12 @@
     width: 40px;
     height: 40px;
 }
+.nav-own { padding-top: 0 !important; }
+.div-calendar { margin: 0 auto 38px auto !important; }
+.calendar-hd { height: 50px; }
+.calendar-ct, .month-items, .days, .week { list-style-type: none !important; padding-left: 0 !important; list-style: none !important; }
+.view, .view-date { margin-left: -10px !important; }
+.calendar-ct { width: 320px !important; height: 330px !important; background-color: rgba(0, 0, 0, .02); }
+.calendar-hd a { text-decoration: none !important; }
+.date-items { margin-left: -104% !important; list-style: none !important; }
+.bg-primary:hover, .bg-primary:focus{ color: #fff !important; }

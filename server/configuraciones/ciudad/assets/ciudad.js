@@ -29,10 +29,16 @@ $('#new').click(function () {
     $('#update').hide()
     validationInputSelects("form")
     $('#form').modal('show')
+
+
+
 })
 
 
 $('#insert').click(function () {
+
+       
+
     notvalid = validationInputSelectsWithReturn("form");
     if (notvalid===false) {
         objeto = JSON.stringify({

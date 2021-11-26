@@ -10,6 +10,250 @@ $(document).ajaxStop(function () {
     $.Toast.hideToast();
 });
 
+var fechahoy = new Date();
+console.log(fechahoy)
+var hoy = fechahoy.getDate()+"/"+(fechahoy.getMonth()+1) +"/"+fechahoy.getFullYear()
+
+
+document.getElementById("fechaiboleta").value=hoy
+document.getElementById("fechafboleta").value=hoy
+
+$('.show-tick').selectpicker()
+
+$('.dd').nestable({
+    group:'categories',
+    maxDepth:0,
+    reject: [{
+        rule: function () {
+            // The this object refers to dragRootEl i.e. the dragged element.
+            // The drag action is cancelled if this function returns true
+            var ils = $(this).find('>ol.dd-list > li.dd-item');
+            for (var i = 0; i < ils.length; i++) {
+                var datatype = $(ils[i]).data('type');
+                if (datatype === 'child')
+                    return true;
+            }
+            return false;
+        },
+        action: function (nestable) {
+            // This optional function defines what to do when such a rule applies. The this object still refers to the dragged element,
+            // and nestable is, well, the nestable root element
+            alert('Can not move this item to the root');
+        }
+    }]
+});
+
+$('.module').click(function () {
+    var checked = $(this).prop('checked')
+    //$('.module').prop('checked', false)
+    empresa_id = null
+    sucursal_id = null
+    gerencia_id = null
+    grupo_id = null
+    emp_id = null
+    if ($(this).hasClass('employee')){
+        emp_id = parseInt($(this).attr('data-id'))
+    } else {
+        if ($(this).hasClass('grupo')){
+            grupo_id = parseInt($(this).attr('data-id'))
+            gerencia_id = parseInt($(this).attr('data-ger'))
+            sucursal_id = parseInt($(this).attr('data-suc'))
+            empresa_id = parseInt($(this).attr('data-empr'))
+        } else {
+            if ($(this).hasClass('gerencia')){
+                gerencia_id = parseInt($(this).attr('data-id'))
+                sucursal_id = parseInt($(this).attr('data-suc'))
+                empresa_id = parseInt($(this).attr('data-empr'))
+            }else {
+                if($(this).hasClass('sucursal')){
+                    sucursal_id = parseInt($(this).attr('data-id'))
+                    empresa_id = parseInt($(this).attr('data-empr'))
+                }else {
+                    if($(this).hasClass('empresa')){
+                        empresa_id_id = parseInt($(this).attr('data-id'))
+                    }
+                }
+            }
+        }
+    }
+    $(this).prop('checked', checked)
+    $(this).parent().next().find('.module').prop('checked', $(this).prop('checked'))
+    analizar($(this).parent().parent().closest('.dd-list').prev().find('.module'))
+})
+
+function analizar(parent) {
+    children = $(parent).parent().next().find('.module:checked')
+    //console.log(children.length)
+    $(parent).prop('checked', (children.length > 0))
+    grand_parent = $(parent).parent().parent().closest('.dd-list').prev().find('.module')
+    //console.log(grand_parent.length)
+    if (grand_parent.length > 0){
+        analizar(grand_parent)
+    }
+}
+
+var id_gv = 0
+
+$('#personal').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar Personal',
+    title: 'Seleccione una persona.'
+})
+
+$('#personal').change(function () {
+    obj = JSON.stringify({
+        'id': parseInt(JSON.parse($('#personal').val())),
+        '_xsrf': getCookie("_xsrf")
+    })
+
+    ruta = "persona_obtener_id";
+
+    $.ajax({
+        method: "POST",
+        url: ruta,
+        data: {_xsrf: getCookie("_xsrf"), object: obj},
+        async: false
+    }).done(function (response) {
+        response = JSON.parse(response)
+        append_input_personal('')
+        var id_nombres = ''
+        $("input.nombres").each(function() {
+            id_nombres  = $(this).prop('id');
+        });
+        var id_id = ''
+        $("input.idnombres").each(function() {
+            id_id = $(this).prop('id');
+        });
+
+
+        $('#' + id_id ).val(response.response.id)
+        $('#' + id_id ).parent().addClass('focused')
+        $('#' + id_nombres ).val(response.response.fullname)
+        $('#' + id_nombres ).parent().addClass('focused')
+
+
+    })
+
+    $('#personal').val('')
+    $('#personal').selectpicker('refresh')
+
+});
+
+function append_input_personal(id_in) {
+    if(id_in === ''){
+        id_gv++;
+        id_in = id_gv;
+    }
+    $('#personal_div').append(
+        '<div class="row">\
+            <div class="col-md-1 hidden">\
+                <div class="input-group">\
+                <input  id="id'+id_in+'" class="form-control idnombres personal readonly">\
+                </div>\
+            </div>\
+            <div class="col-md-8 p-t-own">\
+                <div class="form-group form-float">\
+                    <div id="nombresDIV" class="form-line">\
+                        <input id="nombres'+id_in+'" data-id="'+id_in+'" class="form-control nombres">\
+                        <label class="form-label">Nombre Completo</label>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <button type="button" class="btn bg-red waves-effect clear_personal" title="Eliminar">\
+                    <i class="material-icons">clear</i>\
+                </button>\
+            </div>\
+        </div>'
+    )
+
+    $('.clear_personal').last().click(function () {
+        $(this).parent().parent().remove()
+    })
+
+    $('.nombres').click(function () {
+        $(this).parent().addClass('focused');
+        current_input = $(this).prop('id');
+    })
+
+    $('.idnombres').click(function () {
+        $(this).parent().addClass('focused');
+        current_input = $(this).prop('id');
+    })
+
+}
+
+function obtener_personas_arbol() {
+    aux = []
+    $('.employee:checked').each(function () {
+        var a = parseInt($(this).attr('data-id'))
+
+        aux.push((function add(a) {
+            return a
+        })(a))
+    })
+    return aux
+}
+
+function obtener_personas() {
+    objeto = []
+    objeto_inputs = $('.personal')
+
+    for (i = 0; i < objeto_inputs.length; i += 1) {
+        h0 = parseInt(objeto_inputs[i].value)
+
+        objeto.push((function add_objeto(h0) {
+                return h0
+        })(h0))
+    }
+    return objeto
+}
+
+$('#estado').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar ',
+    title: 'Seleccione un estado'
+})
+$('#boleta').click(function () {
+
+    $('#fechaiboleta').val($('#fechai').val())
+    $('#fechafboleta').val($('#fechaf').val())
+    $('#personal_div').empty()
+    $('#desplegable').show()
+    $('#cliente_title').html('Descargar Reportes de Vacacion')
+    $('#aclaracion').hide()
+    $('#generar_pdf').show()
+    $('#generar_rep').show()
+    $('#eliminar_reg').hide()
+    $('#form-boleta').modal('show')
+})
+
+$('#generar_rep').click(function () {
+    obj = JSON.stringify({
+        'fechainicio': $('#fechaiboleta').val(),
+        'fechafin': $('#fechafboleta').val(),
+        'personas_arbol': obtener_personas_arbol(),
+        'personas': obtener_personas(),
+        '_xsrf': getCookie("_xsrf")
+    })
+
+    $.ajax({
+        method: "POST",
+        url: '/v_personal_reporte_total',
+        data: {object: obj, _xsrf: getCookie("_xsrf")}
+    }).done(function(response){
+        dictionary = JSON.parse(response)
+        dictionary = dictionary.response
+        servidor = ((location.href.split('/'))[0])+'//'+(location.href.split('/'))[2];
+        url = servidor + dictionary;
+
+        window.open(url)
+    })
+})
+
+
 $('#importar_excel').click(function () {
     $(".xlsfl").each(function () {
         $(this).fileinput('refresh',{
@@ -176,9 +420,12 @@ function attach_edit() {
         }, function (response) {
             var self = response;
             $('#id').val(self.id)
-            $('#nombre').val(self.nombre)
-            $('#fkciudad').val(self.fkciudad)
-            $('#fkciudad').selectpicker('refresh')
+            $('#nombre').val(self.persona.fullname)
+            $('#dias').val(self.dias)
+            $('#gestion').val(self.gestion)
+            $('#estado').val(self.estado)
+            $('#estado').selectpicker('refresh')
+
 
             clean_form()
             verif_inputs('')
@@ -197,8 +444,10 @@ $('#update').click(function () {
     if (notvalid===false) {
         objeto = JSON.stringify({
             'id': parseInt($('#id').val()),
-            'nombre': $('#nombre').val(),
-            'fkciudad': $('#fkciudad').val()
+            'dias': $('#dias').val(),
+            'gestion': $('#gestion').val(),
+            'estado': $('#estado').val()
+
         })
         ajax_call('v_personal_update', {
             object: objeto,

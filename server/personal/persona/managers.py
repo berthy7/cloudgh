@@ -8,6 +8,8 @@ from ...configuraciones.departamento.managers import *
 from ...configuraciones.ciudad.managers import *
 from ...configuraciones.sucursal.managers import *
 
+from ..organigrama.models import *
+
 from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.styles import Font
@@ -16,6 +18,13 @@ from openpyxl.styles import Font
 class PersonaManager(SuperManager):
     def __init__(self, db):
         super().__init__(Persona, db)
+
+    def obtener_x_id(self,idpersona):
+        return self.db.query(self.entity).filter(self.entity.id == idpersona).first()
+
+    def listar_todos(self):
+        return self.db.query(self.entity).all()
+
 
     def get_all(self):
         return self.db.query(self.entity).filter(self.entity.enabled == True).all()
@@ -32,8 +41,8 @@ class PersonaManager(SuperManager):
     def listar_todo(self):
         return self.db.query(self.entity).filter(self.entity.enabled == True).order_by(self.entity.apellidopaterno.asc()).all()
 
-    def obtener_x_gerencia(self,idempresa,idgerencia):
-        objeto= self.db.query(Persona).join(Empleado).filter(Persona.enabled == True).filter(Empleado.fkgerencia== idgerencia).order_by(Persona.fullname.asc()).all()
+    def obtener_x_gerencia(self,idsucursal,idgerencia):
+        objeto= self.db.query(Persona).join(Empleado).filter(Persona.enabled == True).filter(Empleado.fksucursal== idsucursal).filter(Empleado.fkgerencia== idgerencia).order_by(Persona.fullname.asc()).all()
 
         return objeto
 
@@ -43,9 +52,29 @@ class PersonaManager(SuperManager):
         return objeto
 
     def obtener_correo(self,idpersona):
-        objeto= self.db.query(Persona).join(Empleado).filter(Persona.enabled == True).filter(Persona.id== idpersona).order_by(Persona.fullname.asc()).first()
+        objeto= self.db.query(Persona).join(Empleado).filter(Persona.enabled == True).filter(Persona.id== idpersona).first()
 
         return objeto.empleado[0].email
+
+    def obtener_telefono(self,idpersona):
+        objeto= self.db.query(Persona).join(Empleado).filter(Persona.enabled == True).filter(Persona.id== idpersona).first()
+
+        return objeto.telefono
+
+    def obtener_correo_superior(self,idpersona):
+        objeto = False
+        organi_perso = self.db.query(Organigrama).filter(Organigrama.enabled == True).filter(Organigrama.fkpersona == idpersona).first()
+
+        if organi_perso:
+            organi_super = self.db.query(Organigrama).filter(Organigrama.enabled == True).filter(
+                Organigrama.id == organi_perso.fkpadre).first()
+            if organi_super:
+
+                obj= self.db.query(Persona).join(Empleado).filter(Persona.enabled == True).filter(Persona.id== organi_super.fkpersona).first()
+                objeto = obj.empleado[0].email
+
+
+        return objeto
 
     def obtener_contrato(self, id):
         list = {}
@@ -99,6 +128,16 @@ class PersonaManager(SuperManager):
 
     def insert(self, objeto):
         objeto.fechanacimiento = datetime.strptime(objeto.fechanacimiento, '%d/%m/%Y')
+        for contra in objeto.contrato:
+            if contra.fechaFin:
+                contra.fechaFin = datetime.strptime(contra.fechaFin, '%d/%m/%Y %H:%M:%S')
+
+            if contra.fechaIngreso:
+                contra.fechaIngreso = datetime.strptime(contra.fechaIngreso, '%d/%m/%Y %H:%M:%S')
+
+            if contra.fechaForzado:
+                contra.fechaForzado = datetime.strptime(contra.fechaForzado, '%d/%m/%Y %H:%M:%S')
+
         fecha = BitacoraManager(self.db).fecha_actual()
 
         a = super().insert(objeto)
@@ -153,13 +192,19 @@ class PersonaManager(SuperManager):
                                     row[indices['CARGO']].value is not None and \
                                     row[indices['CONTRATO_PLAZO']].value is not None and \
                                     row[indices['FECHA_INGRESO_NOM']].value is not None and \
-                                    row[indices['FECHA_VENCIMIENTO']].value is not None and \
                                     row[indices['PAIS']].value is not None and \
                                     row[indices['DEPARTAMENTO']].value is not None and \
                                     row[indices['CIUDAD']].value is not None and \
                                     row[indices['SUCURSAL']].value is not None:
                         query = self.db.query(Empleado).filter(Empleado.codigo == row[indices['CODIGO']].value).filter(Persona.ci == str(row[indices['CI']].value)).all()
                         if not query:
+                            # print(type(row[indices['FECHA_NACIMIENTO']].value))
+                            # print(type(row[indices['FECHA_INGRESO_NOM']].value))
+                            # print(type(row[indices['FECHA_VENCIMIENTO']].value))
+                            print(str(row[indices['CODIGO']].value))
+
+                            if str(row[indices['CODIGO']].value) == "2014":
+                                print("entro")
                             empl = Empleado(codigo=row[indices['CODIGO']].value,email=row[indices['CORREO']].value)
                             persona = Persona(nombres=row[indices['NOMBRE']].value,
                                               apellidopaterno=row[indices['APELLIDO_P']].value,
@@ -311,6 +356,40 @@ class PersonaManager(SuperManager):
 
         return admin
 
+    # def get_employees_tree(self):
+    #     query = EmpresaManager(self.db).get_all()
+    #     admin = dict()
+    #
+    #     for empresa in query:
+    #         em = (empresa.id, empresa.nombre)
+    #         admin[em] = dict()
+    #         cont_suc = 1
+    #         for sucursales in empresa.sucursales:
+    #
+    #             su = (cont_suc, sucursales.nombre)
+    #             cont_suc = cont_suc + 1
+    #             admin[em][su] = dict()
+    #
+    #             list_gerencias = SucursalManager(self.db).obtener_gerencias(empresa.id, sucursales.id)
+    #             cont_ger = 1
+    #             for gerencias in list_gerencias:
+    #                 ger = (cont_ger, list_gerencias[gerencias]['gerencia'])
+    #                 cont_ger = cont_ger + 1
+    #                 admin[em][su][ger] = dict()
+    #
+    #                 list_personal = PersonaManager(self.db).obtener_x_gerencia(sucursales.id,list_gerencias[gerencias]['idgerencia'])
+    #                 html_e = ""
+    #                 for personal in list_personal:
+    #                     html = '<li class="dd-item" data-id="' + str(personal.id) + str(
+    #                         personal.id) + '"><div class="dd-handle"><input id="' + str(personal.id) + str(
+    #                         personal.id) + '" data-id="' + str(personal.id) + '" data-sex="' + str(
+    #                         personal.sexo) + '"type="checkbox" class="module chk-col-deep-purple employee"><label for="' + str(
+    #                         personal.id) + str(personal.id) + '">' + str(personal.fullname) + '</label></div></li>'
+    #                     html_e = html_e + html
+    #
+    #                     admin[em][su][ger] = html_e
+    #     return admin
+
     def get_employees_tree(self):
         query = EmpresaManager(self.db).get_all()
         admin = dict()
@@ -318,31 +397,43 @@ class PersonaManager(SuperManager):
         for empresa in query:
             em = (empresa.id, empresa.nombre)
             admin[em] = dict()
-            cont_suc =1
-            for sucursales in empresa.sucursales:
 
-                su = (cont_suc, sucursales.nombre)
-                cont_suc = cont_suc + 1
-                admin[em][su] = dict()
+            list_ciudad = CiudadManager(self.db).get_all()
+            cont_ciu = 1
+            cont_suc = 1
+            cont_ger = 1
 
-                list_gerencias = SucursalManager(self.db).obtener_gerencias(empresa.id,sucursales.id)
-                cont_ger= 1
-                for gerencias in list_gerencias:
-                    ger = (cont_ger, list_gerencias[gerencias]['gerencia'])
-                    cont_ger = cont_ger + 1
-                    admin[em][su][ger] = dict()
+            for ciudades in list_ciudad:
+                ciu = (cont_ciu, ciudades.nombre)
+                cont_ciu = cont_ciu + 1
+                admin[em][ciu] = dict()
 
-                    list_personal = PersonaManager(self.db).obtener_x_gerencia(empresa.id,list_gerencias[gerencias]['idgerencia'])
-                    html_e = ""
-                    for personal in list_personal:
-                        html = '<li class="dd-item" data-id="' + str(personal.id)+ str(personal.id) + '"><div class="dd-handle"><input id="' + str(personal.id) + str(personal.id) + '" data-id="' + str(personal.id) + '" data-sex="' + str(personal.sexo) + '"type="checkbox" class="module chk-col-deep-purple employee"><label for="' + str(personal.id) + str(personal.id) + '">' + str(personal.fullname) + '</label></div></li>'
-                        html_e = html_e + html
+                list_sucursal = SucursalManager(self.db).listar_x_ciudad(ciudades.id)
 
-                        admin[em][su][ger] = html_e
+                for sucursales in list_sucursal:
+
+                    su = (cont_suc, sucursales.nombre)
+                    cont_suc = cont_suc + 1
+                    admin[em][ciu][su] = dict()
+
+                    list_gerencias = SucursalManager(self.db).obtener_gerencias(empresa.id,sucursales.id)
+
+                    for gerencias in list_gerencias:
+                        ger = (cont_ger, list_gerencias[gerencias]['gerencia'])
+                        cont_ger = cont_ger + 1
+                        admin[em][ciu][su][ger] = dict()
+
+                        list_personal = PersonaManager(self.db).obtener_x_gerencia(sucursales.id,list_gerencias[gerencias]['idgerencia'])
+                        html_e = ""
+                        for personal in list_personal:
+                            html = '<li class="dd-item" data-id="' + str(personal.id)+ str(personal.id) + '"><div class="dd-handle"><input id="' + str(personal.id) + str(personal.id) + '" data-id="' + str(personal.id) + '" data-sex="' + str(personal.sexo) + '"type="checkbox" class="module chk-col-deep-purple employee"><label for="' + str(personal.id) + str(personal.id) + '">' + str(personal.fullname) + '</label></div></li>'
+                            html_e = html_e + html
+
+                            admin[em][ciu][su][ger] = html_e
         return admin
 
     def get_dataemp(self, idp):
-        objeto = self.db.query(Persona).join(Empleado).filter(Persona.enabled == True).filter(Persona.id == idp).order_by(Persona.fullname.asc()).all()
+        objeto = self.db.query(Persona).join(Empleado).filter(Persona.id == idp).order_by(Persona.fullname.asc()).all()
 
         return objeto
 
@@ -404,8 +495,14 @@ class PersonaManager(SuperManager):
         ws['S' + str(indice)].font = Font(bold=True)
         ws['T' + str(indice)].font = Font(bold=True)
 
-        for i in empleados:
-            x = PersonaManager(self.db).get_dataemp(i['id'])
+
+        for i in PersonaManager(self.db).listar_todos():
+            x = PersonaManager(self.db).get_dataemp(i.id)
+
+            fechaf = ""
+            if x[0].contrato[0].fechaFin:
+                fechaf = x[0].contrato[0].fechaFin.strftime('%d/%m/%Y')
+
 
             indice = indice + 1
             ws['A' + str(indice)] = x[0].id
@@ -426,22 +523,9 @@ class PersonaManager(SuperManager):
             ws['P' + str(indice)] = x[0].empleado[0].cargo.nombre
             ws['Q' + str(indice)] = x[0].contrato[0].tipo
             ws['R' + str(indice)] = x[0].contrato[0].fechaIngreso.strftime('%d/%m/%Y')
-            ws['S' + str(indice)] = x[0].contrato[0].fechaFin.strftime('%d/%m/%Y')
+            ws['S' + str(indice)] = fechaf
             ws['T' + str(indice)] = x[0].empleado[0].email
 
-        for col in ws.columns:
-            row_idx = 0
-            max_length = 0
-            column = col[0].column
-            for cell in col:
-                row_idx = row_idx + 1
-                try:
-                    max_length = len(cell.value)
-                except:
-                    pass
-            adjusted_width = (max_length + 2) * 1.2
-            if column not in ['N']:
-                ws.column_dimensions[column].width = adjusted_width
 
         wb.save("server/common/resources/downloads/persona/" + cname)
         return cname
@@ -707,5 +791,29 @@ class HijosManager(SuperManager):
 
         a = super().update(objeto)
         b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Modifico Hijo.", fecha=fecha, tabla="rrhh_persona_hijos", identificador=a.id)
+        super().insert(b)
+        return a
+
+
+class CoordenadasManager(SuperManager):
+    def __init__(self, db):
+        super().__init__(Coordenadas, db)
+
+    def insert(self, objeto):
+        fecha = BitacoraManager(self.db).fecha_actual()
+
+        a = super().insert(objeto)
+        b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Registro Coordenadas del personal.", fecha=fecha,
+                     tabla="cb_rrhh_persona_coordenadas", identificador=a.id)
+        super().insert(b)
+
+        return a
+
+    def update(self, objeto):
+        fecha = BitacoraManager(self.db).fecha_actual()
+
+        a = super().update(objeto)
+        b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Modifico Coordenadas del personal.", fecha=fecha,
+                     tabla="cb_rrhh_persona_coordenadas", identificador=a.id)
         super().insert(b)
         return a

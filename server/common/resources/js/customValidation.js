@@ -92,7 +92,7 @@ function validationInputSelectsWithReturn(id) {
 
     for (var i = 0; i < elementsSelect.length; i++) {
         if (!elementsSelect[i].checkValidity()) {
-            console.log(elementsSelect[i])
+            //console.log(elementsSelect[i])
             printError(elementsSelect[i], elementsSelect[i].validationMessage);
             flag = true;
             return elementsSelect[i].querySelector('.bs-title-option').text;
@@ -187,7 +187,7 @@ function validationKeyup(id) {
     var elementsInput = document.querySelectorAll('#' + id + ' input[type=text]')
     var elementsNumber = document.querySelectorAll('#' + id + ' input[type=number]:enabled')
     for (var i = 0; i < elementsInput.length; i++) {
-
+        //console.log(elementsInput[i].id);
         if (elementsInput[i].id != '')
             elementsInput[i].oninput = function () {
                 if (!this.checkValidity()) {
@@ -310,14 +310,19 @@ function validarConflictoHorarios(id) {
         arrayDiferencias.push(diferenciaHorarios(arrayMoment[i]));
     }
 
+    console.log("arrayDiferencias:" + arrayDiferencias)
+
     // ArrayDiferencias, matriz de 2x1, representa la diferencia entre los horarios de cada fila
     // console.log("arrayDiferencias");
     // console.log(arrayDiferencias);
 
     for (let j = 0; j < arrayDiferencias.length ; j++) {
         let x = arrayDiferencias[j];
-        let allTrue = x.every(elemento => elemento > 0);
+        console.log("turno: "+x)
+        let allTrue = x.every(elemento => Math.abs(elemento) > 0);
+        console.log(allTrue)
         if(!allTrue){
+
             flag = printErrorArray(x, j, elementsInputOrdenado);
         }
     }
@@ -342,14 +347,25 @@ function diferenciaHorarios(arrayString) {
         // let b = arrayString[i+1];
         // let c = b.diff(a, 'minutes');
         // arrayTemporal.push(c);
-        arrayTemporal.push(arrayString[i+1].diff(arrayString[i], 'minutes'));
+
+        var cero_1 = (arrayString[i], 'minutes')
+        var cero = (arrayString[i], 'minutes')
+
+        var resultado = arrayString[i+1].diff(arrayString[i], 'minutes')
+
+        arrayTemporal.push(resultado);
+
     }
+
     return arrayTemporal;
 }
 
 function printErrorArray(arrayString, index, elementsInputOrdenado) {
     for (let i = 0; i < arrayString.length; i++) {
+
         let a = arrayString[i];
+
+
         if(a<=0){
             printError(elementsInputOrdenado[index][i], "conflicto de horario");
             printError(elementsInputOrdenado[index][i+1], "conflicto de horario");
@@ -361,4 +377,71 @@ function printErrorArray(arrayString, index, elementsInputOrdenado) {
         }
     }
     return true;
+}
+
+function fields_keyup() {
+    $('.form-control').keyup(function () {
+    tag_element = $(this).prop('localName')
+    if (['input', 'textarea'].includes(tag_element)) mensaje = 'Completa este campo'
+    if (tag_element === 'select') mensaje = 'Selecciona un elemento de la lista'
+
+    if ($(this).prop('required')) {
+        if (this.value.length > 0) {
+            $(this).parent().removeClass('error')
+            $(this).parent().next().hide("slow", function(){ $(this).remove(); })
+        } else {
+            $(this).parent().addClass('error')
+            if($('#errorMsg_'+$(this).attr('id')).length === 0) {
+                $('<label id="errorMsg_'+$(this).attr('id')+'" class="error text-danger">'+mensaje+'</label>').insertAfter($(this).parent()).hide().show('slow')
+            }
+        }
+    }
+});
+}
+
+function inputmask_keyup() {
+    $(".hr").focus(function () {
+        $(this).parent().addClass('focused')
+    })
+
+    $('.hr').keyup(function () {
+        if ($(this).prop('required')) {
+            if ($(this).val().indexOf('_') === -1 && $(this).val().length > 0) {
+                $(this).parent().removeClass('error')
+                $(this).parent().next().hide("slow", function(){ $(this).remove(); })
+            } else {
+                $(this).parent().addClass('error')
+                elem_next = $(this).parent().next()
+                list_class = $(elem_next).prop('classList')
+                if($(elem_next).prop('localName') !== 'label') {
+                    $('<label class="error text-danger">Completa este campo</label>').insertAfter($(this).parent()).hide().show('slow')
+                }
+            }
+        }
+    })
+}
+
+function fix_buttons() {
+    var items  = $('.dd-collapsed')
+
+
+
+    for (i=0; i<items.length; i++) {
+        item_id = $(items[i]).attr('data-id')
+        $(items[i]).attr('id', 'prt-'+item_id)
+        console.log("primer 1")
+        if ($(items[i]).children().length > 0) {
+            btns_item = $('#prt-'+item_id+' button')
+            btns_item = $('#prt-'+item_id+' button')
+            console.log("primer 2")
+            if (btns_item.length >= 2) {
+                console.log("primer 3")
+                clp_acn = $(btns_item[0]).attr('data-action')
+                exp_acn = $(btns_item[1]).attr('data-action')
+
+                $(btns_item[0]).attr('style', 'display: none;')
+                $(btns_item[1]).removeAttr('style')
+            }
+        }
+    }
 }

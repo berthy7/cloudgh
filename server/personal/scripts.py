@@ -11,15 +11,15 @@ def insertions():
 
         personal_m = session.query(Modulo).filter(Modulo.name == 'personal').first()
         if personal_m is None:
-            personal_m = Modulo(title='Personal', name='personal', icon='personal.ico')
+            personal_m = Modulo(title='Personal', name='personal', icon='personal.png')
 
         persona_m = session.query(Modulo).filter(Modulo.name == 'persona').first()
         if persona_m is None:
-            persona_m = Modulo(title='Personas', route='/persona', name='persona', icon='usuarios.ico')
+            persona_m = Modulo(title='Personas', route='/persona', name='persona', icon='usuarios.png')
 
         organigrama_m = session.query(Modulo).filter(Modulo.name == 'organigrama').first()
         if organigrama_m is None:
-            organigrama_m = Modulo(title='Organigrama', route='/organigrama', name='organigrama', icon='cargos.ico')
+            organigrama_m = Modulo(title='Organigrama', route='/organigrama', name='organigrama', icon='organigrama.png')
 
         personal_m.children.append(persona_m)
         personal_m.children.append(organigrama_m)
@@ -85,7 +85,7 @@ def insertions():
         organigrama_m.children.append(update_organigrama)
         organigrama_m.children.append(delete_organigrama)
 
-        admin_role = session.query(Rol).filter(Rol.nombre == 'ADMINISTRADOR').first()
+        admin_role = session.query(Rol).filter(Rol.nombre == 'SUPER ADMINISTRADOR').first()
 
         ###Modulos de Operaciones
 

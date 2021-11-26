@@ -1,7 +1,8 @@
 from ...operaciones.bitacora.managers import *
 from server.common.managers import SuperManager
 from .models import *
-
+from server.database.connection import transaction
+from sqlalchemy.orm.session import make_transient
 
 class EmpresaManager(SuperManager):
 
@@ -53,3 +54,25 @@ class EmpresaManager(SuperManager):
         self.db.merge(x)
         self.db.commit()
         return x
+
+class EmpresaGlobalManager:
+    def get_data_empress(self):
+        foto1 = '/resources/default/cloudbit/cb-hor-md.png'
+        foto2 = '/resources/default/cloudbit/cb-vert-md-wh.png'
+        foto3 = '/resources/default/cloudbit/cloudbit.ico'
+
+        with transaction() as session:
+            data = session.query(Empresa).first()
+            if not data:
+                return None
+            session.expunge(data)
+            make_transient(data)
+
+            if data.foto1 not in ['S/I', ' ', None, '']:
+                foto1 = data.foto1
+            if data.foto2 not in ['S/I', ' ', None, '']:
+                foto2 = data.foto2
+            if data.foto3 not in ['S/I', ' ', None, '']:
+                foto3 = data.foto3
+
+        return {'nombre': data.nombre, 'foto1': foto1, 'foto2': foto2, 'foto3': foto3}

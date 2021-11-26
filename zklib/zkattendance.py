@@ -111,17 +111,18 @@ def zkgetattendancebt(self, device):
 
 def zkgetattendance(self, device):
     """Start a connection with the time clock"""
-    try:
-        command = CMD_ATTLOG_RRQ
-        command_string = b''
-        chksum = 0
-        session_id = self.session_id
-        reply_id = unpack('HHHH', self.data_recv[:8])[3]
-        buf = self.createHeader(command, chksum, session_id,
-                                reply_id, command_string)
-        self.zkclient.sendto(buf, self.address)
+    command = CMD_ATTLOG_RRQ
+    command_string = b''
+    chksum = 0
+    session_id = self.session_id
+    reply_id = unpack('HHHH', self.data_recv[:8])[3]
 
+    buf = self.createHeader(command, chksum, session_id,
+                            reply_id, command_string)
+    self.zkclient.sendto(buf, self.address)
+    try:
         self.data_recv, addr = self.zkclient.recvfrom(1024)
+
         if getSizeAttendance(self):
             bytes = getSizeAttendance(self)
             while bytes > 0:
@@ -148,13 +149,7 @@ def zkgetattendance(self, device):
                                                       attendancedata.ljust(zkcheckdevicemax(device))[
                                                       :zkcheckdevicemax(device)])
 
-                xxx = b''.join([uid, state])
-
-                a, b, c, d = unpack('1s1s1s13s', xxx.ljust(zkcheckdevicemax(device))[:zkcheckdevicemax(device)])
-
-                codigo = b''.join([c, b])
-
-                uid = zkdecodeuserid(device, codigo)
+                uid = zkdecodeuserid(device, uid)
                 if isinstance(uid, str):
                     uid = int(uid.split('\x00')[0])
                 if state == b'':
@@ -176,8 +171,78 @@ def zkgetattendance(self, device):
                 attendancedata = attendancedata[zkcheckdevicemax(device):]
         return attendance
     except Exception as e:
-        print("Error en zkgetattendance: "+str(e))
+        print(str(e))
         return False
+
+# def zkgetattendance(self, device):
+#     """Start a connection with the time clock"""
+#     try:
+#         command = CMD_ATTLOG_RRQ
+#         command_string = b''
+#         chksum = 0
+#         session_id = self.session_id
+#         reply_id = unpack('HHHH', self.data_recv[:8])[3]
+#         buf = self.createHeader(command, chksum, session_id,
+#                                 reply_id, command_string)
+#         self.zkclient.sendto(buf, self.address)
+#
+#         self.data_recv, addr = self.zkclient.recvfrom(1024)
+#         if getSizeAttendance(self):
+#             bytes = getSizeAttendance(self)
+#             while bytes > 0:
+#                 data_recv, addr = self.zkclient.recvfrom(1032)
+#                 self.attendancedata.append(data_recv)
+#                 bytes -= 1024
+#             self.session_id = unpack('HHHH', self.data_recv[:8])[2]
+#             data_recv = self.zkclient.recvfrom(8)
+#
+#         attendance = []
+#         if len(self.attendancedata) > 0:
+#             # The first 4 bytes don't seem to be related to the user
+#             for x in iter(range(len(self.attendancedata))):
+#                 if x > 0:
+#                     self.attendancedata[x] = self.attendancedata[x][8:]
+#
+#             attendancedata = b''.join(self.attendancedata)
+#
+#             attendancedata = attendancedata[zkcheckdevicerange(device):]
+#
+#             while len(attendancedata) > zkcheckdevicemax(device):
+#
+#                 uid, state, timestamp, space = unpack(zkcheckdevicemask(device),
+#                                                       attendancedata.ljust(zkcheckdevicemax(device))[
+#                                                       :zkcheckdevicemax(device)])
+#
+#                 xxx = b''.join([uid, state])
+#
+#                 a, b, c, d = unpack('1s1s1s13s', xxx.ljust(zkcheckdevicemax(device))[:zkcheckdevicemax(device)])
+#
+#                 codigo = b''.join([c, b])
+#
+#                 uid = zkdecodeuserid(device, codigo)
+#                 if isinstance(uid, str):
+#                     uid = int(uid.split('\x00')[0])
+#                 if state == b'':
+#                     state = b'\x00'
+#                 attendance.append((uid, int(codecs.encode(state, 'hex_codec'), 16),
+#                                    decode_time(int(reverseHex(codecs.encode(timestamp, 'hex_codec')), 16))))
+#                 attendancedata = attendancedata[zkcheckdevicemax(device):]
+#             uid, state, timestamp, space = unpack(zkcheckdevicemask(device),
+#                                                   attendancedata.ljust(zkcheckdevicemax(device))[
+#                                                   :zkcheckdevicemax(device)])
+#             uid = zkdecodeuserid(device, uid)
+#             if uid != 32:
+#                 if isinstance(uid, str):
+#                     uid = int(uid.split('\x00')[0])
+#                 if state == b'':
+#                     state = b'\x00'
+#                 attendance.append((uid, int(codecs.encode(state, 'hex_codec'), 16),
+#                                    decode_time(int(reverseHex(codecs.encode(timestamp, 'hex_codec')), 16))))
+#                 attendancedata = attendancedata[zkcheckdevicemax(device):]
+#         return attendance
+#     except Exception as e:
+#         print("Error en zkgetattendance: "+str(e))
+#         return False
 
 def zkdecodeuserid(device, userid):
      switcher ={

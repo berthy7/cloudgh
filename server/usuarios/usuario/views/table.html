@@ -21,6 +21,15 @@
             <img src="/resources/iconos/editar.ico" class="icono-table"/>
         </div>
     {% end %}
+
+    </td>
+        <td align="center">
+    {% if 'usuario_update' in privileges %}
+        <div id="password" data-json="{{usuarios.id}}" class="caja-icono password" title="Actualizar">
+            <img src="/resources/iconos/actualizarajustes.png" class="icono-table"/>
+        </div>
+    {% end %}
+
     </td>
 </tr>
 {% end %}

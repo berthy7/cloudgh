@@ -48,7 +48,27 @@
             <div class="col-sm-1">
                 {% if 'ajustes_update' in privileges %}
                 <div  id="actualizar" type="button" class="caja-icono" title="Actualizar Ajustes">
-                    <img src="/resources/iconos/actualizar_hora.ico" class="icono" />
+                    <img src="/resources/iconos/actualizarajustes.png" class="icono" />
+                </div>
+                {% end %}
+            </div>
+            <div class="col-sm-2">
+                 <div class="header color-subtitulo" ><h2>Horario Nocturno</h2></div>
+                 </br>
+                <div class="form-line">
+                    <input id="iniciohoranocturno"  placeholder="Inicio Horario" class=" form-control hr" value="{{ ajuste.iniciohoranocturno.strftime("%H:%M") }}">
+                </div>
+                    <div class="form-line">
+                    <input id="finhoranocturno" placeholder="Fin Horario" class=" form-control hr" value="{{ ajuste.finhoranocturno.strftime("%H:%M") }}">
+                </div>
+                    <div class="form-line">
+                    <input id="porcentajehoranocturno"  placeholder="Porcentaje" class=" form-control" value="{{ ajuste.porcentajehoranocturno }} ">
+                </div>
+            </div>
+            <div class="col-sm-1">
+                {% if 'ajustes_update' in privileges %}
+                <div  id="actualizar" type="button" class="caja-icono" title="Actualizar Ajustes">
+                    <img src="/resources/iconos/actualizar_hora.png" class="icono" />
                 </div>
                 {% end %}
             </div>

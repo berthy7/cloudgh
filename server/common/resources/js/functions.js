@@ -203,3 +203,18 @@ function ajax_call_login(url, data, render, callback) {
 
     })
 }
+
+function ajax_call_post_no_msg(url, data, callback) {
+    $.ajax({
+        method: "POST",
+        url: url,
+        data: data,
+        async: false
+    }).done(function (response) {
+        if (callback != null) {
+            dictionary = JSON.parse(response)
+            if (!dictionary.success) showMessage(dictionary.message, "danger", "remove");
+            callback(dictionary)
+        }
+    })
+}

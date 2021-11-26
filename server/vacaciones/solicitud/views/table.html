@@ -1,0 +1,59 @@
+{% for c in solicitudes %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.tipovacacion.nombre }}</td>
+
+    {% if c.fkpersona %}
+        <td>{{ c.persona.fullname }}</td>
+    {% else %}
+        <td> Varias Personas</td>
+    {% end %}
+
+    <td>{{ c.fechai.strftime("%d/%m/%Y") }}</td>
+    <td>{{ c.fechaf.strftime("%d/%m/%Y") }}</td>
+
+    {% if c.fkautorizacion %}
+        <td>{{ c.autorizacion.fullname }}</td>
+    {% else %}
+        <td> ------ </td>
+    {% end %}
+
+    {% if c.fkpersona %}
+        <td> {% if c.persona.empleado[0].autorizacion %} {% if 'v_solicitud_autorizacion' in privileges %} <div class="contenedor"><div data-json="{{c.id}}" class="caja-icono autorizacion" title="Editar"><img src="/resources/iconos/editar3.png" class="icono-table"/></div></div>{% end %}{% end %} {{ c.estadoautorizacion }}</td>
+    {% else %}
+        <td>  {% if 'v_solicitud_autorizacion' in privileges %} <div class="contenedor"><div data-json="{{c.id}}" class="caja-icono autorizacion" title="Editar"><img src="/resources/iconos/editar3.png" class="icono-table"/></div></div>{% end %} {{ c.estadoautorizacion }}</td>
+    {% end %}
+
+    {% if c.fkaprobacion %}
+        <td>{{ c.aprobacion.fullname }}</td>
+    {% else %}
+        <td> ------ </td>
+    {% end %}
+
+    {% if c.fkpersona %}
+        <td> {% if c.persona.empleado[0].aprobacion %} {% if 'v_solicitud_aprobacion' in privileges %} <div class="contenedor"><div data-json="{{c.id}}" class="caja-icono aprobacion" title="Editar"><img src="/resources/iconos/editar3.png" class="icono-table"/></div></div>{% end %}{% end %} {{ c.estadoaprobacion }}</td>
+    {% else %}
+        <td> {% if 'v_solicitud_aprobacion' in privileges %} <div class="contenedor"><div data-json="{{c.id}}" class="caja-icono aprobacion" title="Editar"><img src="/resources/iconos/editar3.png" class="icono-table"/></div></div>{% end %} {{ c.estadoaprobacion }}</td>
+    {% end %}
+
+    {% if 'v_solicitud_update' in privileges %}
+    <td align="center">
+        <div class="contenedor">
+            <div data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                <img src="/resources/iconos/editar.ico" class="icono-table"/>
+            </div>
+        </div>
+    </td>
+    {% end %}
+
+    {% if 'v_solicitud_imprimir' in privileges %}
+    <td align="center">
+        <div class="contenedor">
+            <div data-json="{{c.id}}" class="caja-icono imprimir" title="Imprimir">
+                <img src="/resources/iconos/seguimiento.ico" class="icono-table"/>
+            </div>
+        </div>
+    </td>
+    {% end %}
+</tr>
+{% end %}

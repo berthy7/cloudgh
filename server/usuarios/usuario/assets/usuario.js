@@ -140,7 +140,8 @@ $('#insert').click(function () {
         'username': $('#username').val(),
         'password': $('#password').val(),
         'fkrol': parseInt($('#role_id').val()),
-        'fkpersona': parseInt($('#fkpersona').val())
+        'fkpersona': parseInt($('#fkpersona').val()),
+        'autenticacion':document.getElementById('autenticacion').checked
         })
 
         ajax_call('usuario_insert', {
@@ -214,6 +215,7 @@ $('#insert_usuarios').click(function () {
 
 
 function attach_edit() {
+
     $('.edit').click(function () {
         obj = JSON.stringify({
             'id': parseInt(JSON.parse($(this).attr('data-json')))
@@ -232,6 +234,7 @@ function attach_edit() {
 
             $('#fkpersona').val(self.fkpersona)
             $('#fkpersona').selectpicker('render')
+            document.getElementById('autenticacion').checked=self.autenticacion
 
             clean_form()
             verif_inputs('')
@@ -242,7 +245,36 @@ function attach_edit() {
             $('#form').modal('show')
         })
     })
+
+    $('.password').click(function () {
+        obj = JSON.stringify({
+            'id': parseInt(JSON.parse($(this).attr('data-json')))
+        })
+        ajax_call_get('usuario_update',{
+            _xsrf: getCookie("_xsrf"),
+            object: obj
+        },function(response){
+            var self = response;
+
+            $('#id_usuario').val(self.id)
+            $('#new_pass').val('')
+            $('#new_rpass').val('')
+            $('#new_pass').parent().addClass('focused')
+            $('#new_rpass').parent().addClass('focused')
+
+
+            clean_form()
+            verif_inputs('')
+            $('#id_div').hide()
+            $('#close').show()
+            $('#modificar_password').modal('show')
+        })
+    })
+
+
 }
+
+
 attach_edit()
 
 
@@ -252,7 +284,8 @@ $('#update').click(function () {
         'username': $('#username').val(),
         'password': $('#password').val(),
         'fkrol': parseInt($('#role_id').val()),
-        'fkpersona': parseInt($('#fkpersona').val())
+        'fkpersona': parseInt($('#fkpersona').val()),
+        'autenticacion':document.getElementById('autenticacion').checked
     })
         ajax_call('usuario_update', {
             _xsrf: getCookie("_xsrf"),
@@ -272,6 +305,44 @@ $('#update').click(function () {
 
         })
     $('#form').modal('hide')
+})
+
+$('#close').click(function () {
+    
+    if ($('#new_pass').val()===$('#new_rpass').val()) {
+    
+        objeto = JSON.stringify({
+            'id': parseInt($('#id_usuario').val()),
+            'new_pass': $('#new_pass').val()
+        })
+            ajax_call('usuario_modificar_contraseña', {
+                _xsrf: getCookie("_xsrf"),
+                object: objeto
+            }, null, function (response) {
+                response = JSON.parse(response);
+                if(response.success === true){
+                    setTimeout(function(){window.location=main_route}, 2000);
+                }else{
+    
+                    swal(
+                        'Datos duplicados',
+                        response.message,
+                        'error'
+                    )
+                }
+    
+            })
+        $('#modificar_password').modal('hide')
+        
+    }else{
+        swal(
+            'Error de datos.',
+            'las contraseñas no coinciden',
+            'warning'
+        )
+    }
+    
+    
 })
 reload_form()
 $('#role_id').selectpicker()
@@ -362,11 +433,11 @@ function Modificar_Contraseña() {
             id = $('#id_usuario').val()
             newp = $('#new_pass').val()
             newp1 = $('#new_rpass').val()
-            objeto =JSON.stringify({'id' : id,'new_password' : newp, 'new_password_2':newp1})
+            objeto =JSON.stringify({'id' : id,'new_pass' : newp})
 
             if(newp==newp1) {
                 $.ajax({
-                    url: "/usuario_reset_password",
+                    url: "/usuario_modificar_password",
                     type: "post",
                     data: {object:objeto, _xsrf: getCookie("_xsrf")},
                 }).done(function (response) {
@@ -417,6 +488,141 @@ $('.reset1').click(function () {
     }).then(function () {
         ajax_call("/usuario_codigo_reset", { id: id,_xsrf: getCookie("_xsrf")}, null, function () {setTimeout(function(){window.location=main_route}, 2000);})
     })
+})
+
+    $('#reporte-xls').click(function () {
+        aux = {'datos': ''}
+        obj = JSON.stringify(aux)
+        ruta = "/usuario_reporte_xls";
+        $.ajax({
+            method: "POST",
+            url: ruta,
+            data:{_xsrf: getCookie("_xsrf"), object: obj},
+            async: false
+        }).done(function(response){
+            response = JSON.parse(response)
+
+            if (response.success) {
+                $('#link_excel').attr('href', response.response.url).html(response.response.nombre)
+            }
+        })
+        $('#modal-rep-xls').modal('show')
+    })
+
+    $('#importar_Excel').click(function () {
+    $(".xlsfl").each(function () {
+        $(this).fileinput('refresh',{
+            allowedFileExtensions: ['xlsx', 'txt'],
+            maxFileSize: 2000,
+            maxFilesNum: 1,
+            showUpload: false,
+            layoutTemplates: {
+                main1: '{preview}\n' +
+                    '<div class="kv-upload-progress hide"></div>\n' +
+                    '<div class="input-group {class}">\n' +
+                    '   {caption}\n' +
+                    '   <div class="input-group-btn">\n' +
+                    '       {remove}\n' +
+                    '       {cancel}\n' +
+                    '       {browse}\n' +
+                    '   </div>\n' +
+                    '</div>',
+                main2: '{preview}\n<div class="kv-upload-progress hide"></div>\n{remove}\n{cancel}\n{browse}\n',
+                preview: '<div class="file-preview {class}">\n' +
+                    '    {close}\n' +
+                    '    <div class="{dropClass}">\n' +
+                    '    <div class="file-preview-thumbnails">\n' +
+                    '    </div>\n' +
+                    '    <div class="clearfix"></div>' +
+                    '    <div class="file-preview-status text-center text-success"></div>\n' +
+                    '    <div class="kv-fileinput-error"></div>\n' +
+                    '    </div>\n' +
+                    '</div>',
+                icon: '<span class="glyphicon glyphicon-file kv-caption-icon"></span>',
+                caption: '<div tabindex="-1" class="form-control file-caption {class}">\n' +
+                    '   <div class="file-caption-name"></div>\n' +
+                    '</div>',
+                btnDefault: '<button type="{type}" tabindex="500" title="{title}" class="{css}"{status}>{icon}{label}</button>',
+                btnLink: '<a href="{href}" tabindex="500" title="{title}" class="{css}"{status}>{icon}{label}</a>',
+                btnBrowse: '<div tabindex="500" class="{css}"{status}>{icon}{label}</div>',
+                progress: '<div class="progress">\n' +
+                    '    <div class="progress-bar progress-bar-success progress-bar-striped text-center" role="progressbar" aria-valuenow="{percent}" aria-valuemin="0" aria-valuemax="100" style="width:{percent}%;">\n' +
+                    '        {percent}%\n' +
+                    '     </div>\n' +
+                    '</div>',
+                footer: '<div class="file-thumbnail-footer">\n' +
+                    '    <div class="file-caption-name" style="width:{width}">{caption}</div>\n' +
+                    '    {progress} {actions}\n' +
+                    '</div>',
+                actions: '<div class="file-actions">\n' +
+                    '    <div class="file-footer-buttons">\n' +
+                    '        {delete} {other}' +
+                    '    </div>\n' +
+                    '    {drag}\n' +
+                    '    <div class="file-upload-indicator" title="{indicatorTitle}">{indicator}</div>\n' +
+                    '    <div class="clearfix"></div>\n' +
+                    '</div>',
+                actionDelete: '<button type="button" class="kv-file-remove {removeClass}" title="{removeTitle}"{dataUrl}{dataKey}>{removeIcon}</button>\n',
+                actionDrag: '<span class="file-drag-handle {dragClass}" title="{dragTitle}">{dragIcon}</span>'
+            }
+        })
+    });
+    verif_inputs('')
+        console.log("importar excel")
+
+    $('#id_div').hide()
+    $('#insert-importar').show()
+    $('#form-importar').modal('show')
+})
+
+    $('#insert-importar').on('click',function (e) {
+     e.preventDefault();
+
+    var data = new FormData($('#importar-form')[0]);
+
+    ruta = "usuario_importar";
+    data.append('_xsrf', getCookie("_xsrf"))
+    render = null
+    callback = function () {
+        setTimeout
+        (function () {
+            window.location = main_route
+        }, 2000);
+    }
+    $.ajax({
+        url: ruta,
+        type: "post",
+        data: data,
+        contentType: false,
+        processData: false,
+        cache: false,
+        async: false
+    }).done(function (response) {
+        $('.page-loader-wrapper').hide();
+        $('#form').modal('hide');
+        response = JSON.parse(response)
+
+        if (response.success) {
+            swal({
+                title: "Operacion Correcta...",
+                text: response.message,
+                type: "success",
+                showCancelButton: false,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Confirmar"
+            }).then(function () {
+                $('#form-importar').modal('hide')
+                setTimeout(function () {
+                    window.location = main_route
+                }, 500);
+            });
+        } else {
+            swal("Operacion Fallida", response.message, "error").then(function () {
+                query_render('/residente');
+            });
+        }
+    })
+    $('#form').modal('hide')
 })
 
 validationKeyup("form")

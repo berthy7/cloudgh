@@ -5,6 +5,9 @@ from ...personal.persona.managers import *
 from ...notificaciones.correo.managers import *
 from ..rol.managers import *
 from ..login.managers import *
+
+import os.path
+import uuid
 import json
 
 from server.database.connection import transaction
@@ -31,7 +34,10 @@ class UsuarioController(CrudController):
         '/usuario_validacion_token': {'PUT': 'usuario_validacion_token'},
         '/usuario_notificacion_token_email': {'PUT': 'usuario_notificacion_token_email'},
         '/usuario_notificacion_token_sms': {'PUT': 'usuario_notificacion_token_sms'},
-        '/usuario_notificacion_token_ambosl': {'PUT': 'usuario_notificacion_token_ambosl'}
+        '/usuario_notificacion_token_ambosl': {'PUT': 'usuario_notificacion_token_ambosl'},
+        '/usuario_reporte_xls': {'POST': 'reportexls'},
+        '/usuario_importar': {'POST': 'importar'},
+        '/usuario_modificar_password': {'POST': 'modificar_password'},
     }
 
     def get_extra_data(self):
@@ -40,6 +46,34 @@ class UsuarioController(CrudController):
         aux['personal'] = PersonaManager(self.db).listar_todo()
         aux['admin'] = PersonaManager(self.db).get_employees_tree()
         return aux
+
+    def importar(self):
+        self.set_session()
+        fileinfo = self.request.files['archivo'][0]
+        fname = fileinfo['filename']
+        extn = os.path.splitext(fname)[1]
+        cname = str(uuid.uuid4()) + extn
+        fh = open("server/common/resources/uploads/" + cname, 'wb')
+        fh.write(fileinfo['body'])
+        fh.close()
+        if extn in ['.xlsx', '.xls']:
+            mee = self.manager(self.db).importar_excel(cname,self.get_user_id(),self.request.remote_ip)
+            self.respond(message=mee['message'], success=mee['success'])
+        else:
+            if extn == '.txt':
+                mee = self.manager(self.db).importar_txt(cname)
+                self.respond(message=mee['message'], success=mee['success'])
+            else:
+                self.respond(message='Formato de Archivo no aceptado¡¡', success=False)
+        self.db.close()
+
+    def reportexls(self):
+        self.set_session()
+        diccionary = json.loads(self.get_argument("object"))
+
+        cname = self.manager(self.db).usuario_excel()
+        self.respond({'nombre': cname, 'url': 'resources/downloads/' + cname}, True)
+        self.db.close()
 
     def insert(self):
         self.set_session()
@@ -70,6 +104,18 @@ class UsuarioController(CrudController):
         objeto = self.manager(self.db).entity(**diccionary)
         UsuarioManager(self.db).update(objeto)
         self.respond(success=True, message='Modificado correctamente.')
+
+
+
+    def modificar_password(self):
+        self.set_session()
+        diccionary = json.loads(self.get_argument("object"))
+        id = diccionary['id']
+        new_pass = diccionary['new_pass']
+        UsuarioManager(self.db).modificar_contraseña(id, new_pass, self.get_user_id(), self.request.remote_ip)
+
+        self.respond(success=True, message='Usuario cambio de contraseña.')
+
 
     def delete_user(self):
         self.set_session()
@@ -151,16 +197,46 @@ class UsuarioController(CrudController):
         diccionary = json.loads(self.get_argument("object"))
         username = diccionary['username']
         password = diccionary['password']
+        try:
 
-        password = hashlib.sha512(password.encode()).hexdigest()
-        user = self.db.query(Usuario).filter(Usuario.username == username).filter(Usuario.password == password).first()
-        with transaction() as db:
-                CorreoManager(db).notificar_token_email(user)
+            password = hashlib.sha512(password.encode()).hexdigest()
+            user = self.db.query(Usuario).filter(Usuario.username == username).filter(Usuario.password == password).first()
+            with transaction() as db:
+                    CorreoManager(db).notificar_token_email(user)
 
-        respuesta = dict(respuesta=True)
+            respuesta = dict(respuesta=True, mensaje="correo enviado")
 
-        self.respond(respuesta)
-        self.db.close()
+            self.respond(respuesta)
+            self.db.close()
+        except Exception as e:
+            print(e)
+            respuesta = dict(respuesta=False, mensaje=str(e))
+
+            self.respond(respuesta)
+            self.db.close()
+
+    def usuario_notificacion_token_sms(self):
+        self.set_session()
+        diccionary = json.loads(self.get_argument("object"))
+        username = diccionary['username']
+        password = diccionary['password']
+        try:
+
+            password = hashlib.sha512(password.encode()).hexdigest()
+            user = self.db.query(Usuario).filter(Usuario.username == username).filter(Usuario.password == password).first()
+            with transaction() as db:
+                    SmsManager(db).notificar_token_sms(user)
+
+            respuesta = dict(respuesta=True, mensaje="sms enviado")
+
+            self.respond(respuesta)
+            self.db.close()
+        except Exception as e:
+            print(e)
+            respuesta = dict(respuesta=False, mensaje=str(e))
+
+            self.respond(respuesta)
+            self.db.close()
 
     def user_update_password(self):
         self.set_session()

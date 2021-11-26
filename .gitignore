@@ -11,3 +11,5 @@ docs/
 *.manifest
 venv/
 .vscode/
+*.bat
+

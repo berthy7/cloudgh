@@ -7,7 +7,7 @@ from ...database.serializable import Serializable
 
 
 class Asistencia(Serializable, Base):
-    way = {'persona': {'empleado': {}},'autorizacion': {}}
+    way = {'persona': {'empleado': {}}, 'autorizacion': {}}
 
     __tablename__ = 'cb_asistencia_personal'
     __table_args__ = ({"schema": "ASISTENCIA"})
@@ -16,12 +16,8 @@ class Asistencia(Serializable, Base):
     fkpersona = Column(Integer, ForeignKey('ASISTENCIA.cb_rrhh_persona.id'), nullable=True)
     codigo = Column(Integer, default=True)
     nombrecompleto = Column(String(255), nullable=True)
-    entradamin = Column(DateTime, nullable=False)
     entrada = Column(DateTime, nullable=False)
-    entradamax = Column(DateTime, nullable=False)
-    salidamin = Column(DateTime, nullable=False)
     salida = Column(DateTime, nullable=False)
-    salidamax = Column(DateTime, nullable=False)
     fecha = Column(DateTime, nullable=True)
     mentrada = Column(DateTime, nullable=True)
     msalida = Column(DateTime, nullable=True)
@@ -79,3 +75,17 @@ class Asistencia(Serializable, Base):
         aux['autorizacion'] = lista
 
         return aux
+
+class AsistenciaMarcaciones(Serializable, Base):
+    way = {'persona': {}}
+
+    __tablename__ = 'cb_asistencia_marcaciones'
+    __table_args__ = ({"schema": "ASISTENCIA"})
+
+    id = Column(Integer, Sequence('id'), primary_key=True)
+    fkpersona = Column(Integer, ForeignKey('ASISTENCIA.cb_rrhh_persona.id'), nullable=True)
+    marcacion = Column(DateTime)
+
+    enabled = Column(Boolean, default=True)
+
+    persona = relationship('Persona')

@@ -3,8 +3,6 @@ main_route = '/portal_ausencia'
 $(document).ready(function () {
     $('#data_table').DataTable();
     $('#data_table_recibidas').DataTable();
-
-
 });
 
     document.getElementById("primero").click();
@@ -24,28 +22,15 @@ $(document).ajaxStart(function () { });
 $(document).ajaxStop(function () {
     $.Toast.hideToast();
 });
+
+var fechahoy = new Date();
+var hoy = fechahoy.getDate()+"/"+(fechahoy.getMonth()+1) +"/"+fechahoy.getFullYear()
 $(".hr").inputmask("h:s",{ "placeholder": "__/__" });
 
-$('.date').bootstrapMaterialDatePicker({
-    format: 'DD/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    eraseError(this)
-});
-$('.datepicker').bootstrapMaterialDatePicker({
-    format: 'DD/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    $('#f_date').bootstrapMaterialDatePicker('setMinDate', date);
-});
+document.getElementById("fechai").value=hoy
+document.getElementById("fechaf").value=hoy
+
+
 
 $('#fktipoausencia').selectpicker({
     size: 10,
@@ -75,10 +60,10 @@ $('#new').click(function () {
     $('#horai').val('')
     $('#fechaf').val('')
     $('#horaf').val('')
-
+    document.getElementById("fechai").value=hoy
+    document.getElementById("fechaf").value=hoy
 
     verif_inputs('')
-    validationInputSelects("form")
     $('#id_div').hide()
     $('#insert').show()
     $('#update').hide()
@@ -102,39 +87,53 @@ $('#insert').click(function () {
             'horaf': $('#horaf').val()
 
         })
-        
-        objeto_verificar = JSON.stringify({
-            'fkpersona': $('#pid').val(),
-            'fechai': $('#fechai').val(),
-            'fechaf': $('#fechaf').val()
 
-        })
+        if($('#fktipoausencia').val() != "1"){
+            ajax_call('portal_ausencia_insert', {
+                object: objeto,
+                    _xsrf: getCookie("_xsrf")
+                }, null, function () {
+                    setTimeout(function () {
+                    window.location = main_route
+                }, 2000);
+            })
+            $('#form').modal('hide')
 
-        ajax_call_post("v_personal_disponible", {
-            _xsrf: getCookie("_xsrf"),
-            object: objeto_verificar
-            }, function (response) {
-                if(response.success === true){
-                    ajax_call('portal_ausencia_insert', {
-                        object: objeto,
-                            _xsrf: getCookie("_xsrf")
-                        }, null, function () {
-                            setTimeout(function () {
-                            window.location = main_route
-                        }, 2000);
-                    })
-                    $('#form').modal('hide')
+        }else{
+
+            objeto_verificar = JSON.stringify({
+                'fkpersona': $('#pid').val(),
+                'fechai': $('#fechai').val(),
+                'fechaf': $('#fechaf').val()
+
+            })
+
+            ajax_call_post("v_personal_disponible", {
+                _xsrf: getCookie("_xsrf"),
+                object: objeto_verificar
+                }, function (response) {
+                    if(response.success === true){
+                        ajax_call('portal_ausencia_insert', {
+                            object: objeto,
+                                _xsrf: getCookie("_xsrf")
+                            }, null, function () {
+                                setTimeout(function () {
+                                window.location = main_route
+                            }, 2000);
+                        })
+                        $('#form').modal('hide')
 
 
 
-                }else{
-                    swal(
-                        'No se pudo procesar.',
-                        response.message,
-                        response.tipo )
-                }
+                    }else{
+                        swal(
+                            'No se pudo procesar.',
+                            response.message,
+                            response.tipo )
+                    }
 
             });
+         }
 
     } else {
         swal(

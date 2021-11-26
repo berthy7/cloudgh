@@ -72,20 +72,24 @@ class PersonaController(CrudController):
         diccionary = json.loads(self.get_argument("object"))
         dtfile = self.request.files
 
-        if 'id' not in diccionary:
-            if "foto" in dtfile:
-                fileinfo = self.request.files["foto"][0]
-                fname = fileinfo.filename
-                extn = os.path.splitext(fname)[1]
-                cname = str(uuid.uuid4()) + extn
-                f = open("server/common/resources/images/personal/" + cname, 'wb')
-                f.write(fileinfo.body)
-                f.close()
+        user = self.get_user_id()
+        ip = self.request.remote_ip
+        diccionary['user'] = user
+        diccionary['ip'] = ip
+
+        if "foto" in dtfile:
+            fileinfo = self.request.files["foto"][0]
+            fname = fileinfo.filename
+            extn = os.path.splitext(fname)[1]
+            cname = str(uuid.uuid4()) + extn
+            f = open("server/common/resources/images/personal/" + cname, 'wb')
+            f.write(fileinfo.body)
+            f.close()
+
+            if diccionary['empleado'][0]:
                 diccionary['empleado'][0]['foto'] = "/resources/images/personal/" + cname
 
-            diccionary['user'] = self.get_user_id()
-            diccionary['ip'] = self.request.remote_ip
-
+        if 'id' not in diccionary:
             if diccionary['empleado'][0]['fkpais'] == '':
                 diccionary['empleado'][0]['fkpais'] = None
 
@@ -116,78 +120,78 @@ class PersonaController(CrudController):
             if result:
                 if 'administrativo' in diccionary and len(diccionary['administrativo']) > 0:
                     diccionary['administrativo'][0]['fkpersona'] = result.id
-                    diccionary['administrativo'][0]['user'] = self.get_user_id()
-                    diccionary['administrativo'][0]['ip'] = self.request.remote_ip
+                    diccionary['administrativo'][0]['user'] = user
+                    diccionary['administrativo'][0]['ip'] = ip
                     objeto_adm = AdministrativoManager(self.db).entity(**diccionary['administrativo'][0])
                     AdministrativoManager(self.db).insert(objeto_adm)
 
                 if 'estudios' in diccionary and len(diccionary['estudios']) > 0:
                     for itemst in diccionary['estudios']:
                         itemst['fkpersona'] = result.id
-                        itemst['user'] = self.get_user_id()
-                        itemst['ip'] = self.request.remote_ip
+                        itemst['user'] = user
+                        itemst['ip'] = ip
                         objeto_est = EstudiosManager(self.db).entity(**itemst)
                         EstudiosManager(self.db).insert(objeto_est)
 
                 if 'capacitacion' in diccionary and len(diccionary['capacitacion']) > 0:
                     for itemc in diccionary['capacitacion']:
                         itemc['fkpersona'] = result.id
-                        itemc['user'] = self.get_user_id()
-                        itemc['ip'] = self.request.remote_ip
+                        itemc['user'] = user
+                        itemc['ip'] = ip
                         objeto_cap = CapacitacionManager(self.db).entity(**itemc)
                         CapacitacionManager(self.db).insert(objeto_cap)
 
                 if 'educacion' in diccionary and len(diccionary['educacion']) > 0:
                     diccionary['educacion'][0]['fkpersona'] = result.id
-                    diccionary['educacion'][0]['user'] = self.get_user_id()
-                    diccionary['educacion'][0]['ip'] = self.request.remote_ip
+                    diccionary['educacion'][0]['user'] = user
+                    diccionary['educacion'][0]['ip'] = ip
                     objeto_edc = EducacionManager(self.db).entity(**diccionary['educacion'][0])
                     EducacionManager(self.db).insert(objeto_edc)
 
                 if 'memo' in diccionary and len(diccionary['memo']) > 0:
                     for itemb in diccionary['memo']:
                         itemb['fkpersona'] = result.id
-                        itemb['user'] = self.get_user_id()
-                        itemb['ip'] = self.request.remote_ip
+                        itemb['user'] = user
+                        itemb['ip'] = ip
                         objeto_memo = MemoManager(self.db).entity(**itemb)
                         MemoManager(self.db).insert(objeto_memo)
 
                 if 'idioma' in diccionary and len(diccionary['idioma']) > 0:
                     for itemd in diccionary['idioma']:
                         itemd['fkpersona'] = result.id
-                        itemd['user'] = self.get_user_id()
-                        itemd['ip'] = self.request.remote_ip
+                        itemd['user'] = user
+                        itemd['ip'] = ip
                         objeto_idm = IdiomaManager(self.db).entity(**itemd)
                         IdiomaManager(self.db).insert(objeto_idm)
 
                 if 'experiencia' in diccionary and len(diccionary['experiencia']) > 0:
                     for itemexp in diccionary['experiencia']:
                         itemexp['fkpersona'] = result.id
-                        itemexp['user'] = self.get_user_id()
-                        itemexp['ip'] = self.request.remote_ip
+                        itemexp['user'] = user
+                        itemexp['ip'] = ip
                         objeto_exp = ExperienciaManager(self.db).entity(**itemexp)
                         ExperienciaManager(self.db).insert(objeto_exp)
 
                 if 'padres' in diccionary and len(diccionary['padres']) > 0:
                     for itemp in diccionary['padres']:
                         itemp['fkpersona'] = result.id
-                        itemp['user'] = self.get_user_id()
-                        itemp['ip'] = self.request.remote_ip
+                        itemp['user'] = user
+                        itemp['ip'] = ip
                         objeto_pad = PadresManager(self.db).entity(**itemp)
                         PadresManager(self.db).insert(objeto_pad)
 
                 if 'conyuge' in diccionary and len(diccionary['conyuge']) > 0:
                     diccionary['conyuge'][0]['fkpersona'] = result.id
-                    diccionary['conyuge'][0]['user'] = self.get_user_id()
-                    diccionary['conyuge'][0]['ip'] = self.request.remote_ip
+                    diccionary['conyuge'][0]['user'] = user
+                    diccionary['conyuge'][0]['ip'] = ip
                     objeto_con = ConyugeManager(self.db).entity(**diccionary['conyuge'][0])
                     ConyugeManager(self.db).insert(objeto_con)
 
                 if 'hijos' in diccionary and len(diccionary['hijos']) > 0:
                     for itemh in diccionary['hijos']:
                         itemh['fkpersona'] = result.id
-                        itemh['user'] = self.get_user_id()
-                        itemh['ip'] = self.request.remote_ip
+                        itemh['user'] = user
+                        itemh['ip'] = ip
                         objeto_hj = HijosManager(self.db).entity(**itemh)
                         HijosManager(self.db).insert(objeto_hj)
 
@@ -195,19 +199,6 @@ class PersonaController(CrudController):
             else:
                 self.respond(success=False, message='ERROR 403')
         else:
-            if "foto" in dtfile:
-                fileinfo = self.request.files["foto"][0]
-                fname = fileinfo.filename
-                extn = os.path.splitext(fname)[1]
-                cname = str(uuid.uuid4()) + extn
-                f = open("server/common/resources/images/personal/" + cname, 'wb')
-                f.write(fileinfo.body)
-                f.close()
-                diccionary['empleado'][0]['foto'] = "/resources/images/personal/" + cname
-
-            diccionary['user'] = self.get_user_id()
-            diccionary['ip'] = self.request.remote_ip
-
             new_contrato = None
             upd_contrato = None
             if diccionary['contrato']:
@@ -251,20 +242,23 @@ class PersonaController(CrudController):
                 dic_cont = dict()
                 if new_contrato:
                     dic_cont['fkpersona'] = result.id
-                    dic_cont['user'] = self.get_user_id()
-                    dic_cont['ip'] = self.request.remote_ip
+                    dic_cont['user'] = user
+                    dic_cont['ip'] = ip
                     dic_cont['nroContrato'] = new_contrato['nroContrato']
                     dic_cont['tipo'] = new_contrato['tipo']
                     dic_cont['sueldo'] = new_contrato['sueldo']
+
                     dic_cont['fechaIngreso'] = new_contrato['fechaIngreso']
+
                     dic_cont['fechaFin'] = new_contrato['fechaFin']
                     dic_cont['enabled'] = new_contrato['enabled']
+
                     objeto_cont = ContratoManager(self.db).entity(**dic_cont)
                     ContratoManager(self.db).insert(objeto_cont)
                 else:
                     dic_cont['fkpersona'] = result.id
-                    dic_cont['user'] = self.get_user_id()
-                    dic_cont['ip'] = self.request.remote_ip
+                    dic_cont['user'] = user
+                    dic_cont['ip'] = ip
                     dic_cont['id'] = upd_contrato['id']
                     dic_cont['nroContrato'] = upd_contrato['nroContrato']
                     dic_cont['tipo'] = upd_contrato['tipo']
@@ -298,7 +292,8 @@ class PersonaController(CrudController):
         self.respond({'nombre': cname, 'url': 'resources/downloads/persona/' + cname}, True)
         self.db.close()
 
-    def get_contrato(selfpersona_contratos):
+
+    def get_contrato(self, persona_contratos):
         self.set_session()
 
         arraT = ContratoManager(self.db).get_page(1, 10, None, None, True)

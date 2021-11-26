@@ -31,8 +31,7 @@ class CorreoController(CrudController):
         diccionary = json.loads(self.get_argument("object"))
         diccionary['user'] = self.get_user_id()
         diccionary['ip'] = self.request.remote_ip
-        objeto = self.manager(self.db).entity(**diccionary)
-        CorreoManager(self.db).update(objeto)
+        CorreoManager(self.db).update(diccionary)
         self.respond(success=True, message='Insertado correctamente.')
 
     def update(self):
@@ -40,8 +39,7 @@ class CorreoController(CrudController):
         diccionary = json.loads(self.get_argument("object"))
         diccionary['user'] = self.get_user_id()
         diccionary['ip'] = self.request.remote_ip
-        objeto = self.manager(self.db).entity(**diccionary)
-        CorreoManager(self.db).update(objeto)
+        CorreoManager(self.db).update(diccionary)
         self.respond(success=True, message='Modificado correctamente.')
 
     def edit(self):

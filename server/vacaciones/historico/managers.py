@@ -33,9 +33,9 @@ class V_historicoManager(SuperManager):
                      fecha=fecha, tabla="cb_vacaciones_historico", identificador=a.id)
         super().insert(b)
 
-        V_personalManager(self.db).actualizar_nro_vacacion(a.fkpersona,a.dias,a.operacion,objeto.user,objeto.ip)
+        lista_Gestion = V_personalManager(self.db).actualizar_nro_vacacion(a.fkpersona, a.dias, a.operacion, objeto.user, objeto.ip, objeto.idSolicitud)
 
-        return a
+        return lista_Gestion
 
     def update(self, objeto):
         fecha = BitacoraManager(self.db).fecha_actual()
@@ -57,14 +57,13 @@ class V_historicoManager(SuperManager):
         self.db.commit()
         return x
 
-    def actualizar_vacaciones_ausencia(self, ausencia,user,ip):
+    def actualizar_vacaciones_solicitud(self, solicitud, persona, user, ip):
 
         fecha_historico = datetime.now(pytz.timezone('America/La_Paz'))
-        nro_dias = BitacoraManager(self.db).obtener_cant_dias(ausencia.fechai,ausencia.fechaf)
-        v_historico = V_historico(fkpersona=ausencia.fkpersona,dias=nro_dias,descripcion=ausencia.descripcion,operacion="-",fecha=fecha_historico,user=user,ip=ip)
+        nro_dias = BitacoraManager(self.db).obtener_cant_dias(solicitud.fktipovacacion, solicitud.fechai, solicitud.fechaf)
+        v_historico = V_historico(fkpersona=persona, dias=nro_dias, descripcion=solicitud.descripcion, operacion="-", fecha=fecha_historico, user=user, ip=ip,idSolicitud=solicitud.id)
+        lista_Gestion = V_historicoManager(self.db).insert(v_historico)
 
-        V_historicoManager(self.db).insert(v_historico)
-
-        return nro_dias
+        return lista_Gestion
 
 

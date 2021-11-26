@@ -4,7 +4,7 @@
     <td>{{ c.ip}}</td>
     <td>{{ c.puerto}}</td>
     <td>{{ c.descripcion}}</td>
-    <td>{{ c.sucursal.nombre}}</td>
+    <td>{{ c.fksucursal}}</td>
 
     <td align="center">
         <div class="contenedor">
@@ -18,14 +18,14 @@
                 <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
             </div>
         {% end %}
-        {% if c.tipo == "A" %}
-            <div id="extraer" data-json="{{c.id}}" type="button" class="caja-icono extraer" title="Marcaciones">
-                <img src="/resources/iconos/marcacion.ico" class="icono-table" />
-            </div>
-        {% end %}
-            <div id="ver_marcaciones" data-json="{{c.id}}" type="button" class="caja-icono extraer" title="Marcaciones">
-                <img src="/resources/iconos/ver_marcacion.ico" class="icono-table" />
-            </div>
+{#        {% if c.tipo == "A" %}#}
+{#            <div id="extraer" data-json="{{c.id}}" type="button" class="caja-icono extraer" title="Marcaciones">#}
+{#                <img src="/resources/iconos/marcacion.ico" class="icono-table" />#}
+{#            </div>#}
+{#        {% end %}#}
+{#            <div id="ver_marcaciones" data-json="{{c.id}}" type="button" class="caja-icono extraer" title="Marcaciones">#}
+{#                <img src="/resources/iconos/ver_marcacion.ico" class="icono-table" />#}
+{#            </div>#}
         </div>
     </td>
 </tr>

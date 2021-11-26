@@ -1,6 +1,6 @@
 main_route = '/asistenciapersonal'
 
-$(document).ready(function () { });
+$(document).ready(function () { $('[data-toggle="tooltip"]').tooltip() });
 
 $(document).ajaxStart(function () { });
 
@@ -8,34 +8,15 @@ $(document).ajaxStop(function () {
     $.Toast.hideToast();
 });
 
-var fechahoy = new Date()
+var fechahoy = new Date();
 var hoy = fechahoy.getDate()+"/"+(fechahoy.getMonth()+1) +"/"+fechahoy.getFullYear()
 
-document.getElementById("fechainicio").value=hoy
-document.getElementById("fechafin").value=hoy
-
+document.getElementById("fechai").value=hoy
+document.getElementById("fechaf").value=hoy
+document.getElementById("fechaiboleta").value=hoy
+document.getElementById("fechafboleta").value=hoy
 
 $('.show-tick').selectpicker()
-$('.date').bootstrapMaterialDatePicker({
-    format: 'DD/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    eraseError(this)
-});
-$('.datepicker').bootstrapMaterialDatePicker({
-    format: 'DD/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    $('#f_date').bootstrapMaterialDatePicker('setMinDate', date);
-});
 
 $('.dd').nestable({
     group:'categories',
@@ -109,8 +90,6 @@ function analizar(parent) {
     }
 }
 
-
-
 var id_gv = 0
 
 $('#personal').selectpicker({
@@ -118,6 +97,28 @@ $('#personal').selectpicker({
     liveSearch: true,
     liveSearchPlaceholder: 'Buscar Personal',
     title: 'Seleccione una persona.'
+})
+
+$('#fkperiodo').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione.'
+})
+
+$('#fksucursal').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione.'
+})
+
+
+$('#fkpersona').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione.'
 })
 
 $('#personal').change(function () {
@@ -209,38 +210,25 @@ function obtener_personas_arbol() {
         var a = parseInt($(this).attr('data-id'))
 
         aux.push((function add(a) {
-
-            return {
-                'id_persona': a
-            }
-
-
+            return a
         })(a))
     })
     return aux
 }
 
 function obtener_personas() {
-        objeto = []
-        objeto_inputs = $('.personal')
+    objeto = []
+    objeto_inputs = $('.personal')
 
-        for (i = 0; i < objeto_inputs.length; i += 1) {
-            h0 = objeto_inputs[i].value
+    for (i = 0; i < objeto_inputs.length; i += 1) {
+        h0 = parseInt(objeto_inputs[i].value)
 
-
-            objeto.push((function add_objeto(h0) {
-
-                    return {
-                    'id_persona':h0
-                    }
-
-
-            })(
-                objeto_inputs[i].value))
-        }
-        return objeto
+        objeto.push((function add_objeto(h0) {
+                return h0
+        })(h0))
     }
-
+    return objeto
+}
 
 function cargar_tabla(data){
     if ( $.fn.DataTable.isDataTable( '#data_table' ) ) {
@@ -259,17 +247,18 @@ function cargar_tabla(data){
             {  extend : 'excelHtml5',
                exportOptions : { columns : [0, 1, 2, 3, 4, 5 ,6 ,7 ,8 ,9 ,10]},
                 sheetName: 'Reporte de Asistencia',
-               title: 'ELFEC - Reporte de Asistencia'  },
+               title: 'Reporte de Asistencia'  },
             {  extend : 'pdfHtml5',
                 orientation: 'landscape',
                customize: function(doc) {
                     doc.styles.tableBodyEven.alignment = 'center';
                     doc.styles.tableBodyOdd.alignment = 'center';
+
                },
                exportOptions : {
                     columns : [0, 1, 2, 3, 4, 5 ,6 ,7 ,8 ,9 ,10]
                 },
-               title: 'ELFEC - Reporte de Asistencia'
+               title: 'Reporte de Asistencia'
             }
         ],
         initComplete: function () {
@@ -284,11 +273,12 @@ function cargar_tabla(data){
     });
 }
 
-
 $('#new').click(function () {
     obj = JSON.stringify({
-        'fechainicio': $('#fechainicio').val(),
-        'fechafin': $('#fechafin').val(),
+        'personas': obtener_personas(),
+        'fkperiodo': $('#fkperiodo').val(),
+        'fechainicio': $('#fechai').val(),
+        'fechafin': $('#fechaf').val(),
         '_xsrf': getCookie("_xsrf")
     })
     ruta = 'asistenciapersonal_insert';
@@ -313,14 +303,17 @@ $('#new').click(function () {
         var data = [];
         for (var i = 0; i < Object.keys(response.response).length; i++) {
             data.push( [
-                response['response'][i]["id"],response['response'][i]["codigo"],response['response'][i]["nombrecompleto"],
+                response['response'][i]["id"],
+                response['response'][i]["codigo"],
+                response['response'][i]["sucursal"],
+                response['response'][i]["nombre"],
                     response['response'][i]["fecha"],response['response'][i]["entrada"],
                     response['response'][i]["salida"],response['response'][i]["mentrada"],
                     response['response'][i]["msalida"],response['response'][i]['observacion'],
                     response['response'][i]["retraso"],response['response'][i]['extra']
             ]);
         }
-        console.log("data1:", data )
+
         cargar_tabla(data)
 
     })
@@ -328,12 +321,15 @@ $('#new').click(function () {
 
 $('#actualizar_marcaciones').click(function () {
     obj = JSON.stringify({
-        'fechainicio': $('#fechainicio').val(),
-        'fechafin': $('#fechafin').val(),
+        'personas': obtener_personas(),
+        'fkperiodo': $('#fkperiodo').val(),
+        'fechainicio': $('#fechai').val(),
+        'fechafin': $('#fechaf').val(),
         '_xsrf': getCookie("_xsrf")
     })
     ruta = 'asistenciapersonal_actualizar_marcaciones';
 
+    console.log("asdfasdfasdfsda")
     $.ajax({
         method: "POST",
         url: ruta,
@@ -354,11 +350,14 @@ $('#actualizar_marcaciones').click(function () {
         var data = [];
         for (var i = 0; i < Object.keys(response.response).length; i++) {
             data.push( [
-                response['response'][i].id,response['response'][i].codigo,response['response'][i].nombrecompleto,
-                response['response'][i].fecha,response['response'][i].entrada,
-                response['response'][i].salida,response['response'][i].mentrada,
-                response['response'][i].msalida,response['response'][i].observacion,
-                response['response'][i].retraso,response['response'][i].extra
+                response['response'][i]["id"],
+                response['response'][i]["codigo"],
+                response['response'][i]["sucursal"],
+                response['response'][i]["nombre"],
+                response['response'][i]["fecha"],response['response'][i]["entrada"],
+                response['response'][i]["salida"],response['response'][i]["mentrada"],
+                response['response'][i]["msalida"],response['response'][i]['observacion'],
+                response['response'][i]["retraso"],response['response'][i]['extra']
             ]);
         }
 
@@ -371,8 +370,9 @@ $('#filtrar').click(function () {
     $("#rgm-loader").show();
     document.getElementById("filtrar").disabled = true
     obj = JSON.stringify({
-        'fechainicio': $('#fechainicio').val(),
-        'fechafin': $('#fechafin').val(),
+        'fechainicio': $('#fechai').val(),
+        'fechafin': $('#fechaf').val(),
+        'fksucursal': $('#fksucursal').val(),
         '_xsrf': getCookie("_xsrf")
     })
     ruta = "asistenciapersonal_filtrar";
@@ -380,15 +380,26 @@ $('#filtrar').click(function () {
         method: "POST",
         url: ruta,
         data: {_xsrf: getCookie("_xsrf"), object: obj},
-        async: true
+        async: true,
+                beforeSend: function () {
+           $("#rproc-loader-filtro").fadeIn(800);
+           $("#new").hide();
+        },
+        success: function () {
+           $("#rproc-loader-filtro").fadeOut(800);
+           $("#new").show();
+        }
     }).done(function (response) {
         response = JSON.parse(response)
+        
+        showMessage("Actualizado correctamente", "success", "ok")
 
         var data = [];
         for (var i = 0; i < Object.keys(response.response).length; i++) {
 
             data.push( [
-                response['response'][i]["id"],response['response'][i]["codigo"],response['response'][i]["nombre"],
+                response['response'][i]["id"],
+                response['response'][i]["codigo"],response['response'][i]["sucursal"],response['response'][i]["nombre"],
                 response['response'][i]["fecha"],response['response'][i]["entrada"],
                 response['response'][i]["salida"],response['response'][i]["mentrada"],
                 response['response'][i]["msalida"],response['response'][i]['observacion'],
@@ -399,7 +410,6 @@ $('#filtrar').click(function () {
         cargar_tabla(data)
     })
 });
-
 
 $('#insert').click(function () {
     values = "nombre";
@@ -427,12 +437,30 @@ $('#insert').click(function () {
 })
 
 $('#boleta').click(function () {
-    $('#fechainicioboleta').val($('#fechainicio').val())
-    $('#fechafinboleta').val($('#fechafin').val())
+    $('#fechaiboleta').val($('#fechai').val())
+    $('#fechafboleta').val($('#fechaf').val())
     $('#personal_div').empty()
+    $('#desplegable').show()
+    $('#cliente_title').html('Descargar Boleta de Asistencia')
+    $('#aclaracion').hide()
+    $('#generar_pdf').show()
+    $('#generar_rep').show()
+    $('#eliminar_reg').hide()
     $('#form-boleta').modal('show')
 })
 
+$('#eliminar_marcaciones').click(function () {
+    $('#fechaiboleta').val($('#fechai').val())
+    $('#fechafboleta').val($('#fechaf').val())
+    $('#personal_div').empty()
+    $('#desplegable').hide()
+    $('#cliente_title').html('Eliminar Marcaciones')
+    $('#aclaracion').show()
+    $('#generar_pdf').hide()
+    $('#generar_rep').hide()
+    $('#eliminar_reg').show()
+    $('#form-boleta').modal('show')
+})
 
 function attach_edit() {
     $('.edit').click(function () {
@@ -459,7 +487,6 @@ function attach_edit() {
 }
 attach_edit()
 
-
 $('#update').click(function () {
     if (!validationInputSelects("form")) {
         objeto = JSON.stringify({
@@ -482,7 +509,6 @@ $('#update').click(function () {
     }
 })
 reload_form()
-
 
 $('.delete').click(function () {
     id = parseInt(JSON.parse($(this).attr('data-json')))
@@ -509,10 +535,10 @@ $('.delete').click(function () {
     })
 })
 
- $('#generar_pdf').click(function () {
+$('#generar_pdf').click(function () {
     obj = JSON.stringify({
-        'fechainicio': $('#fechainicioboleta').val(),
-        'fechafin': $('#fechafinboleta').val(),
+        'fechainicio': $('#fechaiboleta').val(),
+        'fechafin': $('#fechafboleta').val(),
         'personas_arbol': obtener_personas_arbol(),
         'personas': obtener_personas(),
         '_xsrf': getCookie("_xsrf")
@@ -521,6 +547,29 @@ $('.delete').click(function () {
     $.ajax({
         method: "POST",
         url: '/asistenciapersonal_boleta_pdf',
+        data: {object: obj, _xsrf: getCookie("_xsrf")}
+    }).done(function(response){
+        dictionary = JSON.parse(response)
+        dictionary = dictionary.response
+        servidor = ((location.href.split('/'))[0])+'//'+(location.href.split('/'))[2];
+        url = servidor + dictionary;
+
+        window.open(url)
+    })
+})
+
+$('#generar_rep').click(function () {
+    obj = JSON.stringify({
+        'fechainicio': $('#fechaiboleta').val(),
+        'fechafin': $('#fechafboleta').val(),
+        'personas_arbol': obtener_personas_arbol(),
+        'personas': obtener_personas(),
+        '_xsrf': getCookie("_xsrf")
+    })
+
+    $.ajax({
+        method: "POST",
+        url: '/asistenciapersonal_reporte_total',
         data: {object: obj, _xsrf: getCookie("_xsrf")}
     }).done(function(response){
         dictionary = JSON.parse(response)
@@ -549,4 +598,51 @@ $('#reporte-xls').click(function () {
         }
     })
     $('#modal-rep-xls').modal('show')
+})
+
+$('#eliminar_reg').click(function () {
+
+    swal({
+        title: "¿Desea Eliminar Horarios de asistencia?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#1565c0",
+        cancelButtonColor: "#F44336",
+        confirmButtonText: "Aceptar",
+        cancelButtonText: "Cancelar"
+    }).then(function () {
+
+        obj = JSON.stringify({
+            'fechainicio': $('#fechai').val(),
+            'fechafin': $('#fechaf').val(),
+            'personas': obtener_personas(),
+            'fkperiodo': $('#fkperiodo').val(),
+            '_xsrf': getCookie("_xsrf")
+        })
+
+        ruta = "asistenciapersonal_remove";
+        $.ajax({
+            method: "POST",
+            url: ruta,
+            data: {_xsrf: getCookie("_xsrf"), object: obj},
+            async: true,
+                    beforeSend: function () {
+               $("#rproc-loader-filtro").fadeIn(800);
+               $("#new").hide();
+            },
+            success: function () {
+               $("#rproc-loader-filtro").fadeOut(800);
+               $("#new").show();
+            }
+        }).done(function (response) {
+            response = JSON.parse(response)
+
+            if (self.success) {
+                $('#form-boleta').modal('hide');
+                showMessage(self.message, 'success', 'ok');
+            }
+        })
+
+
+    })
 })

@@ -1,0 +1,115 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="portal/asistencia/assets/asistencia.css">
+{% end %}
+
+
+
+{% block content %}
+    {% if 'portal_asistencia_insert' in privileges or 'portal_asistencia_update' in privileges %}
+        {% include form.html %}
+        {% include form_coordenadas.html %}
+    {% end %}
+
+    <div class="header bg-page-own"><h2>Asistencia Home office</h2></div>
+    </br>
+        <div class="row clearfix">
+            <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+                {% if 'portal_asistencia_insert' in privileges %}
+                    <div id="new" class="caja-icono" title="Nuevo">
+                        <img src="/resources/iconos/camara.png" class="icono" />
+                    </div>
+                {% end %}
+            </div>
+            <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+
+                    <div id="new_coordenadas" class="caja-icono" title="Nuevo">
+                        <img src="/resources/iconos/localizacion.ico" class="icono" />
+                    </div>
+
+            </div>
+            <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+
+                    <div id="new_foto" class="caja-icono" title="Nueva Foto">
+                        <img src="/resources/iconos/agregar.ico" class="icono" />
+                    </div>
+
+            </div>
+        </div>
+        <div id="row_info" class="row clearfix" hidden>
+            <div class="col-sm-5">
+                <div class="form-line">
+                    <label class="form-label">Nombre</label>
+                    <input id="nombre" name="Nombre" class=" form-control" readonly>
+                </div>
+                <input type="hidden" id="pnombre" value="{{nombrepersona}}">
+                <input type="hidden" id="pfoto" value="{{fotopersona}}">
+                <input type="hidden" id="pid" value="{{idpersona}}">
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group"align="center">
+                    <img id='show_img' src='/resources/images/no_photo.png' width='90px'>
+                </div>
+            </div>
+        </div>
+        </br>
+    <div id="row_video" class="row clearfix" hidden>
+        <div class="col-sm-6">
+            <div id="body_video" class="body">
+                <video id="video" width="500" height="500" autoplay muted></video>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <img src="/resources/images/no_photo.png" id="photo" alt="photo" width='100px'>
+        </div>
+    </div>
+
+    <div class="row clearfix" hidden>
+        <div class="col-sm-6">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+        {% if 'portal_asistencia_query' in privileges %}
+        <div id="row_tabla" class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Código</th>
+                            <th class="order_by_th" data-name="names">Nombre Completo</th>
+                            <th class="order_by_th" data-name="names">Marcación </th>
+
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+        {% end %}
+{% end %}
+
+{% block script %}
+    <script src="resources/js/functions.js"></script>
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="portal/asistencia/assets/asistencia.js"></script>
+    <script src="resources/plugins/face-api/lib/face-api.js"></script>
+    <script>
+        $(document).ready(function () {
+            var data = [];
+            {% set cont = 0 %}
+            {% for c in asistencia_personal %}
+                data.push( [
+                    '{{ c.id }}',
+                    '{{ c.persona.empleado[0].codigo }}',
+                    '{{ c.persona.fullname }}',
+                    '{{ c.marcacion.strftime("%d/%m/%Y %H:%M:%S") }}'
+                ]);
+            {% set cont = cont + 1 %}
+            {% end %}
+            cargar_tabla(data)
+        });
+    </script>
+{% end %}

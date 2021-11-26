@@ -50,6 +50,8 @@ class PortalMarcacionesManager(SuperManager):
     def filtrar(self, fechainicio, fechafin,fkpersona):
         list = {}
         c = 0
+        fechainicio = datetime.strptime(fechainicio, '%d/%m/%Y')
+        fechafin = datetime.strptime(fechafin, '%d/%m/%Y')
 
         ajuste = self.db.query(Ajustes).filter(Ajustes.enabled == True).first()
 

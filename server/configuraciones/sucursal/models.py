@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Sequence
+from sqlalchemy import Column, Integer, String, Boolean, Sequence,Text
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -16,6 +16,8 @@ class Sucursal(Serializable, Base):
     nombre = Column(String(50), nullable=False, unique=True)
     fkciudad = Column(Integer, ForeignKey("ASISTENCIA.cb_rrhh_ciudad.id"))
     fkempresa = Column(Integer, ForeignKey("ASISTENCIA.cb_rrhh_empresa.id"), nullable=True)
+    latitud = Column(Text, nullable=True)
+    longitud = Column(Text, nullable=True)
     enabled = Column(Boolean, default=True)
 
     ciudad = relationship("Ciudad")

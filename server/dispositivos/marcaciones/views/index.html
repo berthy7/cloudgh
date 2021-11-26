@@ -15,7 +15,7 @@
     <div class="body">
         <div class="row clearfix">
             <div id="importar_marcaciones" class="caja-icono" title="Importar Excel">
-                <img src="/resources/iconos/importar.ico" class="icono" />
+                <img src="/resources/iconos/importar.png" class="icono" />
             </div>
         </div>
         <div class="row clearfix">
@@ -24,7 +24,7 @@
                <div class="form-group">
                     <div id="fechaDIVinicio" class="form-line success">
 
-                        <input id="fechainicio" type="text" class="form-control datepicker">
+                        <input id="fechai" type="text" class="form-control datei">
                     </div>
                 </div>
             </div>
@@ -33,13 +33,13 @@
                     <label class="form-label">Fecha Fin</label>
                     <div id="fechaDIVfin" class="form-line success">
 
-                        <input id="fechafin" type="text" class="form-control datepicker">
+                        <input id="fechaf" type="text" class="form-control datef">
                     </div>
                 </div>
             </div>
             <div class="col-sm-1">
                 <div id="filtrar" class="caja-icono" title="Filtrar">
-                    <img src="/resources/iconos/filtro.ico" class="icono" />
+                    <img src="/resources/iconos/filtrar.png" class="icono" />
                 </div>
             </div>
         </div>
@@ -133,7 +133,7 @@
                     {  extend : 'excelHtml5',
                        exportOptions : { columns : [0, 1, 2, 3, 4, 5]},
                         sheetName: 'Marcaciones Registradas',
-                       title: 'ELFEC - Marcaciones Registradas'  },
+                       title: 'Marcaciones Registradas'  },
                     {  extend : 'pdfHtml5',
                        customize: function(doc) {
                             doc.styles.tableBodyEven.alignment = 'center';
@@ -142,7 +142,7 @@
                        exportOptions : {
                             columns : [0, 1, 2, 3, 4, 5]
                         },
-                       title: 'ELFEC - Marcaciones Registradas'
+                       title: 'Marcaciones Registradas'
                     }
                 ],
                 initComplete: function () {

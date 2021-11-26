@@ -30,7 +30,7 @@ class Index(SuperController):
     def crear_horarios(self):
         fecha_zona = datetime.now(pytz.timezone('America/La_Paz'))
         with transaction() as db:
-            AsistenciaManager(db).crear_horarios(fecha_zona,fecha_zona)
+            AsistenciaManager(db).crear_horarios(fecha_zona,fecha_zona,None)
 
     def obtener_empresa(self):
         with transaction() as db:

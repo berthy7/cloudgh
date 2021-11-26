@@ -150,15 +150,20 @@ class ZKLib:
     
     def clearAdmin(self):
         return zkclearadmin(self)
-        
+
     def getAttendance(self):
         device = zkdevicename(self)
-        if device ==b'MA300-BT\x00':
-            print("Ma300 BT")
-            return zkgetattendancebt(self, device.decode())
-        else:
-            print(device.decode())
-            return zkgetattendance(self, device.decode())
+        print(device.decode())
+        return zkgetattendance(self, device.decode())
+
+    # def getAttendance(self):
+    #     device = zkdevicename(self)
+    #     if device ==b'MA300-BT\x00':
+    #         print("Ma300 BT")
+    #         return zkgetattendancebt(self, device.decode())
+    #     else:
+    #         print(device.decode())
+    #         return zkgetattendance(self, device.decode())
 
     def clearAttendance(self):
         return zkclearattendance(self)

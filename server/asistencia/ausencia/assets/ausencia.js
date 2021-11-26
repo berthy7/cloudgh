@@ -9,28 +9,15 @@ $(document).ajaxStart(function () { });
 $(document).ajaxStop(function () {
     $.Toast.hideToast();
 });
+
+var fechahoy = new Date();
+var hoy = fechahoy.getDate()+"/"+(fechahoy.getMonth()+1) +"/"+fechahoy.getFullYear()
 $(".hr").inputmask("h:s",{ "placeholder": "__/__" });
 
-$('.date').bootstrapMaterialDatePicker({
-    format: 'DD/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    eraseError(this)
-});
-$('.datepicker').bootstrapMaterialDatePicker({
-    format: 'DD/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    $('#f_date').bootstrapMaterialDatePicker('setMinDate', date);
-});
+document.getElementById("fechai").value=hoy
+document.getElementById("fechaf").value=hoy
+
+
 
 $('#fktipoausencia').selectpicker({
     size: 10,
@@ -46,6 +33,16 @@ $('#fkpersona').selectpicker({
     title: 'Seleccione una persona'
 })
 
+$('#fktipoausencia').change(function () {
+
+    if(parseInt(JSON.parse($('#fktipoausencia').val())) == 2){
+        $('#div_medio_dia').show()
+    }else{
+        $('#div_medio_dia').hide()
+    }
+
+});
+
 
 $('#new').click(function () {
     $('#fktipoausencia').val('')
@@ -57,11 +54,13 @@ $('#new').click(function () {
     $('#horai').val('')
     $('#fechaf').val('')
     $('#horaf').val('')
-    
-    verif_inputs('')
+    document.getElementById("fechai").value=hoy
+    document.getElementById("fechaf").value=hoy
+
     $('#id_div').hide()
     $('#insert').show()
     $('#update').hide()
+    verif_inputs('')
     validationInputSelects("form")
     $('#form').modal('show')
 })
@@ -82,38 +81,50 @@ $('#insert').click(function () {
 
         })
 
-        objeto_verificar = JSON.stringify({
-            'fkpersona': $('#fkpersona').val(),
-            'fechai': $('#fechai').val(),
-            'fechaf': $('#fechaf').val()
+        if($('#fktipoausencia').val() != "1"){
+            ajax_call_ausencia('ausencia_insert',{
+                object: objeto,
+                _xsrf: getCookie("_xsrf")
+            },null, function () {
+                setTimeout(function () {
+                    window.location = main_route
+                }, 2000);
+            })
+            $('#form').modal('hide')
+        }else{
 
-        })
+            objeto_verificar = JSON.stringify({
+                'fkpersona': $('#fkpersona').val(),
+                'fechai': $('#fechai').val(),
+                'fechaf': $('#fechaf').val()
 
-        ajax_call_post("v_personal_disponible", {
-            _xsrf: getCookie("_xsrf"),
-            object: objeto_verificar
-            }, function (response) {
-                if(response.success === true){
+            })
 
-                    ajax_call_ausencia('ausencia_insert',{
-                        object: objeto,
-                        _xsrf: getCookie("_xsrf")
-                    },null, function () {
-                        setTimeout(function () {
-                            window.location = main_route
-                        }, 2000);
-                    })
-                    $('#form').modal('hide')
+            ajax_call_post("v_personal_disponible", {
+                _xsrf: getCookie("_xsrf"),
+                object: objeto_verificar
+                }, function (response) {
+                    if(response.success === true){
 
-                }else{
-                    swal(
-                        'No se pudo procesar.',
-                        response.message,
-                        response.tipo )
-                }
+                        ajax_call_ausencia('ausencia_insert',{
+                            object: objeto,
+                            _xsrf: getCookie("_xsrf")
+                        },null, function () {
+                            setTimeout(function () {
+                                window.location = main_route
+                            }, 2000);
+                        })
+                        $('#form').modal('hide')
+
+                    }else{
+                        swal(
+                            'No se pudo procesar.',
+                            response.message,
+                            response.tipo )
+                    }
 
             });
-
+        }
     } else {
         swal(
             'Error de datos.',
@@ -219,8 +230,7 @@ $('.delete').click(function () {
     })
 })
 
-var inputHoraInicio = document.getElementById('horai') ,
-    inputHoraFin = document.getElementById('horaf')
+var inputHoraInicio = document.getElementById('horai'), inputHoraFin = document.getElementById('horaf')
 inputHoraInicio.onfocusout = function (){ this.parentElement.classList.add('focused')}
 inputHoraFin.onfocusout = function (){ this.parentElement.classList.add('focused')}
 

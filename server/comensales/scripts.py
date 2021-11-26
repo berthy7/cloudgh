@@ -12,15 +12,15 @@ def insertions():
 
         comensal_m = session.query(Modulo).filter(Modulo.name == 'comensal').first()
         if comensal_m is None:
-            comensal_m = Modulo(title='Comensales', name='comensal', icon='comensales.ico')
+            comensal_m = Modulo(title='Comensales', name='comensal', icon='comensal.png')
 
         menu_m = session.query(Modulo).filter(Modulo.name == 'menu').first()
         if menu_m is None:
-            menu_m = Modulo(title='Menú', route='/menu', name='menu', icon='menudia.ico')
+            menu_m = Modulo(title='Menú', route='/menu', name='menu', icon='menu.png')
 
         pedido_m = session.query(Modulo).filter(Modulo.name == 'pedido').first()
         if pedido_m is None:
-            pedido_m = Modulo(title='Pedidos', route='/pedido', name='pedido', icon='menucomensal.ico')
+            pedido_m = Modulo(title='Pedidos', route='/pedido', name='pedido', icon='pedido.png')
 
         comensal_m.children.append(menu_m)
         comensal_m.children.append(pedido_m)
@@ -123,7 +123,7 @@ def insertions():
         pedido_m.children.append(delete_pedido)
         pedido_m.children.append(imprimir_pedido)
 
-        admin_role = session.query(Rol).filter(Rol.nombre == 'ADMINISTRADOR').first()
+        admin_role = session.query(Rol).filter(Rol.nombre == 'SUPER ADMINISTRADOR').first()
 
         ###Modulos de Operaciones
 
@@ -152,4 +152,4 @@ def insertions():
 
         session.merge(horariocomensal)
 
-        session.commit()
+        # session.commit()

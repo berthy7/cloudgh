@@ -25,37 +25,40 @@
         <div class="tab-pane fade body" id="body-cont" role="tabpanel" aria-labelledby="home-tab">
             <div class="body">
                 <div class="row clearfix">
-                    <div class="col-xs-3 col-sm-2 col-md-6 col-lg-7">
+                        <div class="col-sm-1">
+                            <div  id="edit_hora" type="button" class="caja-icono" title="Actualizar Hora">
+                                <img src="/resources/iconos/actualizar_hora.png" class="icono" />
+                            </div>
+                        </div>
+
+                </div>
+                <div class="row clearfix">
                         <div class="col-sm-6">
                             <div class="body table-responsive">
-                                <table id="data_table_hora" class="table table-bordered table-striped table-hover">
+                                <table id="data_table_hora" style="width:300px" class="table table-bordered table-striped table-hover" readonly>
                                     <thead>
                                         <tr>
-                                            <th class="order_by_th" data-name="name">Hora Limite de Pedidos</th>
-                                            <th class="order_by_th" data-name="name">Hora Inicio del Almuerzo</th>
-                                            <th class="order_by_th" data-name="name">Hora Fin del Almuerzo</th>
+                                            <th style="width:200px" class="order_by_th" data-name="name">Hora Limite de Pedidos</th>
+                                            <td style="width:100px" ><input id="horaLimite" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaLimite.strftime("%H:%M")}}" ></td>
+
+                                        </tr>
+                                        <tr>
+                                            <th style="width:200px" class="order_by_th" data-name="name">Hora Inicio del Almuerzo</th>
+                                            <td style="width:100px" ><input id="horaInicio" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaInicio.strftime("%H:%M")}}" ></td>
+
+                                        </tr>
+                                        <tr>
+                                            <th style="width:200px" class="order_by_th" data-name="name">Hora Fin del Almuerzo</th>
+                                            <td style="width:100px" ><input id="horaFin" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaFin.strftime("%H:%M")}}" ></td>
+
                                         </tr>
 
                                     </thead>
-                                    <tbody id="table_content">
-                                        <tr>
-                                            <td><input id="horaLimite" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaLimite.strftime("%H:%M")}}"></td>
-                                            <td><input id="horaInicio" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaInicio.strftime("%H:%M")}}"></td>
-                                            <td><input id="horaFin" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaFin.strftime("%H:%M")}}"></td>
-                                        </tr>
-                                    </tbody>
                                 </table>
                             </div>
                         </div>
-                        <div class="col-sm-1">
-                            <div  id="edit_hora" type="button" class="caja-icono" title="Actualizar Hora">
-                                <img src="/resources/iconos/actualizar_hora.ico" class="icono" />
-                            </div>
-                        </div>
-
-
-                    </div>
                 </div>
+
                 <div id='calendar' style="max-width: 900px; margin: 0 auto">
                 </div>
             </div>

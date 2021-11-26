@@ -60,12 +60,36 @@ $('#insert').click(function () {
 
 $('#crear').click(function () {
 
-        ajax_call('lectores_crear', {
-                _xsrf: getCookie("_xsrf")
-            }, null, function () {
-                setTimeout(function () {
-                window.location = main_route
-            }, 2000);
+        // ajax_call('lectores_extraer_marcaciones', {
+        //         _xsrf: getCookie("_xsrf")
+        //     }, null, function () {
+        //         setTimeout(function () {
+        //         window.location = main_route
+        //     }, 2000);
+        // })
+        //
+        obj = JSON.stringify({
+            '_xsrf': getCookie("_xsrf")
+        })
+
+        ruta = "lectores_extraer_marcaciones";
+        $.ajax({
+            method: "POST",
+            url: ruta,
+            data: {_xsrf: getCookie("_xsrf"), object: obj},
+            async: true,
+                    beforeSend: function () {
+               $("#rproc-loader").fadeIn(800);
+               $("#new").hide();
+            },
+            success: function () {
+               $("#rproc-loader").fadeOut(800);
+               $("#new").show();
+            }
+        }).done(function (response) {
+            response = JSON.parse(response)
+            showMessage("Marcaciones Extraidas", 'success', 'ok');
+
         })
 
 })

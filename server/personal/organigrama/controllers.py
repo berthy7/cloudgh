@@ -19,7 +19,9 @@ class OrganigramaController(CrudController):
         '/organigrama_update': {'POST': 'update'},
         '/organigrama_data': {'POST': 'dataorg'},
         '/organigrama_get_brother': {'POST': 'get_brother'},
-        '/organigrama_get': {'POST': 'get_entity'}
+        '/organigrama_get': {'POST': 'get_entity'},
+        '/organigrama_reporte_xls': {'POST': 'reportexls'},
+        '/organigrama_importar': {'POST': 'importar'},
     }
 
     def get_extra_data(self):
@@ -31,6 +33,34 @@ class OrganigramaController(CrudController):
         aux['objeto'] = objeto
 
         return aux
+
+    def importar(self):
+        self.set_session()
+        fileinfo = self.request.files['archivo'][0]
+        fname = fileinfo['filename']
+        extn = os.path.splitext(fname)[1]
+        cname = str(uuid.uuid4()) + extn
+        fh = open("server/common/resources/uploads/" + cname, 'wb')
+        fh.write(fileinfo['body'])
+        fh.close()
+        if extn in ['.xlsx', '.xls']:
+            mee = self.manager(self.db).importar_excel(cname,self.get_user_id(),self.request.remote_ip)
+            self.respond(message=mee['message'], success=mee['success'])
+        else:
+            if extn == '.txt':
+                mee = self.manager(self.db).importar_txt(cname)
+                self.respond(message=mee['message'], success=mee['success'])
+            else:
+                self.respond(message='Formato de Archivo no aceptado¡¡', success=False)
+        self.db.close()
+
+    def reportexls(self):
+        self.set_session()
+        diccionary = json.loads(self.get_argument("object"))
+
+        cname = self.manager(self.db).organigrama_excel()
+        self.respond({'nombre': cname, 'url': 'resources/downloads/' + cname}, True)
+        self.db.close()
 
     def dataorg(self):
         self.set_session()

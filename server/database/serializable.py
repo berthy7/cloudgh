@@ -65,12 +65,18 @@ class Serializable:
             way = self.way
         result = dict()
         for colum in self.__table__.columns:
-            col = colum.name.split('_')
-            attr = getattr(self, col[len(col)-1])
+            # col = colum.name.split('_')
+            # attr = getattr(self, col[len(col)-1])
+            # if not isinstance(attr, (str, int, float, bool)):
+            #     result[col[len(col)-1]] = str(attr)
+            # else:
+            #     result[col[len(col)-1]] = attr
+
+            attr = getattr(self, colum.name)
             if not isinstance(attr, (str, int, float, bool)):
-                result[col[len(col)-1]] = str(attr)
+                result[colum.name] = str(attr)
             else:
-                result[col[len(col)-1]] = attr
+                result[colum.name] = attr
 
         for key in way:
             attr = getattr(self, key)

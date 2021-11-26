@@ -130,6 +130,12 @@ class SuperManager:
         self.db.commit()
         return object
 
+    def delete(self, object):
+        object = self.many_to_many(object)
+        self.db.delete(object)
+        self.db.commit()
+        return object
+
     def change_state(self, key, state):
         obj = self.db.query(self.entity).get(key)
         obj.enabled = state

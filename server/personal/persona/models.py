@@ -8,7 +8,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 
 class Persona(Serializable, Base):
-    way = {'contrato': {}, 'empleado': {'sucursal': {'ciudad': {'departamento': {'pais': {}} } }, 'gerencia': {} }, 'administrativo': {}, 'educacion': {},
+    way = {'coordenadas': {},'contrato': {}, 'empleado': {'sucursal': {'ciudad': {'departamento': {'pais': {}} } }, 'gerencia': {} }, 'administrativo': {}, 'educacion': {},
            'capacitacion': {}, 'estudios': {}, 'memo': {}, 'idioma': {}, 'experiencia': {}, 'padres': {}, 'conyuge': {}, 'hijos': {}}
 
     __tablename__ = 'cb_rrhh_persona'
@@ -22,7 +22,7 @@ class Persona(Serializable, Base):
     ci = Column(String(50), nullable=False)
     fechanacimiento = Column(Date, nullable=True)
     domicilio = Column(String(100), nullable=True)
-    telefono = Column(String(10), nullable=True)
+    telefono = Column(String(50), nullable=True)
     enabled = Column(Boolean, default=True)
 
     empleado = relationship("Empleado", cascade="save-update, merge, delete, delete-orphan")
@@ -37,6 +37,7 @@ class Persona(Serializable, Base):
     padres = relationship("Padres", cascade="save-update, merge, delete, delete-orphan")
     conyuge = relationship("Conyuge", cascade="save-update, merge, delete, delete-orphan")
     hijos = relationship("Hijos", cascade="save-update, merge, delete, delete-orphan")
+    coordenadas = relationship("Coordenadas", cascade="save-update, merge, delete, delete-orphan")
 
     @hybrid_property
     def fullname(self):
@@ -96,6 +97,8 @@ class Empleado(Serializable, Base):
     fkcentro = Column(Integer, ForeignKey("ASISTENCIA.cb_rrhh_centro_costo.id"), nullable=True)
     fkoficina = Column(Integer, ForeignKey("ASISTENCIA.cb_rrhh_oficina.id"), nullable=True)
     email = Column(String(50), nullable=True)
+    autorizacion = Column(Boolean, default=True)
+    aprobacion = Column(Boolean, default=True)
     enabled = Column(Boolean, default=True)
 
     persona = relationship("Persona")
@@ -411,3 +414,19 @@ class Padres(Serializable, Base):
             aux['fechanacimiento'] = self.fechanacimiento.strftime('%d/%m/%Y')
 
         return aux
+
+
+class Coordenadas(Serializable, Base):
+    way = {'persona': {}}
+
+    __tablename__ = 'cb_rrhh_persona_coordenadas'
+    __table_args__ = ({"schema": "ASISTENCIA"})
+
+    id = Column(Integer, Sequence('id'), primary_key=True)
+    fkpersona = Column(Integer, ForeignKey("ASISTENCIA.cb_rrhh_persona.id"))
+    latitud = Column(Text, nullable=True)
+    longitud = Column(Text, nullable=True)
+    estado = Column(Boolean, nullable=True)
+    enabled = Column(Boolean, default=True)
+
+    persona = relationship("Persona")

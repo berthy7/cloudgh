@@ -55,7 +55,7 @@ class AutorizacionextraManager(SuperManager):
         super().update(x)
 
         b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Registro Autorizacion.",
-                     fecha=fecha, tabla="cb_asistencia_autorizacionextra", identificador=a.id)
+                     fecha=fecha, tabla="cb_asistencia_autorizacion", identificador=a.id)
         super().insert(b)
         return a
 
@@ -66,7 +66,7 @@ class AutorizacionextraManager(SuperManager):
 
         a = super().update(objeto)
         b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Modifico Autorizacion.",
-                     fecha=fecha, tabla="cb_asistencia_autorizacionextra", identificador=a.id)
+                     fecha=fecha, tabla="cb_asistencia_autorizacion", identificador=a.id)
         super().insert(b)
         return a
 
@@ -77,7 +77,7 @@ class AutorizacionextraManager(SuperManager):
         y.enabled = False
         fecha = BitacoraManager(self.db).fecha_actual()
         b = Bitacora(fkusuario=user, ip=ip, accion="Eliminó Autorizacion.", fecha=fecha,
-                     tabla="cb_asistencia_autorizacionextra", identificador=id)
+                     tabla="cb_asistencia_autorizacion", identificador=id)
         super().insert(b)
         self.db.merge(x)
         self.db.merge(y)

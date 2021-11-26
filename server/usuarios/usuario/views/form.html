@@ -19,7 +19,7 @@
 
                     <div class="form-group form-float">
                         <div class="form-line">
-                            <input id="username" name="usuario" type="text" class="form-control username" required>
+                            <input id="username" name="usuario" type="text" class="form-control" required>
                             <label for="username" class="form-label">Nombre de usuario</label>
                         </div>
                     </div>
@@ -42,13 +42,27 @@
                     </br>
                     </br>
                     <label>Personal</label>
-                    <select id="fkpersona" class="form-control" required>
+                    <select id="fkpersona" class="form-control">
                     {% for per in personal %}
                         <option value="{{per.id}}">{{per.fullname}}</option>
                     {% end %}
                     </select>
                     </br>
                     </br>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <label>Doble Autenticacion</label>
+                            <label>Para activar esta opcion debe asegurarse de que el personal tenga registrado el correo corporativo y numero de celular</label>
+                            <div  class="box-body">
+                                <div id="c_" class="col-md-2">
+                                    <input id="autenticacion" type="checkbox" class="regular-checkbox big-checkbox" data-id="1" >
+                                    <label for="autenticacion"></label>
+                                 </div>
+
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
@@ -96,6 +110,58 @@
                 <button id="modify_pass" type="button" class="btn btn-primary" data-dismiss="modal" onclick="Modificar_Contraseña();"><i class="material-icons">save</i> Guardar</button>
                 <button id="close" type="button" class="btn btn-danger" data-dismiss="modal"><i class="material-icons">delete</i> Cancelar</button>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-rep-xls">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="title-form" class="modal-title">Exportar Usuarios</h3>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <label class="link-own"><i class="material-icons">cloud_download</i> Descargar:</label>
+                    <a href="" id="link_excel"></a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-orange waves-effect" data-dismiss="modal">
+                    <i class="material-icons">close</i> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="form-importar" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width:60vw; max-width: 500px" >
+        <div class="modal-content">
+              <form id="importar-form" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h3 id="importxls_title" class="modal-title">Importar</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div id="importxls_form_body" class="box-body">
+                        <label class="control-label">Excel o Texto</label>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input id="archivo" name="archivo" type="file" class="form-control file xlsfl" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button id="insert-importar" type="submit" class="btn btn-primary white-own">Importar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -18,25 +18,25 @@
                 <div class="contenedor">
                     {% if 'correo_insert' in privileges %}
                     <div id="new" type="button" class="caja-icono" title="Agregar correos">
-                        <img src="/resources/iconos/correo_personal.ico" class="icono" />
+                        <img src="/resources/iconos/correo_personal.png" class="icono" />
                     </div>
                     {% end %}
 
                     {% if 'correo_update' in privileges %}
                     <div  id="edit" type="button" class="caja-icono" title="Actualizar Servidor">
-                        <img src="/resources/iconos/servidor_correo.ico" class="icono" />
+                        <img src="/resources/iconos/servidor_correo.png" class="icono" />
                     </div>
                     {% end %}
                 </div>
             </div>
             <div class="col-xs-3 col-sm-2 col-md-6 col-lg-7">
                 <div class="contenedor">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         <div class="body table-responsive">
                             <table id="data_table_hora" class="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th class="order_by_th" data-name="name">Hora de Correo</th>
+                                        <th class="order_by_th" data-name="name" width="70">Hora de Correo</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table_content">
@@ -50,7 +50,7 @@
                     <div class="col-sm-1">
                         {% if 'correo_update' in privileges %}
                         <div  id="edit_hora" type="button" class="caja-icono" title="Actualizar Hora">
-                            <img src="/resources/iconos/actualizar_hora.ico" class="icono" />
+                            <img src="/resources/iconos/actualizar_hora.png" class="icono" />
                         </div>
                         {% end %}
                     </div>

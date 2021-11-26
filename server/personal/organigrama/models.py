@@ -18,6 +18,8 @@ class Organigrama(Serializable, Base):
     fkpersona = Column(Integer, ForeignKey('ASISTENCIA.cb_rrhh_persona.id'), nullable=True)
     fkpadre = Column(Integer, ForeignKey('ASISTENCIA.cb_rrhh_organigrama.id'), nullable=True)
     siguiente = Column(Integer, nullable=True)
+    gerencia = Column(Boolean, default=False)
+    jefatura = Column(Boolean, default=False)
     enabled = Column(Boolean, nullable=False, default=True)
 
     cargo = relationship('Cargo')

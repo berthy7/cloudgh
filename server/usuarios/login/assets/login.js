@@ -1,7 +1,7 @@
 $( document ).ready(function() { });
 
 $(function () {
-    console.log("boton22")
+   
     $('#sign_in').validate({
         
         highlight: function (input) {
@@ -31,7 +31,7 @@ $("#see-pass").mouseup(function(){
 });
 
 function validar(){
-    console.log("validar")
+  
     if($('#username').val() == '' && $('#password').val() == ''){
         $('#msg-data').fadeIn('slow')
         return false
@@ -42,7 +42,7 @@ function validar(){
 }
 
 $('#sign_in').submit(function(){
-    console.log("boton")
+   
     if(!$('#username').val() == '' && $(!'#password').val() == ''){
         $('#btn-login').html('Espere...')
         $('#msg-data').fadeOut('slow')
@@ -85,7 +85,7 @@ $('#insert').on('click',function (e) {
                     })
                     setTimeout(function () {
                         window.location = "/"
-                    }, 1500);
+                    }, 500);
 
             }
 
@@ -97,8 +97,11 @@ $('#insert').on('click',function (e) {
 
 
         }else{
-            console.log("respuesta false")
             $('#msg-data').fadeIn('slow')
+            setTimeout(function () {
+               $('#msg-data').fadeOut('slow')
+            }, 2000);
+
         }
 
 
@@ -139,14 +142,77 @@ $('#insert_token').on('click',function (e) {
             $('#msg-data-autenticacion').fadeIn('slow')
         }
 
-
     })
-
-
 
  })
 
+
+
 $('#envio_email').on('click',function (e) {
+    e.preventDefault();
+    obj = JSON.stringify({
+        'username': $('#username').val(),
+        'password': $('#password').val()
+    })
+    ajax_call_get('usuario_notificacion_token_email', {
+        _xsrf: getCookie("_xsrf"),
+        object: obj
+    }, function (response) {
+        var self = response;
+
+        if(self['respuesta']){
+
+            $('#msg-data_correo_ok').fadeIn('slow')
+            setTimeout(function () {
+               $('#msg-data_correo_ok').fadeOut('slow')
+            }, 2000);
+
+
+        }else{
+            console.log(self['mensaje'])
+            $('#msg-data_correo_fail').fadeIn('slow')
+            setTimeout(function () {
+               $('#msg-data_correo_fail').fadeOut('slow')
+            }, 2000);
+        }
+
+    })
+
+ })
+
+$('#envio_sms').on('click',function (e) {
+    e.preventDefault();
+    obj = JSON.stringify({
+        'username': $('#username').val(),
+        'password': $('#password').val()
+    })
+    ajax_call_get('usuario_notificacion_token_sms', {
+        _xsrf: getCookie("_xsrf"),
+        object: obj
+    }, function (response) {
+        var self = response;
+        
+        if(self['respuesta']){
+
+            $('#msg-data_sms_ok').fadeIn('slow')
+            setTimeout(function () {
+               $('#msg-data_sms_ok').fadeOut('slow')
+            }, 2000);
+
+
+        }else{
+            console.log(self['mensaje'])
+            $('#msg-data_sms_fail').fadeIn('slow')
+            setTimeout(function () {
+               $('#msg-data_sms_fail').fadeOut('slow')
+            }, 2000);
+        }
+
+    })
+
+ })
+
+$('#envio_ambos').on('click',function (e) {
     e.preventDefault();
     obj = JSON.stringify({
         'username': $('#username').val(),
@@ -162,81 +228,6 @@ $('#envio_email').on('click',function (e) {
 
  })
 
-$('#envio_sms').on('click',function (e) {
-    e.preventDefault();
-    obj = JSON.stringify({
-        'username': $('#username').val(),
-        'password': $('#password').val(),
-        'token': $('#token').val()
-    })
-    ajax_call_get('usuario_validacion_token_sms', {
-        _xsrf: getCookie("_xsrf"),
-        object: obj
-    }, function (response) {
-        var self = response;
-
-        if(self['respuesta']){
-            console.log("login true")
-
-            ajax_call_login('/login', {
-                _xsrf: getCookie("_xsrf"),
-                object: obj
-            }, function () {
-
-            })
-            setTimeout(function () {
-                window.location = "/"
-            }, 2000);
-
-        }else{
-            console.log("respuesta false")
-            $('#msg-data-autenticacion').fadeIn('slow')
-        }
-
-
-    })
-
-
-
- })
-
-$('#envio_ambos').on('click',function (e) {
-    e.preventDefault();
-    obj = JSON.stringify({
-        'username': $('#username').val(),
-        'password': $('#password').val(),
-        'token': $('#token').val()
-    })
-    ajax_call_get('usuario_validacion_token', {
-        _xsrf: getCookie("_xsrf"),
-        object: obj
-    }, function (response) {
-        var self = response;
-
-        if(self['respuesta']){
-            console.log("login true")
-
-            ajax_call_login('/login', {
-                _xsrf: getCookie("_xsrf"),
-                object: obj
-            }, function () {
-
-            })
-            setTimeout(function () {
-                window.location = "/"
-            }, 2000);
-
-        }else{
-            console.log("respuesta false")
-            $('#msg-data-autenticacion').fadeIn('slow')
-        }
-
-
-    })
-
-
-
- })
 
 $('#atras').on('click',function (e) {
     $('#msg-data').fadeOut('slow')

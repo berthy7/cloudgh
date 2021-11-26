@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Sequence
+from sqlalchemy import Column, Integer, String, Boolean, Sequence,Text
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -15,6 +15,8 @@ class Departamento(Serializable, Base):
     id = Column(Integer, Sequence('id'), primary_key=True)
     nombre = Column(String(50), nullable=False, unique=True)
     fkpais = Column(Integer, ForeignKey("ASISTENCIA.cb_rrhh_pais.id"))
+    latitud = Column(Text, nullable=True)
+    longitud = Column(Text, nullable=True)
     enabled = Column(Boolean, default=True)
 
     ciudades = relationship('Ciudad')

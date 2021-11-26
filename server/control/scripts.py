@@ -98,7 +98,7 @@ def insertions():
         tarea_m.children.append(imprimir_tarea)
 
 
-        admin_role = session.query(Rol).filter(Rol.nombre == 'ADMINISTRADOR').first()
+        admin_role = session.query(Rol).filter(Rol.nombre == 'SUPER ADMINISTRADOR').first()
 
         ###Modulos de Operaciones
 
@@ -118,5 +118,5 @@ def insertions():
         admin_role.modulos.append(delete_tarea)
         admin_role.modulos.append(imprimir_tarea)
 
-        session.commit()
+        # session.commit()
 

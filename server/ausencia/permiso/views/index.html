@@ -1,0 +1,73 @@
+{% extends ../../../common/views/layout.html %}
+
+{% block style %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="ausencia/permiso/assets/permiso.css">
+{% end %}
+
+{% block content %}
+    {% if 'permiso_insert' in privileges or 'permiso_update' in privileges %}
+        {% include form.html %}
+    {% end %}
+
+    <div class="header bg-page-own"><h2>Autorizaciones de Salidas</h2></div>
+    <div class="body">
+        <div class="row clearfix">
+            <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+                <div class="contenedor">
+                {% if 'permiso_insert' in privileges %}
+                    <div id="new" class="caja-icono" title="Nuevo">
+                        <img src="/resources/iconos/agregar.ico" class="icono" />
+                    </div>
+                {% end %}
+                    <div id="imprimir_general" class="caja-icono " title="Imprimir">
+                        <img src="/resources/iconos/seguimiento.ico" class="icono-table"/>
+                    </div>
+                 </div>
+            </div>
+        </div>
+
+        {% if 'permiso_query' in privileges %}
+        <div class="row">
+            <div class="body table-responsive">
+                <table id="data_table" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Ausencia</th>
+                            <th class="order_by_th" data-name="names">Personal</th>
+                            <th class="order_by_th" data-name="names">Fecha Inicio</th>
+                            <th class="order_by_th" data-name="names">Fecha Fin</th>
+                            <th class="order_by_th" data-name="names">Autorizacion estado</th>
+                            <th class="no-sort"></th>
+                            <th class="order_by_th" data-name="names">Aprobacion estado</th>
+                            <th class="no-sort"></th>
+                            <th class="actions_header">Editar</th>
+                            <th class="actions_header">Reporte</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_content">
+                        {% include 'table.html' %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10"></div>
+        {% end %}
+    </div>
+{% end %}
+
+{% block script %}
+    <script src="resources/js/functions.js"></script>
+    <script src="resources/plugins/momentjs/locale/es.js"></script>
+    <script src="ausencia/permiso/assets/permiso.js"></script>
+
+    <script src="resources/js/dataTables.buttons.js"></script>
+    <script src="resources/js/pdfmake.js"></script>
+    <script src="resources/js/vfs_fonts.js"></script>
+    <script src="resources/js/buttons.bootstrap.js"></script>
+    <script src="resources/js/buttons.html5.js"></script>
+    <script src="resources/js/buttons.print.js"></script>
+    <script src="resources/js/buttons.colVis.js"></script>
+{% end %}

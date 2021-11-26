@@ -3,12 +3,40 @@ from ...operaciones.bitacora.managers import *
 from ...dispositivos.marcaciones.models import *
 from ...asistencia.asistenciapersonal.managers import AsistenciaManager
 from .models import *
+from threading import Thread
 
 
 class LectoresManager(SuperManager):
 
     def __init__(self, db):
         super().__init__(Lectores, db)
+
+    def ws_listar_dispositivos(self):
+        return self.db.query(self.entity).filter(self.entity.enabled == True).filter(self.entity.tipo == "A").all()
+
+    def ws_insertRegistros_biometricos(self, marcaciones):
+        for marcacion in marcaciones['marcaciones']:
+
+            marcacion[1] = datetime.strptime(marcacion[1], '%Y-%m-%d %H:%M:%S')
+
+            # print("llegaron marcaciones: " + str(marcacion[1]))
+
+            respuesta = self.db.query(Marcaciones).filter(Marcaciones.time == marcacion[1]).filter(Marcaciones.codigo == marcacion[0]).filter(
+                Marcaciones.fkdispositivo == marcaciones['iddispositivo']).first()
+
+            if not respuesta:
+                print("registro marcacion")
+                dispositivo = LectoresManager(self.db).obtener_dispositivo(marcaciones['iddispositivo'])
+
+                object = Marcaciones(codigo=marcacion[0], time=marcacion[1],
+                                     fkdispositivo=marcaciones['iddispositivo'])
+
+                AsistenciaManager(self.db).insertar_marcaciones(marcacion[1], marcacion[0],dispositivo)
+
+                self.db.add(object)
+
+        self.db.commit()
+        self.db.close()
 
     def obtener_x_nombre(self, nombre):
         return self.db.query(self.entity).filter(self.entity.nombre == nombre).first()
@@ -57,50 +85,41 @@ class LectoresManager(SuperManager):
 
     def crear_dispositivos(self):
         sucursal = self.db.query(Sucursal).filter(Sucursal.enabled == True).first()
-        self.db.add(Lectores(id=1, ip='192.168.11.218', puerto=4370, tipo="A", descripcion='Modelo Desconocido', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=2, ip='192.168.25.101', puerto=4370, tipo="A", descripcion='Central RRHH', modelo='G3', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=3, ip='192.168.25.103', puerto=4370, tipo="K", descripcion='Central Lecturas', modelo='T6C', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=4, ip='192.168.25.104', puerto=4370, tipo="K", descripcion='Central Heroinas', modelo='T6C', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=5, ip='192.168.25.105', puerto=4370, tipo="K", descripcion='Central Costaneras', modelo='T6C', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=6, ip='192.168.112.8', puerto=4370, tipo="K", descripcion='Quillacollo', modelo='T4-C', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=7, ip='192.168.113.8', puerto=4370, tipo="K", descripcion='Vinto', modelo='T6-C', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=8, ip='192.168.114.8', puerto=4370, tipo="K", descripcion='Eterazama', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=9, ip='192.168.115.8', puerto=4370, tipo="M", descripcion='Totora', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=10, ip='192.168.116.8', puerto=4370, tipo="K", descripcion='K40', modelo='K40',fksucursal=sucursal.id))
-        self.db.add(Lectores(id=11, ip='192.168.118.8', puerto=4370, tipo="K", descripcion='Tiquipaya', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=12, ip='192.168.119.8', puerto=4370, tipo="K", descripcion='Villa Tunari', modelo='K40',fksucursal=sucursal.id))
-        self.db.add(Lectores(id=13, ip='192.168.120.8', puerto=4370, tipo="K", descripcion='Mizque', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=14, ip='192.168.121.8', puerto=4370, tipo="K", descripcion='Punata', modelo='T4-C', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=15, ip='192.168.122.8', puerto=4370, tipo="K", descripcion='Tarata', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=16, ip='192.168.123.8', puerto=4370, tipo="M", descripcion='Tiraque', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=17, ip='192.168.124.8', puerto=4370, tipo="K", descripcion='Cliza', modelo='X628-C', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=18, ip='192.168.125.8', puerto=4370, tipo="K", descripcion='Sacaba', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=19, ip='192.168.126.8', puerto=4370, tipo="M", descripcion='Colomi', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=20, ip='192.168.127.8', puerto=4370, tipo="K", descripcion='Arani', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=21, ip='192.168.128.8', puerto=4370, tipo="K", descripcion='Capinota', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=22, ip='192.168.129.8', puerto=4370, tipo="A", descripcion='Morochata', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=23, ip='192.168.130.8', puerto=4370, tipo="A", descripcion='Independecia', modelo='MA300',fksucursal=sucursal.id))
-        self.db.add(Lectores(id=24, ip='192.168.131.8', puerto=4370, tipo="K", descripcion='Sipe Sipe', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=25, ip='192.168.132.8', puerto=4370, tipo="K", descripcion='Entrerios', modelo='K40', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=26, ip='192.168.133.8', puerto=4370, tipo="K", descripcion='Ivirgarzama', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=27, ip='192.168.134.8', puerto=4370, tipo="K", descripcion='Seminario', modelo='T4C', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=28, ip='192.168.135.8', puerto=4370, tipo="K", descripcion='Seguro Delegado', modelo='Silkbio T100', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=29, ip='192.168.136.8', puerto=4370, tipo="M", descripcion='Bolivar', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=30, ip='192.168.137.8', puerto=4370, tipo="M", descripcion='Cocapata', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=31, ip='192.168.138.8', puerto=4370, tipo="M", descripcion='Tapacari', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=32, ip='192.168.139.8', puerto=4370, tipo="M", descripcion='Pocona', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=33, ip='192.168.140.8', puerto=4370, tipo="M", descripcion='Pojo', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=34, ip='192.168.141.8', puerto=4370, tipo="M", descripcion='Omereque', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=35, ip='192.168.142.8', puerto=4370, tipo="M", descripcion='Pasorapa', modelo='MA300', fksucursal=sucursal.id))
-        self.db.add(Lectores(id=36, ip='192.168.143.8', puerto=4370, tipo="K", descripcion='Anzaldo', modelo='MA300', fksucursal=sucursal.id))
+        self.db.add(Lectores(id=1, ip='172.16.12.10', puerto=4370, tipo="A", descripcion='CENTRAL', modelo=''))
+        self.db.add(Lectores(id=2, ip='172.16.12.13', puerto=4370, tipo="A", descripcion='SUCURSAL-01', modelo=''))
+        self.db.add(Lectores(id=3, ip='172.16.12.16', puerto=4370, tipo="A", descripcion='SUCURSAL-02', modelo=''))
+        self.db.add(Lectores(id=4, ip='172.16.12.5', puerto=4370, tipo="A", descripcion='SUCURSAL-04', modelo=''))
+        self.db.add(Lectores(id=5, ip='172.16.12.6', puerto=4370, tipo="A", descripcion='SUCURSAL-05', modelo=''))
+        self.db.add(Lectores(id=6, ip='172.16.12.4', puerto=4370, tipo="A", descripcion='SUCURSAL-06', modelo=''))
+        self.db.add(Lectores(id=7, ip='192.168.0.107', puerto=4370, tipo="A", descripcion='SUCURSAL-07', modelo=''))
+        self.db.add(Lectores(id=8, ip='172.16.12.9', puerto=4370, tipo="A", descripcion='SUCURSAL-08', modelo=''))
+        self.db.add(Lectores(id=9, ip='192.168.0.109', puerto=4370, tipo="A", descripcion='SUCURSAL-09 (MONTERO)', modelo=''))
+        self.db.add(Lectores(id=10, ip='172.16.12.14', puerto=4370, tipo="A", descripcion='SUCURSAL-10', modelo=''))
+        self.db.add(Lectores(id=11, ip='172.16.12.18', puerto=4370, tipo="A", descripcion='SUCURSAL-12 (SATELITE)', modelo=''))
+        self.db.add(Lectores(id=12, ip='172.16.2.4', puerto=4370, tipo="A", descripcion='SUCURSAL-14', modelo=''))
+        self.db.add(Lectores(id=13, ip='172.16.12.11', puerto=4370, tipo="A", descripcion='SUCURSAL-16', modelo=''))
+        self.db.add(Lectores(id=14, ip='27.0.0.17', puerto=4370, tipo="A", descripcion='SUCURSAL-17 (SUCRE)', modelo=''))
+        self.db.add(Lectores(id=15, ip='13.0.0.70', puerto=4370, tipo="A", descripcion='SUCURSAL-03 (LP)', modelo=''))
+        self.db.add(Lectores(id=16, ip='13.0.0.154', puerto=4370, tipo="A", descripcion='SUCURSAL-18 (LP)', modelo=''))
+        self.db.add(Lectores(id=17, ip='29.0.0.70', puerto=4370, tipo="A", descripcion='Sucursal-19(Potosi)', modelo=''))
+        self.db.add(Lectores(id=18, ip='30.0.0.30', puerto=4370, tipo="A", descripcion='Sucursal 20 Tarija', modelo=''))
+        self.db.add(Lectores(id=19, ip='21.0.0.30', puerto=4370, tipo="A", descripcion='Sucursal-11(Tdd)', modelo=''))
+        self.db.add(Lectores(id=20, ip='172.16.12.23', puerto=4370, tipo="A", descripcion='Sucursal 31', modelo=''))
+
 
         self.db.commit()
 
     def preparar_dispositivos(self):
         dispositivos = self.db.query(Lectores).filter(Lectores.tipo == "A").filter(Lectores.enabled == True).all()
-
+        print("extraccion de dispositivo")
         for dispositivo in dispositivos:
+            # print("inicio del hilo de extraccion")
+
+            # t = Thread(target=self.extraer_marcaciones, args=(dispositivo,))
+            # t.start()
+
             LectoresManager(self.db).extraer_marcaciones(dispositivo)
+
         self.db.close()
 
     def extraer_marcaciones(self, dispositivo):
@@ -108,19 +127,30 @@ class LectoresManager(SuperManager):
         try:
 
             zk = zklib.ZKLib(dispositivo.ip, dispositivo.puerto)
-            print('Extrayendo marcaciones: ', dispositivo.ip)
+            print('Extrayendo marcaciones Ip: ', dispositivo.ip)
             ret = zk.connect()
             if ret:
+                print('Conectado  Ip: ', dispositivo.ip)
                 marcaciones = zk.getAttendance()
+                print("cantidad de marcaciones: " + str(len(marcaciones)))
                 if marcaciones:
                     for marcacion in marcaciones:
                         aux = marcacion[2]
+
                         query = self.db.query(Marcaciones).filter(Marcaciones.codigo == marcacion[0]).filter(Marcaciones.time == aux).all()
                         if not query:
+                            print("marcacion: " + str(aux) + " " + str(dispositivo.ip) + " " + str(marcacion[0]))
+
                             self.db.add(Marcaciones(time=aux, fkdispositivo=dispositivo.id, codigo=marcacion[0]))
-                            AsistenciaManager(self.db).insertar_marcaciones(aux,marcacion[0])
+                            AsistenciaManager(self.db).insertar_marcaciones(aux,marcacion[0],dispositivo)
+                    # print("cantidad de marcaciones: " + str(len(marcaciones)))
+                    print('Inicio del Commit')
                     self.db.commit()
 
+                print('Marcaciones Guardadas Correctamente: ', dispositivo.ip)
+
+                zk.clearAttendance()
+                print('Marcaciones Eliminadas del Dispositivo: ', dispositivo.ip)
                 zk.getTime()
                 zk.enableDevice()
                 zk.disconnect()
@@ -128,8 +158,8 @@ class LectoresManager(SuperManager):
                 m = 'Marcaciones Extraidas Correctamente '+ str(dispositivo.ip)
                 return dict(estado=True, mensaje=m)
             else:
-                print('No se puedo conectar con el dispositivo: ', dispositivo.ip)
-                m = 'No se puedo conectar con el dispositivo ' + str(dispositivo.ip)
+                print('No se puede conectar con el dispositivo: ', dispositivo.ip)
+                m = 'No se puede conectar con el dispositivo ' + str(dispositivo.ip)
                 return dict(estado=False, mensaje=m)
         except Exception as e:
             print(e)

@@ -1,0 +1,41 @@
+{% for c in licencias_personales %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.tipoausencia.nombre }}</td>
+    <td>{{ c.persona.fullname }}</td>
+    <td>{{ c.fechai.strftime("%d/%m/%Y") }}</td>
+    <td>{{ c.fechaf.strftime("%d/%m/%Y") }}</td>
+
+    {% if c.fkautorizacion %}
+        <td>{{ c.autorizacion.fullname }}</td>
+    {% else %}
+        <td> ------ </td>
+    {% end %}
+    <td> {{ c.estadoautorizacion }}</td>
+
+    {% if c.fkaprobacion %}
+        <td>{{ c.aprobacion.fullname }}</td>
+    {% else %}
+        <td> ------ </td>
+    {% end %}
+    <td> {{ c.estadoaprobacion }}</td>
+    {% if 'portal_licencia_update' in privileges %}
+        <td align="center">
+            <div class="contenedor">
+                    <div data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                        <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                    </div>
+            </div>
+        </td>
+    {% end %}
+    {% if 'portal_licencia_imprimir' in privileges %}
+    <td align="center">
+            <div class="contenedor">
+                    <div data-json="{{c.id}}" class="caja-icono imprimir" title="Imprimir">
+                        <img src="/resources/iconos/seguimiento.ico" class="icono-table"/>
+                    </div>
+            </div>
+        </td>
+    {% end %}
+</tr>
+{% end %}

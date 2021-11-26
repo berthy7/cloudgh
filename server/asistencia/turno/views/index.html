@@ -21,9 +21,12 @@
                         <img src="/resources/iconos/agregar.ico" class="icono" />
                     </div>
                 {% end %}
-{#                    <div id="sms" class="caja-icono" title="SMS">#}
-{#                        <img src="/resources/iconos/agregar.ico" class="icono" />#}
-{#                    </div>#}
+                    <div id="reporte-xls" class="caja-icono" title="Reporte Excel">
+                        <img src="/resources/iconos/excel.png" class="icono" />
+                    </div>
+                    <div id="importar_Excel" class="caja-icono" title="Importar Excel">
+                        <img src="/resources/iconos/importar.png" class="icono" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,6 +38,7 @@
                     <thead>
                         <tr>
                             <th class="order_by_th" data-name="names">N°</th>
+                            <th class="order_by_th" data-name="names">Codigo</th>
                             <th class="order_by_th" data-name="names">Nombre</th>
                             <th class="order_by_th" data-name="names">Horario</th>
                             <th class="actions_header">Acciones</th>
@@ -56,4 +60,5 @@
     <script src="resources/plugins/momentjs/locale/es.js"></script>
     <script src="resources/js/functions.js"></script>
     <script src="asistencia/turno/assets/turno.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
 {% end %}

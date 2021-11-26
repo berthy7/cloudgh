@@ -2,17 +2,38 @@ main_route = '/pais'
 
 $(document).ready(function () {
     $('#data_table').DataTable();
+//     if ("geolocation" in navigator){ //check geolocation available
+//     //try to get user current location using getCurrentPosition() method
+//     navigator.geolocation.getCurrentPosition(function(position){
+//             console.log("Found your location nLat : "+position.coords.latitude+" nLang :"+ position.coords.longitude);
+//         });
+// }else{
+//     console.log("Browser doesn't support geolocation!");
+// }
+
 });
 
-$(document).ajaxStart(function () { });
+$(document).ajaxStart(function () {});
 
 $(document).ajaxStop(function () {
     $.Toast.hideToast();
 });
 
 
+
+
+
 $('#new').click(function () {
     $('#nombre').val('')
+
+
+    // var latitud = -16.2901535;
+    // var longitud = -63.5886536;
+    // localStorage.setItem('latitud',latitud);
+    // localStorage.setItem('longitud',longitud);
+    // cargar_mapa()
+    
+
 
     verif_inputs('')
     $('#id_div').hide()
@@ -24,10 +45,14 @@ $('#new').click(function () {
 
 
 $('#insert').click(function () {
+
     notvalid = validationInputSelectsWithReturn("form");
     if (notvalid===false) {
         objeto = JSON.stringify({
-            'nombre': $('#nombre').val()
+            'nombre': $('#nombre').val(),
+            // 'latitud':localStorage.getItem("latitud"),
+            // 'longitud':localStorage.getItem("longitud")
+
         })
         ajax_call('pais_insert', {
             object: objeto,
@@ -37,7 +62,9 @@ $('#insert').click(function () {
                 window.location = main_route
             }, 2000);
         })
+        $("#iframe").attr("src", "configuraciones/pais/views/mapa.html")
         $('#form').modal('hide')
+
     } else {
         swal(
             'Error de datos.',
@@ -60,6 +87,10 @@ function attach_edit() {
             var self = response;
             $('#id').val(self.id)
             $('#nombre').val(self.nombre)
+            // localStorage.setItem('latitud',self.latitud)
+            // localStorage.setItem('longitud',self.longitud)
+            //
+            // funcion_actualizar()
 
             clean_form()
             verif_inputs('')
@@ -78,7 +109,9 @@ $('#update').click(function () {
     if (notvalid===false) {
         objeto = JSON.stringify({
             'id': parseInt($('#id').val()),
-            'nombre': $('#nombre').val()
+            'nombre': $('#nombre').val(),
+            // 'latitud':localStorage.getItem("latitud"),
+            // 'longitud':localStorage.getItem("longitud")
         })
         ajax_call('pais_update', {
             object: objeto,

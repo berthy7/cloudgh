@@ -21,12 +21,30 @@
                         </div>
                     {% end %}
                     <div id="actualizar_marcaciones" class="caja-icono" title="Actualizar Marcaciones">
-                        <img src="/resources/iconos/marcacion.ico" class="icono" />
+                        <img src="/resources/iconos/biometrico.png" class="icono" />
                     </div>
 
                     <div id="boleta" class="caja-icono" title="Boleta de Asistencia">
                         <img src="/resources/iconos/boleta.ico" class="icono" />
                     </div>
+                    <div class="col-sm-1">
+                        <button id="eliminar_marcaciones" type="button" class="btn btn-info waves-effect" title="Eliminar marcaciones">
+                            <i class="material-icons">timer_off</i>
+                        </button>
+                    </div>
+                    <div class="col-sm-1">
+                            <button id="eliminar_reg" type="button" class="btn bg-primary waves-effect" data-toggle="tooltip" data-placement="top" title="Remover">
+                                <i class="material-icons">delete_sweep</i>
+                            </button>
+                        </div>
+                    <div class="col-sm-1">
+                        <div id="filtrar" class="caja-icono" title="Filtrar">
+                            <img src="/resources/iconos/filtrar.png" class="icono" />
+                        </div>
+                    </div>
+
+
+
                 </div>
             </div>
         </div>
@@ -36,7 +54,7 @@
                <div class="form-group">
                     <div id="fechaDIVinicio" class="form-line success">
 
-                        <input id="fechainicio" type="text" class="form-control datepicker">
+                        <input id="fechai" type="text" class="form-control datei">
                     </div>
                 </div>
             </div>
@@ -45,15 +63,57 @@
                     <label class="form-label">Fecha Fin</label>
                     <div id="fechaDIVfin" class="form-line success">
 
-                        <input id="fechafin" type="text" class="form-control datepicker">
+                        <input id="fechaf" type="text" class="form-control datef">
                     </div>
                 </div>
             </div>
-            <div class="col-sm-1">
-                <div id="filtrar" class="caja-icono" title="Filtrar">
-                    <img src="/resources/iconos/filtro.ico" class="icono" />
-                </div>
+{#            <div class="col-sm-3">#}
+{#                <label>Personal</label>#}
+{#                 <select id="fkpersona" class="form-control" >#}
+{#                    {% for s in personales %}#}
+{#                        <option value="{{s.id}}">{{s.fullname}}</option>#}
+{#                    {% end %}#}
+{#                 </select>#}
+{#            </div>#}
+
+
+
+        </div>
+        <div class="row clearfix">
+            <div class="col-sm-2">
+                <label>Horarios</label>
+                 <select id="fkperiodo" class="form-control" >
+                    {% for s in periodos %}
+                        <option value="{{s.id}}">{{s.semanal.nombre}}</option>
+                    {% end %}
+                 </select>
             </div>
+            <div class="col-sm-2">
+                <label>Sucursal</label>
+                 <select id="fksucursal" class="form-control" >
+                    {% for s in sucursales %}
+                        <option value="{{s.id}}">{{s.nombre}}</option>
+                    {% end %}
+                 </select>
+            </div>
+            <div class="col-sm-3">
+                 <label>Buscar personas</label>
+                <select id="personal" class="form-control">
+                    {% for s in personal %}
+                    <option value="{{ s.id }}">{{ s.fullname }}</option>
+                    {% end %}
+                </select>
+                </br>
+                </br>
+            </div>
+            <div class="col-sm-6">
+                <div id="personal" class="box-body">
+                    <div id="personal_div" class="clearfix">
+
+                    </div>
+                 </div>
+            </div>
+
         </div>
 
         <div id="rproc-loader" class="loader-wrapper" style="display: none">
@@ -77,7 +137,19 @@
                     </div>
                 </div>
             </div>
-            <p class="text-center inf-own">Actualizando Marcaciones de Asistencia...</p>
+            <p class="text-center inf-own">Sincronizando Marcaciones de Asistencia...</p>
+        </div>
+
+        <div id="rproc-loader-filtro" class="loader-wrapper" style="display: none">
+            <div class="loader loader-own">
+                <div class="preloader preloader-own">
+                    <div class="spinner-layer pl-teal">
+                        <div class="circle-clipper left"><div class="circle"></div></div>
+                        <div class="circle-clipper right"><div class="circle"></div></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center inf-own">Cargando Horarios de Asistencia...</p>
         </div>
 
         {% if 'asistenciapersonal_query' in privileges %}
@@ -87,7 +159,8 @@
                     <thead>
                         <tr>
                             <th class="order_by_th" data-name="names">N°</th>
-                            <th class="order_by_th" data-name="names">Código</th>
+                            <th class="order_by_th" data-name="names">Codigo</th>
+                            <th class="order_by_th" data-name="names">Sucursal</th>
                             <th class="order_by_th" data-name="names">Nombre Completo</th>
                             <th class="order_by_th" data-name="names">Fecha</th>
                             <th class="order_by_th" data-name="names">Entrada</th>
@@ -97,8 +170,6 @@
                             <th class="order_by_th" data-name="names">Observación</th>
                             <th class="order_by_th" data-name="names">Retraso</th>
                             <th class="order_by_th" data-name="names">Extra</th>
-
-
                         </tr>
                     </thead>
 
@@ -132,10 +203,17 @@
             {% set cont = 0 %}
             {% for c in horarios %}
                 data.push( [
-                    '{{ c.id }}', '{{ c.codigo }}', '{{ c.nombrecompleto }}',
-                    '{{ c.fecha.strftime("%d/%m/%Y") }}', '{{ c.entrada.strftime("%H:%M") }}',
-                    '{{ c.salida.strftime("%H:%M") }}', '{%if c.mentrada %}{{ c.mentrada.strftime("%H:%M") }}{%else%}------{%end%}',
-                    '{%if c.msalida %}{{ c.msalida.strftime("%H:%M") }}{%else%}------{%end%}', '{{ c.observacion }}', '{%if c.retraso %}{{ c.retraso.strftime("%H:%M") }}{%else%}------{%end%}',
+                    '{{ c.id }}',
+                    '{{ c.codigo }}',
+                    '{{ c.persona.empleado[0].sucursal.nombre }}',
+                    '{{ c.nombrecompleto }}',
+                    '{{ c.fecha.strftime("%d/%m/%Y") }}',
+                    '{{ c.entrada.strftime("%H:%M") }}',
+                    '{{ c.salida.strftime("%H:%M") }}',
+                    '{%if c.mentrada %}{{ c.mentrada.strftime("%H:%M") }}{%else%}------{%end%}',
+                    '{%if c.msalida %}{{ c.msalida.strftime("%H:%M") }}{%else%}------{%end%}',
+                    '{{ c.observacion }}',
+                    '{%if c.retraso %}{{ c.retraso.strftime("%H:%M") }}{%else%}------{%end%}',
                     '{%if c.extra %}{{ c.extra.strftime("%H:%M") }}{%else%}------{%end%}'
                 ]);
             {% set cont = cont + 1 %}

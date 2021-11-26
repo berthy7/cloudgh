@@ -17,6 +17,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from xhtml2pdf import pisa
+import requests
 
 import os.path
 
@@ -59,13 +60,35 @@ class CorreoManager(SuperManager):
         super().insert(b)
         return a
 
-    def update(self, objeto):
+    def update(self, diccionary):
+        lista = []
+        lista_dict = []
+        for x in diccionary['correos']:
+            try:
+                if x['id']:
+                    lista_dict.append(x)
+            except Exception as e:
+                print("")
+            lista.append(x['fkpersona'])
+
+        lista_filtrada = set(lista)
+
+        for rep in lista_dict:
+            lista_filtrada.remove(rep['fkpersona'])
+
+        for lf in lista_filtrada:
+            lista_dict.append(dict(fkpersona=lf))
+
+        diccionary['correos'] = lista_dict
+
+        objeto = CorreoManager(self.db).entity(**diccionary)
         fecha = BitacoraManager(self.db).fecha_actual()
 
         a = super().update(objeto)
-        b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Modifico Empresa.",
-                     fecha=fecha, tabla="rrhh_empresa", identificador=a.id)
+        b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Modifico servidor.",
+                     fecha=fecha, tabla="cb_notificaciones_servidor", identificador=a.id)
         super().insert(b)
+
         return a
 
     def update_hora(self, objeto,usuario,ip):
@@ -172,15 +195,18 @@ class CorreoManager(SuperManager):
                 # Y finalmente lo agregamos al mensaje
                 mensaje.attach(adjunto_MIME)
                 # Creamos la conexión con el servidor
-                sesion_smtp = smtplib.SMTP(server.servidor)
+                sesion_smtp = smtplib.SMTP(server.servidor,server.puerto)
                 # Ciframos la conexión
+                sesion_smtp.starttls()
                 # Iniciamos sesión en el servidor
+                sesion_smtp.login(server.correo, server.password)
                 # Convertimos el objeto mensaje a texto
                 texto = mensaje.as_string()
                 # Enviamos el mensaje
                 sesion_smtp.sendmail(remitente, destinatarios, texto)
                 # Cerramos la conexión
                 sesion_smtp.quit()
+                print("correo enviado")
 
     def reporte_correo(self,empresa,horarios):
         fecha_actual = datetime.now(pytz.timezone('America/La_Paz'))
@@ -268,100 +294,373 @@ class CorreoManager(SuperManager):
 
     def notificar_ausencia(self,ausencia):
         correos = []
+        autorizacion = ""
+        aprobacion = ""
+
         ajuste = self.db.query(Ajustes).filter(Ajustes.enabled == True).first()
         server = self.db.query(ServidorCorreo).filter(ServidorCorreo.enabled == True).filter(ServidorCorreo.id == 1).first()
 
         correo_rrhh = self.db.query(Correorrhh).filter(Correorrhh.enabled == True).all()
 
 
-        if ausencia.fksuperior:
-             correo = PersonaManager(self.db).obtener_correo(ausencia.fksuperior)
-             correos.append(correo)
+
+        if ausencia.persona.empleado[0].autorizacion:
+            if ausencia.fkautorizacion:
+                 correo = PersonaManager(self.db).obtener_correo(ausencia.fkautorizacion)
+                 if correo:
+                    correos.append(correo)
+
+        elif ausencia.persona.empleado[0].aprobacion:
+            if ausencia.fkaprobacion:
+                correo = PersonaManager(self.db).obtener_correo(ausencia.fkaprobacion)
+                if correo:
+                    correos.append(correo)
+
+
 
         for _rrhh in correo_rrhh:
             correo = PersonaManager(self.db).obtener_correo(_rrhh.fkpersona)
-            correos.append(correo)
+            if correo:
+                correos.append(correo)
+
+
+        if ausencia.fkautorizacion:
+            autorizacion = ausencia.autorizacion.fullname
+        else:
+            autorizacion = "------"
+
+        if ausencia.fkaprobacion:
+            aprobacion = ausencia.aprobacion.fullname
+        else:
+            aprobacion = "------"
 
 
         if len(correos)> 0:
 
-            try:
+            asunto = 'Solicitud de Ausencia :  ' + str(ausencia.persona.fullname)
+            cuerpo = "Ha recibido la siguiente solicitud de Ausencia:" + \
+                     "\n" + "Por favor Ingrese al Sistema para validar: " + str(ajuste.dominio) + "portal_ausencia" + \
+                     "\n" + "\n" + "Nro: "+ str(ausencia.id) + \
+                     "\n" + "Persona: "+ str(ausencia.persona.fullname) +\
+                     "\n" + "Tipo de Ausencia: "+ str(ausencia.tipoausencia.nombre) + \
+                     "\n" + "Descripcion: "+ str(ausencia.descripcion) +\
+                     "\n" + "Fecha Inicio: "+ str(ausencia.fechai.strftime("%d/%m/%Y")) + \
+                     "\n" + "Fecha Fin: "+ str(ausencia.fechaf.strftime("%d/%m/%Y")) + \
+                     "\n" + "\n" + "Autorizado por: " + str(autorizacion)  + \
+                     "\n" + "Estado: " + str(ausencia.estadoautorizacion) + \
+                     "\n" + "Respuesta autorizacion: " + str(ausencia.respuestaautorizacion) + \
+                     "\n" + "\n" + "Aprobado por: " + str(aprobacion) + \
+                     "\n" + "Estado: " + str(ausencia.estadoaprobacion) + \
+                     "\n" + "Respuesta aprobacion: "+ str(ausencia.respuestaaprobacion) + \
+                     "\n" + "\n" +  "Saludos"
 
-                # Iniciamos los parámetros del script
-                remitente = "<"+server.correo+">"
-                destinatarios = correos
-                asunto = 'Solicitud de Ausencia :  ' + str(ausencia.persona.fullname)
-                cuerpo = "Ha recibido la siguiente solicitud de Ausencia:"+ "\n" + "Por favor Ingrese al Sistema para validar: "+ str(ajuste.dominio) + "portal_ausencia"+ "\n" + "\n" + "Nro: "+ str(ausencia.id) + "\n" + "Persona: "+ str(ausencia.persona.fullname) + "\n" + "Tipo de Ausencia: "+ str(ausencia.tipoausencia.nombre) + "\n" + "Descripcion: "+ str(ausencia.descripcion) + "\n" + "Fecha Inicio: "+ str(ausencia.fechai.strftime("%d/%m/%Y")) + "\n" + "Fecha Fin: "+ str(ausencia.fechaf.strftime("%d/%m/%Y")) + "\n" + "Estado: "+ str(ausencia.estado) + "\n" + "\n" +  "Saludos"
-                # Creamos el objeto mensaje
-                mensaje = MIMEMultipart('alternative')
-                # Establecemos los atributos del mensaje
-                mensaje['From'] = remitente
-                mensaje['To'] = ", ".join(destinatarios)
-                mensaje['Subject'] = asunto
-                # Agregamos el cuerpo del mensaje como objeto MIME de tipo texto
-                mensaje.attach(MIMEText(cuerpo, 'plain'))
-                # Abrimos el archivo que vamos a adjuntar
-                # Creamos un objeto MIME base
-                # Creamos la conexión con el servidor
-                sesion_smtp = smtplib.SMTP(server.servidor)
-                # Ciframos la conexión
-                sesion_smtp.starttls()
-                # Iniciamos sesión en el servidor
-                sesion_smtp.login(server.correo, server.password)
-                # Convertimos el objeto mensaje a texto
-                texto = mensaje.as_string()
-                # Enviamos el mensaje
-                sesion_smtp.sendmail(remitente, destinatarios, texto)
-                # Cerramos la conexión
-                sesion_smtp.quit()
-                print("correo enviado")
-            except Exception as e:
-                print(e)
-                # return e
+            CorreoManager(self.db).funcion_email(server, correos, asunto, cuerpo)
 
-    def notificar_ausencia_respuesta(self,ausencia):
+    def notificar_ausencia_respuesta_autorizacion(self,ausencia):
         correos = []
+        autorizacion = ""
+        aprobacion = ""
         server = self.db.query(ServidorCorreo).filter(ServidorCorreo.enabled == True).filter(ServidorCorreo.id == 1).first()
+        correo_rrhh = self.db.query(Correorrhh).filter(Correorrhh.enabled == True).all()
 
         ajuste = self.db.query(Ajustes).filter(Ajustes.enabled == True).first()
 
-        if ausencia.fksuperior:
-             correo = PersonaManager(self.db).obtener_correo(ausencia.fksuperior)
-             correos.append(correo)
 
         if ausencia.fkpersona:
              correo = PersonaManager(self.db).obtener_correo(ausencia.fkpersona)
-             correos.append(correo)
+             if correo:
+                 correos.append(correo)
+
+        for _rrhh in correo_rrhh:
+            correo = PersonaManager(self.db).obtener_correo(_rrhh.fkpersona)
+            if correo:
+                correos.append(correo)
+
+        if ausencia.estadoautorizacion == "Aceptado":
+
+            if ausencia.persona.empleado[0].aprobacion:
+                if ausencia.fkaprobacion:
+                    correo = PersonaManager(self.db).obtener_correo(ausencia.fkaprobacion)
+                    if correo:
+                        correos.append(correo)
+
+        if ausencia.fkautorizacion:
+            autorizacion = ausencia.autorizacion.fullname
+        else:
+            autorizacion = "------"
+
+        if ausencia.fkaprobacion:
+            aprobacion = ausencia.aprobacion.fullname
+        else:
+            aprobacion = "------"
+
+        if len(correos)> 0:
+            asunto = 'Respuesta de Solicitud:  ' + str(ausencia.persona.fullname)
+            cuerpo = "Visite el Portal del Empleado: "+ str(ajuste.dominio) + \
+                     "portal_ausencia"+ \
+                     "\n" + "\n" + "Nro: "+ str(ausencia.id) + \
+                     "\n" + "Persona: "+ str(ausencia.persona.fullname) +\
+                     "\n" + "Tipo de Ausencia: "+ str(ausencia.tipoausencia.nombre) + \
+                     "\n" + "Descripcion: "+ str(ausencia.descripcion) +\
+                     "\n" + "Fecha Inicio: "+ str(ausencia.fechai.strftime("%d/%m/%Y")) + \
+                     "\n" + "Fecha Fin: "+ str(ausencia.fechaf.strftime("%d/%m/%Y")) + \
+                     "\n" + "\n" + "Autorizado por: " + str(autorizacion)  + \
+                     "\n" + "Estado: " + str(ausencia.estadoautorizacion) + \
+                     "\n" + "Respuesta autorizacion: " + str(ausencia.respuestaautorizacion) + \
+                     "\n" + "\n" + "Aprobado por: " + str(aprobacion) + \
+                     "\n" + "Estado: " + str(ausencia.estadoaprobacion) + \
+                     "\n" + "Respuesta aprobacion: "+ str(ausencia.respuestaaprobacion) + \
+                     "\n" + "\n" +  "Saludos"
+            # Creamos el objeto mensaje
+
+            CorreoManager(self.db).funcion_email(server, correos,asunto,cuerpo)
+
+
+    def notificar_ausencia_respuesta_aprobacion(self, ausencia):
+        correos = []
+        autorizacion = ""
+        aprobacion = ""
+        server = self.db.query(ServidorCorreo).filter(ServidorCorreo.enabled == True).filter(
+            ServidorCorreo.id == 1).first()
+        correo_rrhh = self.db.query(Correorrhh).filter(Correorrhh.enabled == True).all()
+
+        ajuste = self.db.query(Ajustes).filter(Ajustes.enabled == True).first()
+
+
+        if ausencia.fkpersona:
+            correo = PersonaManager(self.db).obtener_correo(ausencia.fkpersona)
+            if correo:
+                correos.append(correo)
+
+        for _rrhh in correo_rrhh:
+            correo = PersonaManager(self.db).obtener_correo(_rrhh.fkpersona)
+            if correo:
+                correos.append(correo)
+
+
+        if ausencia.persona.empleado[0].autorizacion:
+            if ausencia.fkautorizacion:
+                correo = PersonaManager(self.db).obtener_correo(ausencia.fkautorizacion)
+                if correo:
+                    correos.append(correo)
+
+        if ausencia.fkautorizacion:
+            autorizacion = ausencia.autorizacion.fullname
+        else:
+            autorizacion = "------"
+
+        if ausencia.fkaprobacion:
+            aprobacion = ausencia.aprobacion.fullname
+        else:
+            aprobacion = "------"
+
+        if len(correos) > 0:
+            asunto = 'Respuesta de Solicitud:  ' + str(ausencia.persona.fullname)
+            cuerpo = "Visite el Portal del Empleado: "+ str(ajuste.dominio) + \
+                     "portal_ausencia"+ "\n" + "\n" + "Nro: "+ str(ausencia.id) + "\n" + "Persona: "+ str(ausencia.persona.fullname) +\
+                     "\n" + "Tipo de Ausencia: "+ str(ausencia.tipoausencia.nombre) + "\n" + "Descripcion: "+ str(ausencia.descripcion) +\
+                     "\n" + "Fecha Inicio: "+ str(ausencia.fechai.strftime("%d/%m/%Y")) + "\n" + "Fecha Fin: "+ str(ausencia.fechaf.strftime("%d/%m/%Y")) + \
+                     "\n" + "\n" + "Autorizado por: " + str(autorizacion)  + \
+                     "\n" + "Estado: " + str(ausencia.estadoautorizacion) + \
+                     "\n" + "Respuesta autorizacion: " + str(ausencia.respuestaautorizacion) + \
+                     "\n" + "\n" + "Aprobado por: " + str(aprobacion) + \
+                     "\n" + "Estado: " + str(ausencia.estadoaprobacion) + \
+                     "\n" + "Respuesta aprobacion: "+ str(ausencia.respuestaaprobacion) + "\n" + "\n" +  "Saludos"
+            # Creamos el objeto mensaje
+
+            CorreoManager(self.db).funcion_email(server, correos, asunto, cuerpo)
+
+
+    def notificar_vacacion(self,ausencia):
+        correos = []
+        autorizacion = ""
+        aprobacion = ""
+        persona = ""
+
+        ajuste = self.db.query(Ajustes).filter(Ajustes.enabled == True).first()
+        server = self.db.query(ServidorCorreo).filter(ServidorCorreo.enabled == True).filter(ServidorCorreo.id == 1).first()
+
+        correo_rrhh = self.db.query(Correorrhh).filter(Correorrhh.enabled == True).all()
+
+
+        if ausencia.fkautorizacion:
+             correo = PersonaManager(self.db).obtener_correo(ausencia.fkautorizacion)
+             if correo:
+                 correos.append(correo)
+
+        for _rrhh in correo_rrhh:
+            correo = PersonaManager(self.db).obtener_correo(_rrhh.fkpersona)
+            if correo:
+                correos.append(correo)
+
+        if ausencia.fkautorizacion:
+            autorizacion = ausencia.autorizacion.fullname
+        else:
+            autorizacion = "------"
+
+        if ausencia.fkaprobacion:
+            aprobacion = ausencia.aprobacion.fullname
+        else:
+            aprobacion = "------"
+
+        if ausencia.fkpersona:
+            persona = ausencia.persona.fullname
+        else:
+            persona = "Varias Personas"
 
         if len(correos)> 0:
 
-            # Iniciamos los parámetros del script
-            remitente = "<"+server.correo+">"
-            destinatarios = correos
-            asunto = 'Respuesta de Solicitud:  ' + str(ausencia.persona.fullname)
-            cuerpo = "Ha recibido la siguiente Respuesta:"+ "\n" + "Estado: "+ str(ausencia.estado) + "\n" + "Mensaje: "+ str(ausencia.respuesta) + "\n" + "Visite el Portal del Empleado: "+ str(ajuste.dominio) + "portal_ausencia"+ "\n" + "\n" + "Nro: "+ str(ausencia.id) + "\n" + "Persona: "+ str(ausencia.persona.fullname) + "\n" + "Tipo de Ausencia: "+ str(ausencia.tipoausencia.nombre) + "\n" + "Descripcion: "+ str(ausencia.descripcion) + "\n" + "Fecha Inicio: "+ str(ausencia.fechai.strftime("%d/%m/%Y")) + "\n" + "Fecha Fin: "+ str(ausencia.fechaf.strftime("%d/%m/%Y")) + "\n" + "Estado: "+ str(ausencia.estado) + "\n" + "\n" +  "Saludos"
+            asunto = 'Solicitud de Vacacion :  ' + str(persona)
+            cuerpo = "Ha recibido la siguiente solicitud de vacacion:" + "\n" + "Por favor Ingrese al Sistema para validar: " + str(
+                ajuste.dominio) + "portal_ausencia" + \
+                     "\n" + "\n" + "Nro: "+ str(ausencia.id) + \
+                     "\n" + "Persona: "+ str(persona) +\
+                     "\n" + "Tipo de Ausencia: "+ str(ausencia.tipovacacion.nombre) + \
+                     "\n" + "Descripcion: "+ str(ausencia.descripcion) +\
+                     "\n" + "Fecha Inicio: "+ str(ausencia.fechai.strftime("%d/%m/%Y")) + \
+                     "\n" + "Fecha Fin: "+ str(ausencia.fechaf.strftime("%d/%m/%Y")) + \
+                     "\n" + "\n" + "Autorizado por: " + str(autorizacion)  + \
+                     "\n" + "Estado: " + str(ausencia.estadoautorizacion) + \
+                     "\n" + "Respuesta autorizacion: " + str(ausencia.respuestaautorizacion) + \
+                     "\n" + "\n" + "Aprobado por: " + str(aprobacion) + \
+                     "\n" + "Estado: " + str(ausencia.estadoaprobacion) + \
+                     "\n" + "Respuesta aprobacion: "+ str(ausencia.respuestaaprobacion) + \
+                     "\n" + "\n" +  "Saludos"
+
+            CorreoManager(self.db).funcion_email(server, correos, asunto, cuerpo)
+
+    def notificar_vacacion_respuesta_autorizacion(self,ausencia):
+        correos = []
+        autorizacion = ""
+        aprobacion = ""
+        persona = ""
+        server = self.db.query(ServidorCorreo).filter(ServidorCorreo.enabled == True).filter(ServidorCorreo.id == 1).first()
+        correo_rrhh = self.db.query(Correorrhh).filter(Correorrhh.enabled == True).all()
+
+        ajuste = self.db.query(Ajustes).filter(Ajustes.enabled == True).first()
+
+
+        if ausencia.fkpersona:
+             correo = PersonaManager(self.db).obtener_correo(ausencia.fkpersona)
+             if correo:
+                 correos.append(correo)
+
+        for _rrhh in correo_rrhh:
+            correo = PersonaManager(self.db).obtener_correo(_rrhh.fkpersona)
+            if correo:
+                correos.append(correo)
+
+        if ausencia.estadoautorizacion == "Aceptado":
+            if ausencia.fkpersona:
+                if ausencia.persona.empleado[0].aprobacion:
+                    if ausencia.fkaprobacion:
+                        correo = PersonaManager(self.db).obtener_correo(ausencia.fkaprobacion)
+                        if correo:
+                            correos.append(correo)
+
+        if ausencia.fkautorizacion:
+            autorizacion = ausencia.autorizacion.fullname
+        else:
+            autorizacion = "------"
+
+        if ausencia.fkaprobacion:
+            aprobacion = ausencia.aprobacion.fullname
+        else:
+            aprobacion = "------"
+
+        if ausencia.fkpersona:
+            persona = ausencia.persona.fullname
+        else:
+            persona = "Varias Personas"
+
+        if len(correos)> 0:
+            asunto = 'Respuesta de Solicitud:  ' + str(persona)
+            cuerpo = "Visite el Portal del Empleado: "+ str(ajuste.dominio) + \
+                     "portal_ausencia"+ \
+                     "\n" + "\n" + "Nro: "+ str(ausencia.id) + \
+                     "\n" + "Persona: "+ str(persona) +\
+                     "\n" + "Tipo de Ausencia: "+ str(ausencia.tipovacacion.nombre) + \
+                     "\n" + "Descripcion: "+ str(ausencia.descripcion) +\
+                     "\n" + "Fecha Inicio: "+ str(ausencia.fechai.strftime("%d/%m/%Y")) + \
+                     "\n" + "Fecha Fin: "+ str(ausencia.fechaf.strftime("%d/%m/%Y")) + \
+                     "\n" + "\n" + "Autorizado por: " + str(autorizacion)  + \
+                     "\n" + "Estado: " + str(ausencia.estadoautorizacion) + \
+                     "\n" + "Respuesta autorizacion: " + str(ausencia.respuestaautorizacion) + \
+                     "\n" + "\n" + "Aprobado por: " + str(aprobacion) + \
+                     "\n" + "Estado: " + str(ausencia.estadoaprobacion) + \
+                     "\n" + "Respuesta aprobacion: "+ str(ausencia.respuestaaprobacion) + \
+                     "\n" + "\n" +  "Saludos"
             # Creamos el objeto mensaje
-            mensaje = MIMEMultipart('alternative')
-            # Establecemos los atributos del mensaje
-            mensaje['From'] = remitente
-            mensaje['To'] = ", ".join(destinatarios)
-            mensaje['Subject'] = asunto
-            # Agregamos el cuerpo del mensaje como objeto MIME de tipo texto
-            mensaje.attach(MIMEText(cuerpo, 'plain'))
-            # Abrimos el archivo que vamos a adjuntar
-            # Creamos un objeto MIME base
-            # Creamos la conexión con el servidor
-            sesion_smtp = smtplib.SMTP(server.servidor)
-            # Ciframos la conexión
-            sesion_smtp.starttls()
-            # Iniciamos sesión en el servidor
-            sesion_smtp.login(server.correo, server.password)
-            # Convertimos el objeto mensaje a texto
-            texto = mensaje.as_string()
-            # Enviamos el mensaje
-            sesion_smtp.sendmail(remitente, destinatarios, texto)
-            # Cerramos la conexión
-            sesion_smtp.quit()
+
+            CorreoManager(self.db).funcion_email(server, correos,asunto,cuerpo)
+
+
+    def notificar_vacacion_respuesta_aprobacion(self, ausencia):
+        correos = []
+        autorizacion = ""
+        aprobacion = ""
+        persona = ""
+        server = self.db.query(ServidorCorreo).filter(ServidorCorreo.enabled == True).filter(
+            ServidorCorreo.id == 1).first()
+        correo_rrhh = self.db.query(Correorrhh).filter(Correorrhh.enabled == True).all()
+
+        ajuste = self.db.query(Ajustes).filter(Ajustes.enabled == True).first()
+
+
+        if ausencia.fkpersona:
+            correo = PersonaManager(self.db).obtener_correo(ausencia.fkpersona)
+            if correo:
+                correos.append(correo)
+
+        for _rrhh in correo_rrhh:
+            correo = PersonaManager(self.db).obtener_correo(_rrhh.fkpersona)
+            if correo:
+                correos.append(correo)
+
+        if ausencia.fkpersona:
+            if ausencia.persona.empleado[0].autorizacion:
+                if ausencia.fkautorizacion:
+                    correo = PersonaManager(self.db).obtener_correo(ausencia.fkautorizacion)
+                    if correo:
+                        correos.append(correo)
+
+        if ausencia.fkautorizacion:
+            autorizacion = ausencia.autorizacion.fullname
+        else:
+            autorizacion = "------"
+
+        if ausencia.fkaprobacion:
+            aprobacion = ausencia.aprobacion.fullname
+        else:
+            aprobacion = "------"
+
+        if ausencia.fkpersona:
+            persona = ausencia.persona.fullname
+        else:
+            persona = "Varias Personas"
+
+
+        if len(correos) > 0:
+            asunto = 'Respuesta de Solicitud:  ' + str(persona)
+            cuerpo = "Visite el Portal del Empleado: "+ str(ajuste.dominio) + \
+                     "portal_ausencia"+ \
+                     "\n" + "\n" + "Nro: "+ str(ausencia.id) + \
+                     "\n" + "Persona: "+ str(persona) +\
+                     "\n" + "Tipo de Ausencia: "+ str(ausencia.tipovacacion.nombre) + \
+                     "\n" + "Descripcion: "+ str(ausencia.descripcion) +\
+                     "\n" + "Fecha Inicio: "+ str(ausencia.fechai.strftime("%d/%m/%Y")) + \
+                     "\n" + "Fecha Fin: "+ str(ausencia.fechaf.strftime("%d/%m/%Y")) + \
+                     "\n" + "\n" + "Autorizado por: " + str(autorizacion)  + \
+                     "\n" + "Estado: " + str(ausencia.estadoautorizacion) + \
+                     "\n" + "Respuesta autorizacion: " + str(ausencia.respuestaautorizacion) + \
+                     "\n" + "\n" + "Aprobado por: " + str(aprobacion) + \
+                     "\n" + "Estado: " + str(ausencia.estadoaprobacion) + \
+                     "\n" + "Respuesta aprobacion: "+ str(ausencia.respuestaaprobacion) + \
+                     "\n" + "\n" +  "Saludos"
+            # Creamos el objeto mensaje
+
+            CorreoManager(self.db).funcion_email(server, correos, asunto, cuerpo)
+
 
     def notificar_token_email(self, usuario):
         correos = []
@@ -370,36 +669,149 @@ class CorreoManager(SuperManager):
 
         if usuario.fkpersona:
             correo = PersonaManager(self.db).obtener_correo(usuario.fkpersona)
-            correos.append(correo)
+            if correo != "" or correo is not None:
+                correos.append(correo)
 
         if len(correos) > 0:
-            # Iniciamos los parámetros del script
-            remitente = "<" + server.correo + ">"
-            destinatarios = correos
             asunto = 'Solicitud de codigo'
             cuerpo = "Se ha detectado inicio de sesion en 2 pasos para el usuario:" + str(usuario.persona.fullname) + "\n" + "Codigo: " + str(
                 usuario.token) + "\n" + "\n" + "Saludos"
-            # Creamos el objeto mensaje
-            mensaje = MIMEMultipart('alternative')
-            # Establecemos los atributos del mensaje
-            mensaje['From'] = remitente
-            mensaje['To'] = ", ".join(destinatarios)
-            mensaje['Subject'] = asunto
-            # Agregamos el cuerpo del mensaje como objeto MIME de tipo texto
-            mensaje.attach(MIMEText(cuerpo, 'plain'))
-            # Abrimos el archivo que vamos a adjuntar
-            # Creamos un objeto MIME base
-            # Creamos la conexión con el servidor
-            sesion_smtp = smtplib.SMTP(server.servidor)
-            # Ciframos la conexión
-            sesion_smtp.starttls()
-            # Iniciamos sesión en el servidor
-            sesion_smtp.login(server.correo, server.password)
-            # Convertimos el objeto mensaje a texto
-            texto = mensaje.as_string()
-            # Enviamos el mensaje
-            sesion_smtp.sendmail(remitente, destinatarios, texto)
-            # Cerramos la conexión
-            sesion_smtp.quit()
+
+            CorreoManager(self.db).funcion_email(server, correos, asunto, cuerpo)
+
+
+    def funcion_email(self, server,correos,asunto,cuerpo):
+        # Iniciamos los parámetros del script
+
+        remitente = "<" + server.correo + ">"
+        destinatarios = correos
+        asunto = asunto
+        cuerpo = cuerpo
+        # Creamos el objeto mensaje
+        mensaje = MIMEMultipart('alternative')
+        # Establecemos los atributos del mensaje
+        mensaje['From'] = remitente
+        mensaje['To'] = ", ".join(destinatarios)
+        mensaje['Subject'] = asunto
+        # Agregamos el cuerpo del mensaje como objeto MIME de tipo texto
+        mensaje.attach(MIMEText(cuerpo, 'plain'))
+        # Abrimos el archivo que vamos a adjuntar
+        # Creamos un objeto MIME base
+        print("Se crea conexión con el servidor")
+        # Creamos la conexión con el servidor
+        sesion_smtp = smtplib.SMTP(server.servidor,server.puerto)
+        # Ciframos la conexión
+        sesion_smtp.starttls()
+        # Iniciamos sesión en el servidor
+        sesion_smtp.login(server.correo, server.password)
+        # Convertimos el objeto mensaje a texto
+        texto = mensaje.as_string()
+        # Enviamos el mensaje
+        sesion_smtp.sendmail(remitente, destinatarios, texto)
+        # Cerramos la conexión
+        sesion_smtp.quit()
+        print("correo enviado")
+
+
+class SmsManager(SuperManager):
+
+    def __init__(self, db):
+        super().__init__(ServidorCorreo, db)
+
+
+    def notificar_token_sms(self, usuario):
+        telefono = ""
+        texto = str(usuario.token) + " es tu codigo para el inicio de sesion en el sistema Cloudgh"
+
+        str(usuario.token)
+
+        if usuario.fkpersona:
+            telefono = PersonaManager(self.db).obtener_telefono(usuario.fkpersona)
+
+
+
+
+
+
+        SmsManager(self.db).sms(telefono, texto)
+
+    def sms(self,telefono,texto):
+        destinations = telefono
+        message = texto
+        senderId = ""
+        debug = True
+
+        SmsManager(self.db).funcion_sms(destinations, message, senderId, debug)
+
+        return texto
+
+    def funcion_sms(self,destinations, message, senderId, debug):
+        if debug:
+            print('Enter altiriaSms: ' + destinations + ', message: ' + message + ', senderId: ' + senderId)
+
+            try:
+                # Se crea la lista de parámetros a enviar en la petición POST
+                # XX, YY y ZZ se corresponden con los valores de identificación del usuario en el sistema.
+                payload = [
+                    ('cmd', 'sendsms'),
+                    ('domainId', 'CLI_2776'),
+                    ('login', 'hlambert@cloudbit.com.bo'),
+                    ('passwd', 'EnviAEses%'),
+                    # No es posible utilizar el remitente en América pero sí en España y Europa
+                    ('senderId', senderId),
+                    ('msg', message)
+                ]
+
+                # add destinations
+                for destination in destinations.split(","):
+                    payload.append(('dest', destination))
+
+                # Se fija la codificacion de caracteres de la peticion POST
+                contentType = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
+
+                # Se fija la URL sobre la que enviar la petición POST
+                url = 'http://www.altiria.net/api/http'
+
+                # Se envía la petición y se recupera la respuesta
+                r = requests.post(url,
+                                  data=payload,
+                                  headers=contentType,
+                                  # Se fija el tiempo máximo de espera para conectar con el servidor (5 segundos)
+                                  # Se fija el tiempo máximo de espera de la respuesta del servidor (60 segundos)
+                                  timeout=(5, 60))  # timeout(timeout_connect, timeout_read)
+
+                if debug:
+                    if str(r.status_code) != '200':  # Error en la respuesta del servidor
+                        print('ERROR GENERAL: ' + str(r.status_code))
+
+                    else:  # Se procesa la respuesta
+                        print('Código de estado HTTP: ' + str(r.status_code))
+
+                        if (r.text).find("ERROR errNum:"):
+                            print('Error de Altiria: ' + r.text)
+
+                        else:
+                            print('Cuerpo de la respuesta: \n' + r.text)
+
+                return r.text
+
+            except requests.ConnectTimeout:
+                print("Tiempo de conexión agotado")
+
+
+            except requests.ReadTimeout:
+                print("Tiempo de respuesta agotado")
+
+
+            except Exception as ex:
+                print("Error interno: " + str(ex))
+
+
+    #print('The function altiriaSms returns: \n' + altiriaSms('346xxxxxxxx,346yyyyyyyy', 'Mesaje de prueba', '', True))
+
+
+    # No es posible utilizar el remitente en América pero sí en España y Europa
+    # Utilizar esta llamada solo si se cuenta con un remitente autorizado por Altiria
+    # print 'The function altiriaSms returns: \n'+altiriaSms('346xxxxxxxx,346yyyyyyyy','Mesaje de prueba', 'remitente', True)
 
 

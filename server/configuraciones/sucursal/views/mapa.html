@@ -1,0 +1,83 @@
+<head>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+
+</head>
+<body>
+    <div class="col-sm-4">
+        <button id="insert_mapa" type="button" class="btn bg-page-own waves-effect">Guardar </button>
+      </div>
+    <div id="map" style="height: 100%"></div>
+
+
+    <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
+{#    <script>#}
+{#        var latitud = localStorage.getItem("latitud");#}
+{#        var longitud = localStorage.getItem("longitud");#}
+{##}
+{#        var map = L.map('map').setView([latitud, longitud],6);#}
+{##}
+{#        var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {#}
+{#            minZoom: 5,#}
+{#            maxZoom: 16,#}
+{#            attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'#}
+{#        });#}
+{##}
+{#        layer.addTo(map);#}
+{##}
+{##}
+{##}
+{#        var marker = L.marker([latitud, longitud], {draggable: true});#}
+{#        marker.on('dragend', function(event){#}
+{#                var marker = event.target;#}
+{#                var position = marker.getLatLng();#}
+{##}
+{#                marker.setLatLng(position,{draggable:true}).bindPopup(position).update();#}
+{#                var position = marker.getLatLng();#}
+{##}
+{#                funcion(position)#}
+{##}
+{#        }).addTo(map);#}
+{##}
+{#        layer.addTo(map);#}
+{##}
+{#        localStorage.setItem('latitud',latitud);#}
+{#        localStorage.setItem('longitud',longitud);#}
+{##}
+{##}
+{#        function funcion(position) {#}
+{#            localStorage.setItem('latitud',position.lat);#}
+{#            localStorage.setItem('longitud',position.lng);#}
+{##}
+{#        }#}
+{##}
+{##}
+{#        function funcion_nuevo() {#}
+{#            console.log("funcion nuevo")#}
+{##}
+{#            marker.setLatLng([localStorage.getItem("latitud"), localStorage.getItem("longitud")],{draggable:true}).bindPopup([localStorage.getItem("latitud"),localStorage.getItem("longitud")]).update(map);#}
+{#            layer.addTo(map);#}
+{##}
+{#        }#}
+{##}
+{##}
+{#        function funcion_actualizar() {#}
+{#            console.log("funcion actualizar")#}
+{##}
+{#            marker.setLatLng([localStorage.getItem("latitud"), localStorage.getItem("longitud")],{draggable:true}).bindPopup([localStorage.getItem("latitud"),localStorage.getItem("longitud")]).update(map);#}
+{#            layer.addTo(map);#}
+{##}
+{#        }#}
+{##}
+{##}
+{#        document.getElementById('insert_mapa').onclick = function(){#}
+{#            console.log("button ")#}
+{##}
+{#            marker.setLatLng([localStorage.getItem("latitud"), localStorage.getItem("longitud")],{draggable:true}).bindPopup([localStorage.getItem("latitud"),localStorage.getItem("longitud")]).update(map);#}
+{#            layer.addTo(map);#}
+{##}
+{#        }#}
+{##}
+{##}
+{#    </script>#}
+</body>

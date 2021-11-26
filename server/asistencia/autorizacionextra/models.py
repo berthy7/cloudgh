@@ -9,7 +9,7 @@ from ...database.serializable import Serializable
 class Autorizacionextra(Serializable, Base):
     way = {'asistencia': {'persona': {'empleado': {}}}}
 
-    __tablename__ = 'cb_asistencia_autorizacionextra'
+    __tablename__ = 'cb_asistencia_autorizacion'
     __table_args__ = ({"schema": "ASISTENCIA"})
 
     id = Column(Integer, Sequence('id'), primary_key=True)
@@ -22,10 +22,10 @@ class Autorizacionextra(Serializable, Base):
 
     def get_dict(self, way=None):
         aux = super().get_dict(way)
+
         if aux['fecha'] == 'None':
             aux['fecha'] = None
         else:
             aux['fecha'] = self.fecha.strftime('%d/%m/%Y')
-
 
         return aux

@@ -3,11 +3,13 @@
 {% block style %}
     {% set user = usuario %}
     <link rel="stylesheet" href="configuraciones/pais/assets/pais.css">
+
 {% end %}
 
 {% block content %}
     {% if 'pais_insert' in privileges or 'pais_update' in privileges %}
         {% include form.html %}
+
     {% end %}
 
     <div class="header bg-page-own"><h2>País</h2></div>
@@ -49,4 +51,6 @@
     <script src="resources/plugins/momentjs/locale/es.js"></script>
     <script src="resources/js/functions.js"></script>
     <script src="configuraciones/pais/assets/pais.js"></script>
+
 {% end %}
+

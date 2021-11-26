@@ -7,6 +7,7 @@ from configparser import ConfigParser
 from ..usuarios.scripts import insertions as user_insertions
 from ..calendario.scripts import insertions as calendario_insertions
 from ..asistencia.scripts import insertions as asistencia_insertions
+from ..ausencia.scripts import insertions as ausencia_insertions
 from ..vacaciones.scripts import insertions as vacaciones_insertions
 from ..comensales.scripts import insertions as comensal_insertions
 from ..dispositivos.scripts import insertions as dispositivos_insertions
@@ -24,15 +25,16 @@ from .models import Base
 def main():
     reload_db()
     user_insertions()
+    personal_insertions()
     calendario_insertions()
     asistencia_insertions()
+    ausencia_insertions()
     vacaciones_insertions()
     notificaciones_insertions()
-    comensal_insertions()
+    # comensal_insertions()
     dispositivos_insertions()
-    personal_insertions()
     portal_insertions()
-    control_insertions()
+    # control_insertions()
     configuraciones_insertions()
     print('Database created/updated correctly!')
 

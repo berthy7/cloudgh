@@ -7,6 +7,7 @@ $(document).ajaxStop(function () {
     $.Toast.hideToast();
 });
 
+$(".hr").inputmask("h:s",{ "placeholder": "__/__" });
 
 $('#new').click(function () {
     $('#nombre').val('')

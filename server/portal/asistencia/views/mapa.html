@@ -1,0 +1,112 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/css/ol.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+      .map {
+        width: 100%;
+        height:400px;
+      }
+
+    </style>
+</head>
+<body>
+
+    <div style="width:100%; height:100%" id="map"></div>
+    <div id="popup" >
+      <i class=" Large material-icons">home</i>
+    </div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/build/ol.js"></script>
+    <script>
+        window.onload = cargar_mapa;
+        function cargar_mapa() {
+
+            var container = document.getElementById('popup');
+            var content = document.getElementById('popup-content');
+
+            var latitud = localStorage.getItem("latitud")
+            var  longitud = localStorage.getItem("longitud")
+
+            console.log("latitud: "+latitud);
+            console.log("longitud: "+longitud);
+
+
+          var lnglat = ol.proj.fromLonLat([longitud,latitud])
+            console.log("longlat: "+lnglat[0]);
+            console.log("longlat: "+lnglat[1]);
+
+
+
+            var principal = new ol.layer.Tile({
+                source: new ol.source.OSM(),
+                visible: true,
+                title: 'principal'
+            })
+
+            var overlay = new ol.Overlay({
+              element: container,
+              autoPan: true,
+              positioning: 'bottom-center',
+              autoPanAnimation: {
+                duration: 250
+              }
+            });
+
+             var layer_marker = new ol.layer.Vector({
+                 source: new ol.source.Vector({
+                     features: [
+                         new ol.Feature({
+                             geometry: new ol.geom.Point([lnglat[0],lnglat[1]])
+                         })
+                     ]
+                 }),
+                 title: 'marker'
+             });
+
+
+
+
+           var map = new ol.Map({
+
+           view: new ol.View({
+             center: [lnglat[0],lnglat[1]],
+             zoom: 14
+           }),
+           layers: [principal
+           ],
+            target: document.getElementById('map')
+            });
+
+
+            map.addLayer(layer_marker);
+
+
+            map.on('click', function (evt) {
+                console.log('latitud_coordendaa ' +evt.coordinate[0])
+                console.log('longitud_coordendaa ' + evt.coordinate[1])
+
+                var latlon = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
+                  var lat = latlon[1];
+                  var lon = latlon[0];
+
+
+                localStorage.setItem('latitud',lat)
+                localStorage.setItem('longitud',lon)
+
+                console.log('latitud ' +lat)
+                console.log('longitud ' + lon)
+
+                var lnglat_coordenadas = ol.proj.fromLonLat([lon,lat])
+
+                console.log('latitud_coordendaa ' +lnglat_coordenadas[0])
+                console.log('longitud_coordendaa ' + lnglat_coordenadas[1])
+
+            })
+        }
+
+
+    </script>
+
+
+</body>

@@ -45,7 +45,7 @@ class MarcacionesController(CrudController):
             self.respond(message=mee['message'], success=mee['success'])
         else:
             if extn == '.txt':
-                mee = self.manager(self.db).importar_txt(cname)
+                mee = self.manager(self.db).importar_txt_monterrey(cname)
                 self.respond(message=mee['message'], success=mee['success'])
             else:
                 self.respond(message='Formato de Archivo no aceptado¡¡', success=False)

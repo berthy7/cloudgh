@@ -9,30 +9,10 @@ $(document).ajaxStop(function () {
 var fechahoy = new Date()
 var hoy = fechahoy.getDate()+"/"+(fechahoy.getMonth()+1) +"/"+fechahoy.getFullYear()
 
-document.getElementById("fechainicio").value=hoy
-document.getElementById("fechafin").value=hoy
+document.getElementById("fechai").value=hoy
+document.getElementById("fechaf").value=hoy
 
 $('.show-tick').selectpicker()
-$('.date').bootstrapMaterialDatePicker({
-    format: 'D/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    eraseError(this)
-});
-$('.datepicker').bootstrapMaterialDatePicker({
-    format: 'DD/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    $('#f_date').bootstrapMaterialDatePicker('setMinDate', date);
-});
 
 
 $('#new').click(function () {
@@ -55,7 +35,7 @@ $('#importar_marcaciones').click(function () {
     $(".xlsfl").each(function () {
         $(this).fileinput('refresh',{
             allowedFileExtensions: ['xlsx', 'xls', 'txt'],
-            maxFileSize: 2000,
+            maxFileSize: 10000,
             maxFilesNum: 1,
             showUpload: false,
             layoutTemplates: {
@@ -280,8 +260,8 @@ $('#filtrar').click(function () {
             $("#rgm-loader").show();
             document.getElementById("filtrar").disabled = true
             obj = JSON.stringify({
-                'fechainicio': $('#fechainicio').val(),
-                'fechafin': $('#fechafin').val(),
+                'fechainicio': $('#fechai').val(),
+                'fechafin': $('#fechaf').val(),
                 '_xsrf': getCookie("_xsrf")
             })
             ruta = "marcaciones_filtrar";
@@ -292,10 +272,10 @@ $('#filtrar').click(function () {
                 async: true
             }).done(function (response) {
                 response = JSON.parse(response)
-                console.log(response)
 
                 var data = [];
                 for (var i = 0; i < Object.keys(response.response).length; i++) {
+                    //console.log(i)
                     data.push( [
                         response['response'][i]["id"], response['response'][i]["codigo"], response['response'][i]["nombre"],
                         response['response'][i]["fecha"],response['response'][i]['hora'], response['response'][i]['dispositivo']
@@ -316,7 +296,7 @@ $('#filtrar').click(function () {
                         {  extend : 'excelHtml5',
                            exportOptions : { columns : [0, 1, 2, 3, 4, 5]},
                             sheetName: 'Marcaciones Registradas',
-                           title: 'ELFEC - Marcaciones Registradas'  },
+                           title: 'Marcaciones Registradas'  },
                         {  extend : 'pdfHtml5',
                            customize: function(doc) {
                                 doc.styles.tableBodyEven.alignment = 'center';
@@ -325,7 +305,7 @@ $('#filtrar').click(function () {
                            exportOptions : {
                                 columns : [0, 1, 2, 3, 4, 5]
                             },
-                           title: 'ELFEC - Marcaciones Registradas'
+                           title: 'Marcaciones Registradas'
                         }
                     ],
                     initComplete: function () {

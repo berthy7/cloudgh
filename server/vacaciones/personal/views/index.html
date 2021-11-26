@@ -7,6 +7,7 @@
 
 {% block content %}
 {% include form.html %}
+{% include form-boleta.html %}
 
     <div class="header bg-page-own"><h2>Vacacion por Personal</h2></div>
     <div class="body">
@@ -20,9 +21,12 @@
 {#                    {% end %}#}
                      {% if 'v_personal_importar' in privileges %}
                         <div id="importar_excel" class="caja-icono" title="Importar Excel">
-                            <img src="/resources/iconos/importar.ico" class="icono" />
+                            <img src="/resources/iconos/importar.png" class="icono" />
                         </div>
                     {% end %}
+                    <div id="boleta" class="caja-icono" title="Boleta de Asistencia">
+                        <img src="/resources/iconos/boleta.ico" class="icono" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -36,7 +40,10 @@
                             <th class="order_by_th" data-name="names">N°</th>
                             <th class="order_by_th" data-name="names">Nombre</th>
                             <th class="order_by_th" data-name="names">Vacacion Disponible</th>
+                            <th class="order_by_th" data-name="names">Gestion</th>
+                            <th class="order_by_th" data-name="names">Estado</th>
                             <th class="actions_header">Historico</th>
+                            <th class="actions_header">Actualizar</th>
                         </tr>
                     </thead>
                     <tbody id="table_content">

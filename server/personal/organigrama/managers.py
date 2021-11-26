@@ -2,6 +2,7 @@ from .models import *
 from ...configuraciones.cargo.managers import *
 from ...configuraciones.ciudad.managers import *
 from ...configuraciones.empresa.models import *
+from ..persona.models import *
 
 from openpyxl import load_workbook
 from openpyxl import Workbook
@@ -14,6 +15,128 @@ class OrganigramaManager(SuperManager):
 
     def list_all(self):
         return dict(objects=self.db.query(Organigrama).filter(Organigrama.enabled is True))
+
+    def organigrama_excel(self, ):
+        cname = "Organigrama.xlsx"
+
+        organigrama = self.db.query(self.entity).order_by(self.entity.id.asc()).all()
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'organigrama'
+
+        indice = 1
+
+        ws['A' + str(indice)] = 'ID'
+        ws['B' + str(indice)] = 'CARGO'
+        ws['C' + str(indice)] = 'CODIGO'
+        ws['D' + str(indice)] = 'SUPERIOR'
+        ws['E' + str(indice)] = 'POSICION'
+        ws['F' + str(indice)] = 'GERENCIA'
+        ws['G' + str(indice)] = 'JEFATURA'
+        ws['H' + str(indice)] = 'ESTADO'
+
+        for i in organigrama:
+
+            if i.fkcargo:
+                indice = indice + 1
+                cargo = self.db.query(Cargo).filter(Cargo.id == i.fkcargo).first()
+
+                if cargo:
+                    NombreCargo = cargo.nombre
+                else:
+                    NombreCargo = ""
+
+                persona = self.db.query(Persona).filter(Persona.id == i.fkpersona).first()
+
+                if persona:
+                    CodigoPersona = persona.empleado[0].codigo
+                else:
+                    CodigoPersona = ""
+
+
+                if persona:
+                    CodigoPersona = persona.empleado[0].codigo
+                else:
+                    CodigoPersona = ""
+
+
+                ws['A' + str(indice)] = i.id
+                ws['B' + str(indice)] = NombreCargo
+                ws['C' + str(indice)] = CodigoPersona
+                ws['D' + str(indice)] = i.fkpadre
+                ws['E' + str(indice)] = i.siguiente
+                ws['F' + str(indice)] = i.gerencia
+                ws['G' + str(indice)] = i.jefatura
+                ws['H' + str(indice)] = i.enabled
+
+        wb.save("server/common/resources/downloads/" + cname)
+        return cname
+
+    def importar_excel(self, cname, user, ip):
+        try:
+            wb = load_workbook(filename="server/common/resources/uploads/" + cname)
+            ws = wb.active
+            colnames = ['ID', 'CARGO', 'CODIGO', 'SUPERIOR', 'POSICION', 'GERENCIA', 'JEFATURA', 'ESTADO']
+            indices = {cell[0].value: n - 1 for n, cell in enumerate(ws.iter_cols(min_row=1, max_row=1), start=1) if
+                       cell[0].value in colnames}
+            if len(indices) == len(colnames):
+                list = []
+
+                padre = self.db.query(Organigrama).order_by(self.entity.id.asc()).first()
+
+                sw = 0
+
+                for row in ws.iter_rows(min_row=2):
+                    sw = sw+1
+
+                    if row[indices['ID']].value is not None and row[indices['CARGO']].value is not None  :
+
+
+                        query_cargo = self.db.query(Cargo).filter(Cargo.nombre == row[indices['CARGO']].value).first()
+
+                        if query_cargo:
+
+                            query_persona = self.db.query(Persona).join(Empleado).filter(
+                                Empleado.codigo == row[indices['CODIGO']].value).first()
+
+                            if query_persona:
+
+                                    if sw == 1:
+
+                                        fkpadre = padre.id
+                                    else:
+                                        fkpadre = row[indices['SUPERIOR']].value
+
+
+                                    org = Organigrama(
+                                                    id=row[indices['ID']].value,
+                                                    fkcargo=query_cargo.id,
+                                                    fkpersona=query_persona.id,
+                                                    fkpadre=fkpadre,
+                                                    siguiente=row[indices['POSICION']].value,
+                                                    gerencia=row[indices['GERENCIA']].value,
+                                                    jefatura=row[indices['JEFATURA']].value,
+                                                    enabled=row[indices['ESTADO']].value)
+
+                                    self.db.merge(org)
+                                    self.db.flush()
+
+
+                    else:
+                        padre = padre.id
+
+                self.db.commit()
+                return {'message': 'Importado Todos Correctamente.', 'success': True}
+            else:
+                return {'message': 'Columnas Faltantes', 'success': False}
+        except Exception as e:
+            self.db.rollback()
+            if 'UNIQUE constraint' in str(e):
+                return {'message': 'duplicado', 'success': False}
+            if 'UNIQUE constraint failed' in str(e):
+                return {'message': 'codigo duplicado', 'success': False}
+            return {'message': str(e), 'success': False}
 
     def list_son(self):
         listaID=self.list_all()
@@ -92,7 +215,92 @@ class OrganigramaManager(SuperManager):
         # Obtener Padre
         padre = self.db.query(self.entity).filter(self.entity.id == x.fkpadre).first()
 
+
+
         return padre.fkpersona
+
+    def obtener_autorizacion_aprobacion(self, fkpersona):
+
+        # Obtener Superior del Organigrama
+        superiores = dict(fkautorizacion=None, fkaprobacion=None, estadoautorizacion="Pendiente",
+                          estadoaprobacion="Pendiente")
+
+
+        Idpersona = fkpersona
+
+        while True:
+            organi = self.db.query(self.entity).filter(self.entity.fkpersona == Idpersona).first()
+
+            # Obtener fkautorizacion
+
+
+            if organi.jefatura:
+                superiores['fkautorizacion'] = organi.fkpersona
+
+                padre = self.db.query(self.entity).filter(self.entity.id == organi.fkpadre).first()
+                Idpersona = padre.fkpersona
+
+
+            elif organi.gerencia:
+                superiores['fkaprobacion'] = organi.fkpersona
+
+                break
+            else :
+                padre = self.db.query(self.entity).filter(self.entity.id == organi.fkpadre).first()
+                Idpersona = padre.fkpersona
+
+        return superiores
+
+
+    def obtener_autorizacion_aprobacion2(self, fkpersona):
+        persona = self.db.query(Persona).filter(Persona.id == fkpersona).first()
+
+        # Obtener Superior del Organigrama
+        x = self.db.query(self.entity).filter(self.entity.fkpersona == fkpersona).first()
+
+        # Si no hay Superior de 'x', devolver None
+        if (x is None):
+            superiores = dict(fkautorizacion=None, fkaprobacion=None,estadoautorizacion="Pendiente",estadoaprobacion="Pendiente")
+
+            return superiores
+
+        if persona.empleado[0].autorizacion and persona.empleado[0].aprobacion:
+
+            # Obtener fkautorizacion
+            autorizacion = self.db.query(self.entity).filter(self.entity.id == x.fkpadre).first()
+
+            if autorizacion:
+                # Obtener fkaprobacion
+                aprobacion = self.db.query(self.entity).filter(self.entity.id == autorizacion.fkpadre).first()
+            else:
+                aprobacion = None
+
+            superiores = dict(fkautorizacion=autorizacion.fkpersona,fkaprobacion=aprobacion.fkpersona,estadoautorizacion="Pendiente",estadoaprobacion="Pendiente")
+
+
+        elif persona.empleado[0].autorizacion:
+
+            # Obtener fkautorizacion
+            autorizacion = self.db.query(self.entity).filter(self.entity.id == x.fkpadre).first()
+
+
+            superiores = dict(fkautorizacion=autorizacion.fkpersona,fkaprobacion=None,estadoautorizacion="Pendiente",estadoaprobacion="No aplica")
+
+        elif persona.empleado[0].aprobacion:
+
+            # Obtener fkautorizacion
+            autorizacion = self.db.query(self.entity).filter(self.entity.id == x.fkpadre).first()
+
+            superiores = dict(fkautorizacion=None, fkaprobacion=autorizacion.fkpersona,estadoautorizacion="No aplica",estadoaprobacion="Pendiente")
+        else:
+            superiores = dict(fkautorizacion=None, fkaprobacion=None,estadoautorizacion="Pendiente",estadoaprobacion="Pendiente")
+
+
+
+
+
+
+        return superiores
 
     # def get_all(self):
     #     return self.db.query(self.entity).filter(self.entity.enabled == True).all()
@@ -129,3 +337,4 @@ class OrganigramaManager(SuperManager):
     #     a = self.db.merge(x)
     #     self.db.commit()
     #     return a
+

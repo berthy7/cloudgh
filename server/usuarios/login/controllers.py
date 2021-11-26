@@ -46,7 +46,7 @@ class LoginController(SuperController):
             if user:
                 fecha = self.fecha_actual()
                 b = Bitacora(fkusuario=user.id, ip=ip, accion="Inicio de sesión.", fecha=fecha)
-                self.insertar_bitacora(b)
+                # self.insertar_bitacora(b)
                 self.set_user_id(user.id)
                 self.redirect("/")
             else:

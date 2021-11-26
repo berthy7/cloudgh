@@ -1,0 +1,42 @@
+{% for c in permisos_recibidas %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.tipoausencia.nombre }}</td>
+    <td>{{ c.persona.fullname }}</td>
+
+    <td>{{ c.fechai.strftime("%d/%m/%Y") }} {{ c.horai.strftime("%H:%M") if c.horai is not None else "-----"}}</td>
+    <td>{{ c.fechaf.strftime("%d/%m/%Y") }} {{ c.horaf.strftime("%H:%M") if c.horaf is not None else "-----"}}</td>
+
+    {% if c.fkautorizacion %}
+        <td>{{ c.autorizacion.fullname }}</td>
+    {% else %}
+        <td> ------ </td>
+    {% end %}
+    <td>{% if c.fkautorizacion == idpersona %}  {% if c.persona.empleado[0].autorizacion %} {% if 'portal_permiso_autorizacion' in privileges %} <div class="contenedor"><div data-json="{{c.id}}" class="caja-icono autorizacion" title="Editar"><img src="/resources/iconos/editar3.png" class="icono-table"/></div></div>{% end %}{% end %}{% end %} {{ c.estadoautorizacion }}</td>
+
+    {% if c.fkaprobacion %}
+        <td>{{ c.aprobacion.fullname }}</td>
+    {% else %}
+        <td> ------ </td>
+    {% end %}
+    <td>{% if c.fkaprobacion == idpersona %} {% if c.persona.empleado[0].aprobacion %} {% if 'portal_permiso_aprobacion' in privileges %} <div class="contenedor"><div data-json="{{c.id}}" class="caja-icono aprobacion" title="Editar"><img src="/resources/iconos/editar3.png" class="icono-table"/></div></div>{% end %}{% end %}{% end %} {{ c.estadoaprobacion }}</td>
+    {% if 'portal_permiso_update' in privileges %}
+        <td align="center">
+            <div class="contenedor">
+                    <div data-json="{{c.id}}" class="caja-icono edit" title="Editar">
+                        <img src="/resources/iconos/editar.ico" class="icono-table"/>
+                    </div>
+            </div>
+        </td>
+    {% end %}
+    {% if 'portal_permiso_imprimir' in privileges %}
+    <td align="center">
+            <div class="contenedor">
+                    <div data-json="{{c.id}}" class="caja-icono imprimir" title="Imprimir">
+                        <img src="/resources/iconos/seguimiento.ico" class="icono-table"/>
+                    </div>
+            </div>
+        </td>
+    {% end %}
+</tr>
+{% end %}

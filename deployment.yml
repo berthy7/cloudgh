@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudgh
+spec:
+  selector:
+    app: cloudgh
+  ports:
+  - protocol: "TCP"
+    port: 8000
+    targetPort: 8000
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudgh
+spec:
+  selector:
+    matchLabels:
+      app: cloudgh
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cloudgh
+    spec:
+      containers:
+      - name: cloudgh
+        image: berthyvargas/cloudgh:latest0.27
+        ports:
+        - containerPort: 8000

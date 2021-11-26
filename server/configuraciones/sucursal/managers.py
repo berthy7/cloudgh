@@ -25,10 +25,10 @@ class SucursalManager(SuperManager):
 
         vector.sort()
         for i in vector:
-            ger = self.db.query(Gerencia).filter(Gerencia.enabled == True).filter(Gerencia.nombre == i).filter(Gerencia.fkempresa == idempresa).one()
-
-            list[c] = dict(idgerencia=ger.id ,gerencia=i)
-            c = c + 1
+            ger = self.db.query(Gerencia).filter(Gerencia.enabled == True).filter(Gerencia.nombre == i).filter(Gerencia.fkempresa == idempresa).first()
+            if ger:
+                list[c] = dict(idgerencia=ger.id ,gerencia=i)
+                c = c + 1
 
         return list
 

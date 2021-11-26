@@ -4,13 +4,12 @@
         <meta charset="UTF-8">
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-
         {% if empresalogo and empresalogo.foto3 != None %}
             <title>{{ empresalogo.nombre }} - Sistema de Gestión RRHH</title>
             <link rel="icon" href={{ empresalogo.foto3 }} type="image/x-icon">
         {% else %}
             <title>Sistema de Gestión RRHH</title>
-            <link rel="icon" href="/resources/images/no_icon.png" type="image/x-icon">
+            <link rel="icon" href="/resources/default/cloudbit/cloudbit.ico" type="image/x-icon">
         {% end %}
 
         <link href="/resources/css/iconfont/material-icons.css" rel="stylesheet">
@@ -26,6 +25,7 @@
         <link href="/resources/plugins/nestable/jquery-nestable.css" rel="stylesheet">
         <link href="/resources/css/main.css" rel="stylesheet" />
         <link href="/resources/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+        <link href="/resources/plugins/jquery-calendar/calendar.css" rel="stylesheet">
         <link href="common/layout.css" rel="stylesheet" />
         {%block style%}{%end %}
     </head>
@@ -47,21 +47,21 @@
             <div class="container-fluid">
                 <div class="navbar-header ">
                     <a href="javascript:void(0);" class="bars"></a>
-                    <a href="/" class="navbar-brand white-own">
-                        <center>
+                    <a href="/" class="navbar-brand white-own nav-own">
+                        <span class="text-center">
                             {% if empresalogo and empresalogo.foto2 %}
                                 <img class="nav-img" src={{ empresalogo.foto2 }}>
                             {% else %}
-                                <img class="nav-noimg" src="/resources/images/no_iconw.png">
+                                <img class="nav-noimg" src="/resources/default/cloudbit/cb_ic_wh.png">
                             {% end %}
-                                Sistema de Gestión RRHH
-                        </center>
+                            <span style="margin-left: 4px">Sistema de Gestión RRHH</span>
+                        </span>
                     </a>
                 </div>
                 <div id="right-options" class="more-options">
                     <ul class="header-dropdown m-r--5">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" alt="Manual" title="Manual" onclick="manual({% if empresalogo and empresalogo.foto1 %} '{{ empresalogo.foto1 }}' {% else %}'/resources/images/no_logo.png' {% end %})">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" alt="Manual" title="Manual" onclick="manual({% if empresalogo and empresalogo.foto1 %} '{{ empresalogo.foto1 }}' {% else %}'/resources/default/cloudbit/cb-hor-md.png' {% end %})">
                                 <i class="material-icons">assignment</i>
                             </a>
                             <a href=""><i class="material-icons"> </i></a>
@@ -71,7 +71,7 @@
                             <a href=""><i class="material-icons"> </i></a>
                             <a href=""><i class="material-icons"> </i></a>
                             <a href=""><i class="material-icons"> </i></a>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" title="Cerrar sesión" alt="Cerrar Sesion" onclick="Salir({% if empresalogo and empresalogo.foto1 != None %} '{{ empresalogo.foto1 }}' {% else %}'/resources/images/no_logo.png' {% end %})">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" title="Cerrar sesión" alt="Cerrar Sesion" onclick="Salir({% if empresalogo and empresalogo.foto1 != None %} '{{ empresalogo.foto1 }}' {% else %}'/resources/default/cloudbit/cb-hor-md.png' {% end %})">
                                 <i class="material-icons">power_settings_new</i>
                             </a>
                         </li>
@@ -131,7 +131,7 @@
                 </div>
                 <div class="legal">
                 <div class="copyright">
-                    © 2020 <a href="http://cloudbit.com.bo/" target="_blank">Desarrollado por Cloudbit S.R.L.</a>.
+                    © 2021 <a href="http://cloudbit.com.bo/" target="_blank">Desarrollado por Cloudgh.</a>.
                 </div>
                 <div class="version">
                     <b>Version: </b> 4.0
@@ -150,7 +150,6 @@
             </div>
         </section>
 
-        <script src="/resources/js/customValidation.js"></script>
         <script src="/resources/plugins/jquery/jquery.min.js"></script>
         <script src="/resources/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
         <script src="/resources/plugins/bootstrap/js/bootstrap.js"></script>
@@ -176,10 +175,12 @@
         <script src="/resources/js/pages/tables/jquery-datatable.js"></script>
         <script src="/resources/js/scripts.js"></script>
         <script src="/resources/js/validations.js"></script>
+        <script src="/resources/js/customValidation.js"></script>
         <script src="/resources/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
         <script src="/resources/plugins/bootstrap-material-datetimepicker/js/moment-with-locales.min.js"></script>
 
         <script src="resources/plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+        <script src="resources/plugins/jquery-calendar/calendar.js"></script>
         <script src="common/layout.js"></script>
         {%block script%}{%end%}
     </body>

@@ -6,6 +6,7 @@ from ...asistencia.ausencia.models import *
 from ...usuarios.ajustes.models import *
 from ...personal.organigrama.managers import *
 from ...notificaciones.correo.managers import *
+from ...ausencia.tipoausencia.models import *
 
 
 

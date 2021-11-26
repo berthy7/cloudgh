@@ -2,11 +2,23 @@ from ...operaciones.bitacora.managers import *
 
 from server.common.managers import SuperManager
 from .models import *
+from sqlalchemy.sql import func,and_,or_
 
 
 class RolManager(SuperManager):
     def __init__(self, db):
         super().__init__(Rol, db)
+
+    def listar_usuario(self,idUsuario):
+
+        if idUsuario.username == "admin":
+            x =self.db.query(Rol).filter(Rol.enabled == True).filter(Rol.nombre != "SUPER ADMINISTRADOR")
+        else:
+            x = self.db.query(Rol).filter(Rol.enabled == True).filter(and_(Rol.nombre != "SUPER ADMINISTRADOR",Rol.nombre != "ADMINISTRADOR"))
+
+        return x
+
+
 
     def get_page(self, page_nr=1, max_entries=10, like_search=None, order_by=None, ascendant=True, query=None):
         query = self.db.query(self.entity).filter(Rol.id > 1)
@@ -27,10 +39,10 @@ class RolManager(SuperManager):
         return a
 
     def list_all(self):
-        return dict(objects=self.db.query(Rol).filter(Rol.nombre != "Super Administrador").distinct())
+        return dict(objects=self.db.query(Rol).filter(Rol.nombre != "SUPER ADMINISTRADOR").distinct())
 
     def get_all(self):
-        return self.db.query(Rol).filter(Rol.enabled == True).filter(Rol.nombre != "Super Administrador")
+        return self.db.query(Rol).filter(Rol.enabled == True).filter(Rol.nombre != "SUPER ADMINISTRADOR")
 
     def delete_rol(self, id, enable, Usuariocr, ip):
         x = self.db.query(Rol).filter(Rol.id == id).one()

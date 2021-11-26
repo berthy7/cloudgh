@@ -144,8 +144,6 @@ function obtener_personas() {
 
             objeto.push((function add_objeto(h0,h1) {
 
-                console.log(h0)
-
 
                 if (h0 == ''){
                     return {

@@ -9,49 +9,49 @@ def insertions():
 
         configuraciones_m = session.query(Modulo).filter(Modulo.name == 'configuraciones').first()
         if configuraciones_m is None:
-            configuraciones_m = Modulo(title='Configuraciones', name='configuraciones', icon='ajuste.ico')
+            configuraciones_m = Modulo(title='Configuraciones', name='configuraciones', icon='configuraciones.png')
 
         centro_costo_m = session.query(Modulo).filter(Modulo.name == 'centro_costo').first()
         if centro_costo_m is None:
             centro_costo_m = Modulo(title='Centro de costos', route='/centro_costo', name='centro_costo',
-                                    icon='costos.ico')
+                                    icon='costos.png')
 
         empresa_m = session.query(Modulo).filter(Modulo.name == 'empresa').first()
         if empresa_m is None:
-            empresa_m = Modulo(title='Empresa', route='/empresa', name='empresa', icon='empresa.ico')
+            empresa_m = Modulo(title='Empresa', route='/empresa', name='empresa', icon='empresa.png')
 
         gerencia_m = session.query(Modulo).filter(Modulo.name == 'gerencia').first()
         if gerencia_m is None:
-            gerencia_m = Modulo(title='Gerencias', route='/gerencia', name='gerencia', icon='gerencia.ico')
+            gerencia_m = Modulo(title='Gerencias', route='/gerencia', name='gerencia', icon='gerencia.png')
 
         cargo_m = session.query(Modulo).filter(Modulo.name == 'cargo').first()
         if cargo_m is None:
-            cargo_m = Modulo(title='Cargos', route='/cargo', name='cargo', icon='cargos.ico')
+            cargo_m = Modulo(title='Cargos', route='/cargo', name='cargo', icon='cargos.png')
 
         localizacion_m = session.query(Modulo).filter(Modulo.name == 'localizacion_Modulo').first()
         if localizacion_m is None:
-            localizacion_m = Modulo(title='Localización', name='localizacion', icon='localizacion.ico')
+            localizacion_m = Modulo(title='Localización', name='localizacion', icon='localizacion.png')
 
         pais_m = session.query(Modulo).filter(Modulo.name == 'pais').first()
         if pais_m is None:
-            pais_m = Modulo(title='País', route='/pais', name='pais', icon='pais.ico')
+            pais_m = Modulo(title='País', route='/pais', name='pais', icon='pais.png')
 
         departamento_m = session.query(Modulo).filter(Modulo.name == 'departamento').first()
         if departamento_m is None:
             departamento_m = Modulo(title='Departamentos', route='/departamento', name='departamento',
-                                    icon='departamento.ico')
+                                    icon='departamento.png')
 
         ciudad_m = session.query(Modulo).filter(Modulo.name == 'ciudad').first()
         if ciudad_m is None:
-            ciudad_m = Modulo(title='Ciudades', route='/ciudad', name='ciudad', icon='ciudad.ico')
+            ciudad_m = Modulo(title='Ciudades', route='/ciudad', name='ciudad', icon='ciudad.png')
 
         sucursal_m = session.query(Modulo).filter(Modulo.name == 'sucursal').first()
         if sucursal_m is None:
-            sucursal_m = Modulo(title='Sucursales', route='/sucursal', name='sucursal', icon='sucursal.ico')
+            sucursal_m = Modulo(title='Sucursales', route='/sucursal', name='sucursal', icon='sucursal.png')
 
         oficina_m = session.query(Modulo).filter(Modulo.name == 'oficina').first()
         if oficina_m is None:
-            oficina_m = Modulo(title='Oficinas', route='/oficina', name='oficina', icon='oficina.ico')
+            oficina_m = Modulo(title='Oficinas', route='/oficina', name='oficina', icon='oficina.png')
 
         configuraciones_m.children.append(centro_costo_m)
         configuraciones_m.children.append(empresa_m)
@@ -372,7 +372,7 @@ def insertions():
         oficina_m.children.append(delete_oficina)
         oficina_m.children.append(imprimir_oficina)
 
-        admin_role = session.query(Rol).filter(Rol.nombre == 'ADMINISTRADOR').first()
+        admin_role = session.query(Rol).filter(Rol.nombre == 'SUPER ADMINISTRADOR').first()
 
         ###Modulos de Operaciones
 

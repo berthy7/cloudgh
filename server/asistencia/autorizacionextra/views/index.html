@@ -33,7 +33,7 @@
                    <div class="form-group">
                         <div class="form-line success">
 
-                            <input id="fechainicio" type="text" class="form-control date">
+                            <input id="fechai" type="text" class="form-control datei">
                         </div>
                     </div>
                 </div>
@@ -42,13 +42,13 @@
                         <label class="form-label">Fecha Fin</label>
                         <div class="form-line success">
 
-                            <input id="fechafin" type="text" class="form-control date">
+                            <input id="fechaf" type="text" class="form-control datef">
                         </div>
                     </div>
                 </div>
                     <div class="col-sm-1">
                         <div id="filtrar" class="caja-icono" title="Filtrar">
-                            <img src="/resources/iconos/filtro.ico" class="icono" />
+                            <img src="/resources/iconos/filtrar.png" class="icono" />
                         </div>
 
                     </div>
@@ -92,7 +92,7 @@
                                                                             <ol class="dd-list">
                                                                                 {% if isinstance(admin[empresa][sucursal][gerencia], dict) %}
                                                                                     {% for grupo in admin[empresa][sucursal][gerencia] %}
-                                                                                        <li class="dd-item dd-nodrag" data-id="gr{{grupo[0]}}">
+                                                                                        <li class="dd-item dd-collapsed" data-id="gr{{grupo[0]}}">
                                                                                             <div class="dd-handle">
                                                                                                 <input id="gr{{grupo[0]}}" type="checkbox" class="module chk-col-deep-purple grupo" data-id="{{grupo[0]}}" data-ger="{{gerencia[0]}}" data-suc="{{sucursal[0]}}" data-empr="{{empresa[0]}}">
                                                                                                 <label for="gr{{grupo[0]}}">{{grupo[1]}}</label>
@@ -191,6 +191,7 @@
     <script src="resources/js/buttons.html5.js"></script>
     <script src="resources/js/buttons.print.js"></script>
     <script src="resources/js/buttons.colVis.js"></script>
+
     <script>
         $(document).ready(function () {
 

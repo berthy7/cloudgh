@@ -14,17 +14,17 @@ def insertions():
 
         dispositivos_m = session.query(Modulo).filter(Modulo.name == 'dispositivos').first()
         if dispositivos_m is None:
-            dispositivos_m = Modulo(title='Dispositivos', name='dispositivos', icon='dispositivo.ico')
+            dispositivos_m = Modulo(title='Dispositivos', name='dispositivos', icon='dispositivo.png')
 
         lectores_m = session.query(Modulo).filter(Modulo.name == 'lectores').first()
         if lectores_m is None:
             lectores_m = Modulo(title='Lectores', route='/lectores', name='lectores',
-                                    icon='biometrico.ico')
+                                    icon='biometrico.png')
 
         marcaciones_m = session.query(Modulo).filter(Modulo.name == 'marcaciones').first()
         if marcaciones_m is None:
             marcaciones_m = Modulo(title='Marcaciones', route='/marcaciones', name='marcaciones',
-                                icon='marcacion.ico')
+                                icon='marcacion.png')
 
         dispositivos_m.children.append(lectores_m)
         dispositivos_m.children.append(marcaciones_m)
@@ -78,7 +78,7 @@ def insertions():
         marcaciones_m.children.append(query_marcaciones)
         marcaciones_m.children.append(imprimir_marcaciones)
 
-        admin_role = session.query(Rol).filter(Rol.nombre == 'ADMINISTRADOR').first()
+        admin_role = session.query(Rol).filter(Rol.nombre == 'SUPER ADMINISTRADOR').first()
 
         ###Modulos de Operaciones
 
@@ -102,8 +102,11 @@ def dispositivos_schedule():
 
     def extraer_marcaciones():
         with transaction() as db:
+            print("inicio")
             LectoresManager(db).preparar_dispositivos()
 
-    schedule.every().day.at("14:50").do(extraer_marcaciones)
-    schedule.every().day.at("11:01").do(extraer_marcaciones)
-    schedule.every().day.at("11:03").do(extraer_marcaciones)
+    schedule.every().day.at("04:00").do(extraer_marcaciones)
+    schedule.every().day.at("09:00").do(extraer_marcaciones)
+    schedule.every().day.at("15:00").do(extraer_marcaciones)
+    schedule.every().day.at("22:00").do(extraer_marcaciones)
+

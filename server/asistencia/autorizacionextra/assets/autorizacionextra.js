@@ -1,7 +1,8 @@
 main_route = '/autorizacion_extra'
 
 $(document).ready(function () {
-
+    document.getElementById('switch').checked=true
+    $('#switch').change()
 });
 
 $(document).ajaxStart(function () { });
@@ -15,33 +16,13 @@ var filtro = "no";
 var hoy = fechahoy.getDate()+"/"+(fechahoy.getMonth()+1) +"/"+fechahoy.getFullYear()
 $(".hr").inputmask("h:s",{ "placeholder": "__/__" });
 
-document.getElementById("fechainicio").value=hoy
-document.getElementById("fechafin").value=hoy
+document.getElementById("fechai").value=hoy
+document.getElementById("fechaf").value=hoy
+
 
 var id_gv = 0
 
 
-$('.show-tick').selectpicker()
-$('.date').bootstrapMaterialDatePicker({
-    format: 'DD/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    eraseError(this)
-});
-$('.datepicker').bootstrapMaterialDatePicker({
-    format: 'DD/MM/YYYY',
-    clearButton: false,
-    weekStart: 1,
-    locale: 'es',
-    time: false
-}).on('change', function (e, date) {
-    $(this).parent().addClass('focused');
-    $('#f_date').bootstrapMaterialDatePicker('setMinDate', date);
-});
 
 $('.dd').nestable({
     group:'categories',
@@ -211,37 +192,25 @@ function obtener_personas_arbol() {
         var a = parseInt($(this).attr('data-id'))
 
         aux.push((function add(a) {
-
-            return {
-                'id_persona': a
-            }
-
-
+            return a
         })(a))
     })
     return aux
 }
 
 function obtener_personas() {
-        objeto = []
-        objeto_inputs = $('.personal')
+    objeto = []
+    objeto_inputs = $('.personal')
 
-        for (i = 0; i < objeto_inputs.length; i += 1) {
-            h0 = objeto_inputs[i].value
+    for (i = 0; i < objeto_inputs.length; i += 1) {
+        h0 = parseInt(objeto_inputs[i].value)
 
-
-            objeto.push((function add_objeto(h0) {
-
-                    return {
-                    'id_persona':h0
-                    }
-
-
-            })(
-                objeto_inputs[i].value))
-        }
-        return objeto
+        objeto.push((function add_objeto(h0) {
+                return h0
+        })(h0))
     }
+    return objeto
+}
 
 function cargar_tabla(data){
     if ( $.fn.DataTable.isDataTable( '#data_table' ) ) {
@@ -260,7 +229,7 @@ function cargar_tabla(data){
             {  extend : 'excelHtml5',
                exportOptions : { columns : [0, 1, 2, 3, 4, 5 ,6 ,7 ,8 ,9 ,10]},
                 sheetName: 'Reporte de Asistencia',
-               title: 'ELFEC - Reporte de Asistencia'  },
+               title: 'Reporte de Asistencia'  },
             {  extend : 'pdfHtml5',
                 orientation: 'landscape',
                customize: function(doc) {
@@ -270,7 +239,7 @@ function cargar_tabla(data){
                exportOptions : {
                     columns : [0, 1, 2, 3, 4, 5 ,6 ,7 ,8 ,9 ,10]
                 },
-               title: 'ELFEC - Reporte de Asistencia'
+               title: 'Reporte de Asistencia'
             }
         ],
         initComplete: function () {
@@ -304,8 +273,8 @@ $('#insert').click(function () {
         'fkasistencia': $('#fkasistencia').val(),
         'extra': $('#extra').val(),
         'autorizado': $('#autorizado').val(),
-         'fechainicio': $('#fechainicio').val(),
-        'fechafin': $('#fechafin').val(),
+         'fechainicio': $('#fechai').val(),
+        'fechafin': $('#fechaf').val(),
         'personas_arbol': obtener_personas_arbol(),
         'filtro': filtro,
         'personas': obtener_personas()
@@ -343,8 +312,8 @@ $('#update').click(function () {
         'fkasistencia': $('#fkasistencia').val(),
         'extra': $('#extra').val(),
         'autorizado': $('#autorizado').val(),
-        'fechainicio': $('#fechainicio').val(),
-        'fechafin': $('#fechafin').val(),
+        'fechainicio': $('#fechai').val(),
+        'fechafin': $('#fechaf').val(),
         'personas_arbol': obtener_personas_arbol(),
         'filtro': filtro,
         'personas': obtener_personas()
@@ -380,8 +349,8 @@ $('#deshabilitar').click(function () {
         'fkasistencia': $('#fkasistencia').val(),
         'extra': $('#extra').val(),
         'autorizado': $('#autorizado').val(),
-        'fechainicio': $('#fechainicio').val(),
-        'fechafin': $('#fechafin').val(),
+        'fechainicio': $('#fechai').val(),
+        'fechaf': $('#fechaf').val(),
         'personas_arbol': obtener_personas_arbol(),
         'filtro': filtro,
         'personas': obtener_personas()
@@ -418,8 +387,8 @@ $('#filtrar').click(function () {
     $("#rgm-loader").show();
     document.getElementById("filtrar").disabled = true
     obj = JSON.stringify({
-        'fechainicio': $('#fechainicio').val(),
-        'fechafin': $('#fechafin').val(),
+        'fechainicio': $('#fechai').val(),
+        'fechafin': $('#fechaf').val(),
        'personas_arbol': obtener_personas_arbol(),
         'personas': obtener_personas(),
         '_xsrf': getCookie("_xsrf")

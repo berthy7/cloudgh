@@ -1,0 +1,51 @@
+.text-own{
+    font-size: 12px !important;
+}
+.txta-own-obj{
+    max-width: 100% !important;
+    background-color: rgba(40, 40, 40, .02);
+    padding: 4px !important;
+}
+
+.bordesdiv {
+  border-top-color: #CC0000;
+  border-right-color: blue;
+  border-bottom-color: #00FF00;
+  border-left-color: #CCC;
+}
+.bordesdiv {
+  padding: 3px 10px;
+  border: #01579b 1px solid;
+  border-radius: 20px;
+}
+
+.boton_verde{
+    background-color: #009688 !important;
+    color: #fff !important;
+    border-bottom: none !important;
+}
+
+.boton_amarillo{
+    background-color: #ffc107ba !important;
+    color: #fff !important;
+    border-bottom: none !important;
+}
+
+.boton_rojo{
+    background-color: #e91e1e !important;
+    color: #fff !important;
+    border-bottom: none !important;
+}
+
+canvas{
+    position: absolute;
+
+}
+
+#body_video{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+
+
+}

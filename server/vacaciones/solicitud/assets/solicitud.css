@@ -1,0 +1,12 @@
+.txta-own{
+    min-height: 20% !important;
+    max-width: 100% !important;
+    background-color: rgba(0, 76, 153, .05);
+    padding: 4px !important;
+}
+
+.bordesdiv {
+  padding: 3px 10px;
+  border: #01579b 1px solid;
+  border-radius: 20px;
+}

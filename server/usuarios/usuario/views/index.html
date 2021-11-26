@@ -9,6 +9,7 @@
     {% if 'usuario_insert' in privileges or 'usuario_update' in privileges %}
         {% include form.html %}
         {% include form_usuarios.html %}
+        {% include boletaexport.html %}
     {% end %}
 
     <div class="header"><h2 class="title-rg-own">USUARIOS</h2></div>
@@ -22,8 +23,15 @@
                 </div>
             {% end %}
                     <div id="new_usuarios" class="caja-icono" title="crear usuarios">
-                        <img src="/resources/iconos/personal.ico" class="icono" />
+                        <img src="/resources/iconos/usuarios.png" class="icono" />
                     </div>
+                    <div id="reporte-xls" class="caja-icono" title="Reporte Excel">
+                        <img src="/resources/iconos/excel.png" class="icono" />
+                    </div>
+                    <div id="importar_Excel" class="caja-icono" title="Importar Excel">
+                        <img src="/resources/iconos/importar.png" class="icono" />
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -34,11 +42,12 @@
                 <table id="data_table" class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
-                            <th class="order_by_th" data-name="name">Nombre Completo </th>
-                            <th class="order_by_th" data-name="usuarioname">Nombre de usuario </th>
-                            <th class="order_by_th" data-name="condominio">Rol </th>
-                            <th class="order_by_th" data-name="enabled">Estado </th>
-                            <th class="actions_header">Acciones </th>
+                            <th class="order_by_th" data-name="name">Nombre Completo</th>
+                            <th class="order_by_th" data-name="name">Usuario</th>
+                            <th class="order_by_th" data-name="name">Rol</th>
+                            <th class="actions_header">Estado</th>
+                            <th class="actions_header">Acciones</th>
+                            <th class="actions_header">Contraseña</th>
                         </tr>
                     </thead>
                     <tbody id="table_content">

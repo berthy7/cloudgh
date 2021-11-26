@@ -16,28 +16,28 @@ def insertions():
 
         asistencia_m = session.query(Modulo).filter(Modulo.name == 'asistencia').first()
         if asistencia_m is None:
-            asistencia_m = Modulo(title='Asistencia', name='asistencia', icon='asistencia.ico')
+            asistencia_m = Modulo(title='Asistencia', name='asistencia', icon='asistencia.png')
 
         turno_m = session.query(Modulo).filter(Modulo.name == 'turno').first()
         if turno_m is None:
-            turno_m = Modulo(title='Turnos', route='/turno', name='turno', icon='turnos.ico')
+            turno_m = Modulo(title='Turnos', route='/turno', name='turno', icon='turnos.png')
 
         horario_m = session.query(Modulo).filter(Modulo.name == 'horario').first()
         if horario_m is None:
-            horario_m = Modulo(title='Horarios Semanal', route='/horario', name='horario', icon='horario.ico')
+            horario_m = Modulo(title='Horarios Semanal', route='/horario', name='horario', icon='horario.png')
 
         asignacion_m = session.query(Modulo).filter(Modulo.name == 'asignacion').first()
         if asignacion_m is None:
-            asignacion_m = Modulo(title='Asignación Horarios', route='/asignacion', name='asignacion', icon='asignacion.ico')
+            asignacion_m = Modulo(title='Asignación Horarios', route='/asignacion', name='asignacion', icon='asignacion.png')
 
         autorizacion_extra_m = session.query(Modulo).filter(Modulo.name == 'autorizacion_extra').first()
         if autorizacion_extra_m is None:
             autorizacion_extra_m = Modulo(title='Autorizacion de horas Extras', route='/autorizacion_extra', name='autorizacion_extra',
-                                  icon='horarioextra.ico')
+                                  icon='horarioextra.png')
 
         tipoausencia_m = session.query(Modulo).filter(Modulo.name == 'tipoausencia').first()
         if tipoausencia_m is None:
-            tipoausencia_m = Modulo(title='Tipos de Ausencias', route='/tipoausencia', name='tipoausencia', icon='tipoausencia.ico')
+            tipoausencia_m = Modulo(title='Tipos de Ausencias', route='/tipoausencia', name='tipoausencia', icon='tipoausencia.png')
 
         ausencia_m = session.query(Modulo).filter(Modulo.name == 'ausencia').first()
         if ausencia_m is None:
@@ -45,18 +45,16 @@ def insertions():
 
         politicas_m = session.query(Modulo).filter(Modulo.name == 'politicas').first()
         if politicas_m is None:
-            politicas_m = Modulo(title='Politicas', route='/politicas', name='politicas', icon='configuraciones.ico')
+            politicas_m = Modulo(title='Politicas', route='/politicas', name='politicas', icon='configuraciones.png')
 
         asistenciapersonal_m = session.query(Modulo).filter(Modulo.name == 'asistenciapersonal').first()
         if asistenciapersonal_m is None:
-            asistenciapersonal_m = Modulo(title='Asistencia Personal', route='/asistenciapersonal', name='asistenciapersonal', icon='reporte.ico')
+            asistenciapersonal_m = Modulo(title='Asistencia Personal', route='/asistenciapersonal', name='asistenciapersonal', icon='asistenciapersonal.png')
 
         asistencia_m.children.append(turno_m)
         asistencia_m.children.append(horario_m)
         asistencia_m.children.append(asignacion_m)
         asistencia_m.children.append(autorizacion_extra_m)
-        asistencia_m.children.append(tipoausencia_m)
-        asistencia_m.children.append(ausencia_m)
         asistencia_m.children.append(politicas_m )
         asistencia_m.children.append(asistenciapersonal_m)
 
@@ -196,73 +194,6 @@ def insertions():
         autorizacion_extra_m.children.append(delete_autorizacion_extra)
         autorizacion_extra_m.children.append(imprimir_autorizacion_extra)
 
-        query_tipoausencia = session.query(Modulo).filter(Modulo.name == 'tipoausencia_query').first()
-        if query_tipoausencia is None:
-            query_tipoausencia = Modulo(title='Consultar', route='',
-                                      name='tipoausencia_query',
-                                      menu=False)
-
-        insert_tipoausencia = session.query(Modulo).filter(Modulo.name == 'tipoausencia_insert').first()
-        if insert_tipoausencia is None:
-            insert_tipoausencia = Modulo(title='Adicionar', route='/tipoausencia_insert',
-                                       name='tipoausencia_insert',
-                                       menu=False)
-        update_tipoausencia = session.query(Modulo).filter(Modulo.name == 'tipoausencia_update').first()
-        if update_tipoausencia is None:
-            update_tipoausencia = Modulo(title='Actualizar', route='/tipoausencia_update',
-                                       name='tipoausencia_update',
-                                       menu=False)
-        delete_tipoausencia = session.query(Modulo).filter(Modulo.name == 'tipoausencia_delete').first()
-        if delete_tipoausencia is None:
-            delete_tipoausencia = Modulo(title='Dar de Baja', route='/tipoausencia_delete',
-                                       name='tipoausencia_delete',
-                                       menu=False)
-
-        imprimir_tipoausencia = session.query(Modulo).filter(Modulo.name == 'tipoausencia_imprimir').first()
-        if imprimir_tipoausencia is None:
-            imprimir_tipoausencia = Modulo(title='Imprimir', route='/tipoausencia_imprimir',
-                                         name='tipoausencia_imprimir',
-                                         menu=False)
-
-        tipoausencia_m.children.append(query_tipoausencia)
-        tipoausencia_m.children.append(insert_tipoausencia)
-        tipoausencia_m.children.append(update_tipoausencia)
-        tipoausencia_m.children.append(delete_tipoausencia)
-        tipoausencia_m.children.append(imprimir_tipoausencia)
-
-        query_ausencia = session.query(Modulo).filter(Modulo.name == 'ausencia_query').first()
-        if query_ausencia is None:
-            query_ausencia = Modulo(title='Consultar', route='',
-                                      name='ausencia_query',
-                                      menu=False)
-
-        insert_ausencia = session.query(Modulo).filter(Modulo.name == 'ausencia_insert').first()
-        if insert_ausencia is None:
-            insert_ausencia = Modulo(title='Adicionar', route='/ausencia_insert',
-                                       name='ausencia_insert',
-                                       menu=False)
-        update_ausencia = session.query(Modulo).filter(Modulo.name == 'ausencia_update').first()
-        if update_ausencia is None:
-            update_ausencia = Modulo(title='Actualizar', route='/ausencia_update',
-                                       name='ausencia_update',
-                                       menu=False)
-        delete_ausencia = session.query(Modulo).filter(Modulo.name == 'ausencia_delete').first()
-        if delete_ausencia is None:
-            delete_ausencia = Modulo(title='Dar de Baja', route='/ausencia_delete',
-                                       name='ausencia_delete',
-                                       menu=False)
-
-        imprimir_ausencia = session.query(Modulo).filter(Modulo.name == 'ausencia_imprimir').first()
-        if imprimir_ausencia is None:
-            imprimir_ausencia = Modulo(title='Imprimir', route='/ausencia_imprimir',
-                                         name='ausencia_imprimir',
-                                         menu=False)
-
-        ausencia_m.children.append(query_ausencia)
-        ausencia_m.children.append(insert_ausencia)
-        ausencia_m.children.append(update_ausencia)
-        ausencia_m.children.append(delete_ausencia)
-        ausencia_m.children.append(imprimir_ausencia)
 
         query_politicas = session.query(Modulo).filter(Modulo.name == 'politicas_query').first()
         if query_politicas is None:
@@ -332,7 +263,7 @@ def insertions():
         asistenciapersonal_m.children.append(delete_asistenciapersonal)
         asistenciapersonal_m.children.append(imprimir_asistenciapersonal)
 
-        admin_role = session.query(Rol).filter(Rol.nombre == 'ADMINISTRADOR').first()
+        admin_role = session.query(Rol).filter(Rol.nombre == 'SUPER ADMINISTRADOR').first()
 
         ###Modulos de Operaciones
 
@@ -341,8 +272,6 @@ def insertions():
         admin_role.modulos.append(horario_m)
         admin_role.modulos.append(asignacion_m)
         admin_role.modulos.append(autorizacion_extra_m)
-        admin_role.modulos.append(tipoausencia_m)
-        admin_role.modulos.append(ausencia_m)
         admin_role.modulos.append(politicas_m)
         admin_role.modulos.append(asistenciapersonal_m)
 
@@ -371,18 +300,6 @@ def insertions():
         admin_role.modulos.append(delete_autorizacion_extra)
         admin_role.modulos.append(imprimir_autorizacion_extra)
 
-        admin_role.modulos.append(query_tipoausencia)
-        admin_role.modulos.append(insert_tipoausencia)
-        admin_role.modulos.append(update_tipoausencia)
-        admin_role.modulos.append(delete_tipoausencia)
-        admin_role.modulos.append(imprimir_tipoausencia)
-
-        admin_role.modulos.append(query_ausencia)
-        admin_role.modulos.append(insert_ausencia)
-        admin_role.modulos.append(update_ausencia)
-        admin_role.modulos.append(delete_ausencia)
-        admin_role.modulos.append(imprimir_ausencia)
-
         admin_role.modulos.append(query_politicas)
         admin_role.modulos.append(insert_politicas)
         admin_role.modulos.append(update_politicas)
@@ -395,9 +312,6 @@ def insertions():
         admin_role.modulos.append(delete_asistenciapersonal)
         admin_role.modulos.append(imprimir_asistenciapersonal)
 
-        tipoause = Tipoausencia(id=1,nombre="Vacacion",descripcion="Vacacion para el personal")
-        session.add(tipoause)
-
         session.commit()
 
 
@@ -407,6 +321,6 @@ def asistencia_schedule():
         fecha_zona = datetime.now(pytz.timezone('America/La_Paz'))
 
         with transaction() as db:
-            AsistenciaManager(db).crear_horarios(fecha_zona, fecha_zona)
+            AsistenciaManager(db).crear_horarios(fecha_zona, fecha_zona,None)
 
     schedule.every().day.at("12:09").do(crear_horarios)

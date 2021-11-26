@@ -32,9 +32,13 @@ class CorreorrhhController(CrudController):
         diccionary['ip'] = self.request.remote_ip
 
         for correo in diccionary['correos']:
-            diccionary['fkpersona'] = correo['fkpersona']
-            objeto = self.manager(self.db).entity(**diccionary)
-            CorreorrhhManager(self.db).insert(objeto)
+
+            persona_correo = self.db.query(Correorrhh).filter(Correorrhh.fkpersona == correo['fkpersona']).first()
+            if persona_correo is None:
+
+                diccionary['fkpersona'] = correo['fkpersona']
+                objeto = self.manager(self.db).entity(**diccionary)
+                CorreorrhhManager(self.db).insert(objeto)
 
         self.respond(success=True, message='Insertado correctamente.')
 

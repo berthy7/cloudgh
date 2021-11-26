@@ -120,14 +120,27 @@ class AutorizacionextraController(CrudController):
         c = 0
 
         diccionario = dict(lista=list, contador=c)
-        fechainicio = data['fechainicio']
-        fechafin = data['fechafin']
+        #fechainicio = data['fechainicio']
+        #fechafin = data['fechafin']
+
+        fechainicio = datetime.strptime(data['fechainicio'], '%d/%m/%Y')
+        fechafin = datetime.strptime(data['fechafin'], '%d/%m/%Y')
+
+        repetidos = set(data['personas_arbol']).intersection(data['personas'])
+
+        for rep in repetidos:
+            data['personas'].remove(rep)
 
         for per in data['personas']:
-           diccionario = ins_manager.filtrar(diccionario,fechainicio, fechafin,per['id_persona'])
+            data['personas_arbol'].append(per)
 
-        for per in data['personas_arbol']:
-            diccionario = ins_manager.filtrar(diccionario,fechainicio, fechafin,per['id_persona'])
+        personas_lista = set(data['personas_arbol'])
+
+        for per in personas_lista:
+            persona_horario = self.db.query(Asignacion).filter(Asignacion.fkpersona == per).first()
+
+            if persona_horario:
+                diccionario = ins_manager.filtrar(diccionario,fechainicio, fechafin,per)
 
         if len(ins_manager.errors) == 0:
             self.respond(diccionario['lista'], message='Operacion exitosa!')

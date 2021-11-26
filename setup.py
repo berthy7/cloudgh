@@ -10,7 +10,7 @@ setup(
     url='',
     license='Licence',
     author='Berthy Vargas Villarreal',
-    author_email='berthy.v2@gmail.com',
+    author_email='bvargas@cloudbit.com.bo',
     description='Server Base on Tornado framework',
     install_requires=requires
 )

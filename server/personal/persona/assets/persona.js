@@ -332,80 +332,83 @@ function get_empleado() {
     data = [];
     var object_inputs = $('.empleado');
 
+     console.log(object_inputs[0].value);
+    console.log(object_inputs[1].value);
+    console.log(object_inputs[2].value);
+    console.log(object_inputs[4].value);
+    console.log(object_inputs[6].value);
+    console.log(object_inputs[8].value);
+    console.log(object_inputs[10].value);
+    console.log(object_inputs[12].value);
+    console.log(object_inputs[14].value);
+    console.log(object_inputs[16].value);
+    console.log(object_inputs[28].value);
+
+
     h0 = object_inputs[0].value;
     h1 = object_inputs[1].value;
-    h2 = object_inputs[2].value;
-    h3 = object_inputs[4].value;
-    h4 = object_inputs[6].value;
-    h5 = object_inputs[8].value;
-    h6 = object_inputs[10].value;
-    h7 = object_inputs[12].value;
-    h8 = object_inputs[14].value;
-    h9 = object_inputs[16].value;
-    h10 = object_inputs[18].value;
+    h4 = object_inputs[2].value;
+    h5 = object_inputs[4].value;
+    h6 = object_inputs[6].value;
+    h7 = object_inputs[8].value;
+    h8 = object_inputs[10].value;
+    h9 = object_inputs[12].value;
+    h10 = object_inputs[14].value;
+    h11 = object_inputs[16].value;
+    h12 = object_inputs[28].value;
 
     //items = [h1, h2, h3, h4, h5, h6, h7, h8, h9, h10];
-    items = [h2];
+    items = [h4];
     if (item_is_empty(items)) {
         gb_msg+= 'datos administrativos';
         return;
     }
 
-    if(h0 == ''){
-        data.push((function get_items(h1, h2, h3, h4, h5, h6, h7, h8, h9, h10) {
-            return {
-                'email': h1,
-                'codigo':h2,
-                'fkpais':h3,
-                'fkdepartamento':h4,
-                'fkciudad':h5,
-                'fksucursal':h6,
-                'fkoficina':h7,
-                'fkgerencia':h8,
-                'fkcargo':h9,
-                'fkcentro':h10
-            }
-        })(
-            object_inputs[1].value,
-            object_inputs[2].value,
-            object_inputs[4].value,
-            object_inputs[6].value,
-            object_inputs[8].value,
-            object_inputs[10].value,
-            object_inputs[12].value,
-            object_inputs[14].value,
-            object_inputs[16].value,
-            object_inputs[18].value
-        ))
-    }else{
         data.push((function get_items(h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10) {
-            return {
-                'id': h0,
-                'email': h1,
-                'codigo':h2,
-                'fkpais':h3,
-                'fkdepartamento':h4,
-                'fkciudad':h5,
-                'fksucursal':h6,
-                'fkoficina':h7,
-                'fkgerencia':h8,
-                'fkcargo':h9,
-                'fkcentro':h10
+            if (h0 ==''){
+                return {
+                    'email': h1,
+                    'codigo':h2,
+                    'fkpais':h3,
+                    'fkdepartamento':h4,
+                    'fkciudad':h5,
+                    'fksucursal':h6,
+                    'fkoficina':h7,
+                    'fkgerencia':h8,
+                    'fkcargo':h9,
+                    'fkcentro':h10
+                }
+
+            }else{
+                return {
+                    'id':h0,
+                    'email': h1,
+                    'codigo':h2,
+                    'fkpais':h3,
+                    'fkdepartamento':h4,
+                    'fkciudad':h5,
+                    'fksucursal':h6,
+                    'fkoficina':h7,
+                    'fkgerencia':h8,
+                    'fkcargo':h9,
+                    'fkcentro':h10
+                }
             }
+
         })(
-            object_inputs[0].value,
-            object_inputs[1].value,
-            object_inputs[2].value,
-            object_inputs[4].value,
-            object_inputs[6].value,
-            object_inputs[8].value,
-            object_inputs[10].value,
-            object_inputs[12].value,
-            object_inputs[14].value,
-            object_inputs[16].value,
-            object_inputs[18].value
+            h0,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            h7,
+            h8,
+            h9,
+            h10
         ))
-    }
+
     return data
 }
 
@@ -451,7 +454,7 @@ function get_contrato() {
             !['None', null, ""].includes(object_inputs[6].value)? object_inputs[6].value+' 00:00:00': null,
             !['None', null, ""].includes(object_inputs[7].value)? object_inputs[7].value+' 00:00:00': null,
             object_inputs[8].value,
-            object_inputs[9].value == 'true'? true: false
+            object_inputs[9].value === 'true'? true: false
         ))
     }else{
         data.push((function get_items(h0, h1, h2, h3, h4, h5, h6, h7, h8) {
@@ -475,7 +478,7 @@ function get_contrato() {
             !['None', null, ""].includes(object_inputs[6].value)? object_inputs[6].value+' 00:00:00': null,
             !['None', null, ""].includes(object_inputs[7].value)? object_inputs[7].value+' 00:00:00': null,
             object_inputs[8].value,
-            object_inputs[9].value == 'true'? true: false
+            object_inputs[9].value === 'true'? true: false
         ))
     }
 
@@ -1800,7 +1803,7 @@ function append_table_contrato(id) {
     obj = JSON.stringify({
         'id': parseInt(id)
     })
-    ajax_call_post("persona_contratos", {
+    ajax_call_post_no_msg("persona_contratos", {
         _xsrf: getCookie("_xsrf"),
         object: obj
     }, function(response) {
@@ -1977,7 +1980,7 @@ $('#new').click(function () {
     $('#show_img').parent().parent().hide()
     $('#fechaforzado').parent().parent().hide()
     $('#descripcionc').parent().parent().hide()
-    $('#fechafin').attr('required', 'required')
+    // $('#fechafin').attr('required', 'required')
 
     if ($.fn.DataTable.isDataTable('#table_contrato')) {
         var del_cont = $('#table_contrato').DataTable()
@@ -2041,8 +2044,8 @@ $('#submit_form').on('submit', function (e) {
     gb_msg = '';
 
     notvalid = validationInputSelectsWithReturn("form");
-    if (notvalid===false) {
-        if($('#id').val() == ''){
+    if (notvalid === false) {
+        if($('#id').val() === '') {
             objeto = JSON.stringify({
                 'apellidopaterno': $('#apellidop').val(),
                 'apellidomaterno': $('#apellidom').val(),
@@ -2052,6 +2055,7 @@ $('#submit_form').on('submit', function (e) {
                 'fechanacimiento': $('#fechanacimiento').val(),
                 'domicilio': $('#domicilio').val(),
                 'telefono': $('#telefonodt').val(),
+
                 'enabled': true,
                 'empleado': get_empleado(),
                 'contrato': get_contrato(),
@@ -2066,7 +2070,7 @@ $('#submit_form').on('submit', function (e) {
                 'conyuge': get_conyuge(),
                 'hijos': get_hijos()
             })
-        }else{
+        } else {
             objeto = JSON.stringify({
                 'id': parseInt($('#id').val()),
                 'apellidopaterno': $('#apellidop').val(),
@@ -2118,25 +2122,16 @@ $('#submit_form').on('submit', function (e) {
                 $(render).html(response)
             } else {
                 dictionary = JSON.parse(response)
-                if ("message" in dictionary && dictionary.message != '') {
-                    if (dictionary.success) {
-                        showMessage(dictionary.message, "success", "ok")
-                    } else {
-                        showMessage(dictionary.message, "danger", "remove")
-                    }
+                if ("message" in dictionary && dictionary.message !== '') {
+                    if (dictionary.success) showMessage(dictionary.message, "success", "ok")
+                    else showMessage(dictionary.message, "danger", "remove")
                 }
             }
-            if (callback != null) {
-                callback(response)
-            }
+            if (callback != null)  callback(response)
         })
         $('#form').modal('hide')
-    }else{
-        swal(
-            'Error de datos.',
-            notvalid,
-            'error'
-        )
+    } else {
+        swal('Error de datos.', notvalid, 'error')
     }
 })
 
@@ -2239,8 +2234,9 @@ function attach_edit() {
             $('#nombres').val(self.nombres)
             $('#fechanacimiento').val(self.fechanacimiento)
             $('#ci').val(self.ci)
-            if (self.domicilio != 'None') $('#domicilio').val(self.domicilio)
-            if (self.telefono != 'None') $('#telefonodt').val(self.telefono)
+            if (self.domicilio !== 'None') $('#domicilio').val(self.domicilio)
+            if (self.telefono !== 'None') $('#telefonodt').val(self.telefono)
+            
 
             $('#sexo').val(self.sexo)
             $('#sexo').selectpicker('refresh')
@@ -2258,7 +2254,7 @@ function attach_edit() {
                 $('#fksucursal').val(self.empleado[0].fksucursal)
                 $('#fksucursal').selectpicker('refresh')
 
-                if (self.empleado[0].fkoficina != 'None') {
+                if (self.empleado[0].fkoficina !== 'None') {
                     $('#fkoficina').val(self.empleado[0].fkoficina)
                     $('#fkoficina').selectpicker('refresh')
                 }
@@ -2274,6 +2270,9 @@ function attach_edit() {
 
                 if(self.empleado[0].foto.includes('images/personal')){
                     $('#show_img').attr('src', self.empleado[0].foto);
+                    $('#show_img').parent().parent().show();
+                }else{
+                    $('#show_img').attr('src', '/resources/images/no_photo.png');
                     $('#show_img').parent().parent().show();
                 }
             }
@@ -2292,41 +2291,48 @@ function attach_edit() {
                         $('#tipocont').val(self.contrato[i].tipo)
                         $('#tipocont').selectpicker('refresh')
 
-                        if (self.contrato[i].tipo == 'INDEFINIDO') $('#fechafin').parent().parent().hide()
+                        if (self.contrato[i].tipo === 'INDEFINIDO') $('#fechafin').parent().parent().hide()
                         else $('#fechafin').parent().parent().show()
+                        if (self.contrato[0].tipo !== 'INDEFINIDO') {
+                            if (!nulos.includes(self.contrato[i].fechaFin)) {
+                                var dt = new Date();
+                                var parts = (self.contrato[i].fechaFin).split('/');
+                                //console.log(parts)
+                                var fd = (parts[0].indexOf('0') === 0)? parts[0].replace('0', ''): parts[0];
+                                var fm = (parts[1].indexOf('0') === 0)? parts[1].replace('0', ''): parts[1];
+                                //console.log('no indef - ffin dt');
+                                //console.log(fd+' | '+fm);
+                                var df = new Date(parts[2]+'-'+fm+'-'+fd);
+                                //console.log(dt.getFullYear()+'-'+(dt.getMonth()+1)+'-'+dt.getDate())
+                                //console.log(df.getFullYear()+'-'+(df.getMonth()+1)+'-'+df.getDate())
 
-                        if (!nulos.includes(self.contrato[i].fechaFin) && self.contrato[0].tipo != 'INDEFINIDO') {
-                            var dt = new Date();
-                            var parts = (self.contrato[i].fechaFin).split('/');
-                            //console.log(parts)
-                            var fd = (parts[0].indexOf('0') == 0)? parts[0].replace('0', ''): parts[0];
-                            var fm = (parts[1].indexOf('0') == 0)? parts[1].replace('0', ''): parts[1];
-                            //console.log('no indef - ffin dt');
-                            //console.log(fd+' | '+fm);
-                            var df = new Date(parts[2]+'-'+fm+'-'+fd);
-                            //console.log(dt.getFullYear()+'-'+(dt.getMonth()+1)+'-'+dt.getDate())
-                            //console.log(df.getFullYear()+'-'+(df.getMonth()+1)+'-'+df.getDate())
-
-                            if (dt > df) {
-                                $('#force-contrato').show()
-                                $('#new-contrato').hide()
-                                gb_ret = 1;
-                                $('#enable_cont').val('false')
-                                //console.log('end vig')
+                                if (dt > df) {
+                                    $('#force-contrato').show()
+                                    $('#new-contrato').hide()
+                                    gb_ret = 1;
+                                    $('#enable_cont').val('false')
+                                    //console.log('end vig')
+                                } else {
+                                    $('#force-contrato').show()
+                                    $('#new-contrato').show()
+                                    $('#enable_cont').val('true')
+                                    //console.log('still vig')
+                                }
                             } else {
+                                console.log("true")
                                 $('#force-contrato').show()
                                 $('#new-contrato').show()
                                 $('#enable_cont').val('true')
-                                //console.log('still vig')
                             }
                         } else {
                             $('#force-contrato').show()
                             $('#new-contrato').show()
+                            $('#enable_cont').val('true')
                             //console.log('indef')
                         }
 
                         $('#fechafin').val(self.contrato[i].fechaFin)
-                        if (self.contrato[i].descripcion != 'None') $('#descripcionc').val(self.contrato[i].descripcion)
+                        if (self.contrato[i].descripcion !== 'None') $('#descripcionc').val(self.contrato[i].descripcion)
 
                         $('#fechaforzado').parent().parent().hide()
                         $('#descripcionc').parent().parent().hide()
@@ -2683,7 +2689,12 @@ $('#valid-contrato').click(function () {
     }, function (response) {
         var dtresp = response.response
         //console.log(dtresp)
-        if (dtresp.message == 'success') showMessage('Acción realizada exitosamente.', "success", "ok")
+        if (dtresp.message === 'success') {
+            showMessage('Acción realizada exitosamente.', "success", "ok")
+            setTimeout(function () {
+                window.location = main_route
+            }, 2000);
+        }
         else showMessage('No se pudo realizar la acción.', "danger", "remove")
     })
 });

@@ -22,32 +22,33 @@
                     {% end %}
                 </div>
             </div>
-            <div class="col-xs-3 col-sm-2 col-md-6 col-lg-7">
-                <div class="col-sm-6">
-                    <div class="body table-responsive">
-                        <table id="data_table_hora" class="table table-bordered table-striped table-hover" readonly>
-                            <thead>
-                                <tr>
-                                    <th class="order_by_th" data-name="name">Hora Limite de Pedidos</th>
-                                    <th class="order_by_th" data-name="name">Hora Inicio del Almuerzo</th>
-                                    <th class="order_by_th" data-name="name">Hora Fin del Almuerzo</th>
-                                </tr>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="body table-responsive">
+                    <table id="data_table_hora" style="width:300px" class="table table-bordered table-striped table-hover" readonly>
+                        <thead>
+                            <tr>
+                                <th style="width:200px" class="order_by_th" data-name="name">Hora Limite de Pedidos</th>
+                                <td style="width:100px" ><input id="horaLimite" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaLimite.strftime("%H:%M")}}" readonly></td>
 
-                            </thead>
-                            <tbody id="table_content">
-                                <tr>
-                                    <td><input id="horaLimite" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaLimite.strftime("%H:%M")}}" readonly></td>
-                                    <td><input id="horaInicio" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaInicio.strftime("%H:%M")}}" readonly></td>
-                                    <td><input id="horaFin" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaFin.strftime("%H:%M")}}" readonly></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            </tr>
+                            <tr>
+                                <th style="width:200px" class="order_by_th" data-name="name">Hora Inicio del Almuerzo</th>
+                                <td style="width:100px" ><input id="horaInicio" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaInicio.strftime("%H:%M")}}" readonly></td>
+
+                            </tr>
+                            <tr>
+                                <th style="width:200px" class="order_by_th" data-name="name">Hora Fin del Almuerzo</th>
+                                <td style="width:100px" ><input id="horaFin" type="text" class="form-control hr" placeholder="Ex: 23:59" value="{{ horarios.horaFin.strftime("%H:%M")}}" readonly></td>
+
+                            </tr>
+
+                        </thead>
+                    </table>
                 </div>
             </div>
-
         </div>
-
 
 
         {% if 'portal_pedido_query' in privileges %}

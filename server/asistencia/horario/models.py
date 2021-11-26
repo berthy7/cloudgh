@@ -13,7 +13,9 @@ class Semanal(Serializable, Base):
     __table_args__ = ({"schema": "ASISTENCIA"})
 
     id = Column(Integer, Sequence('id'), primary_key=True)
+    codigo = Column(String(80), nullable=True, unique=True)
     nombre = Column(String(80), nullable=False, unique=True)
+    enabled = Column(Boolean, default=True)
 
     semanaldetalle = relationship('Semanaldetalle', cascade="save-update, merge, delete, delete-orphan")
 

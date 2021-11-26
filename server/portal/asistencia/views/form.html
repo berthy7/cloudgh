@@ -1,0 +1,51 @@
+<div id="form" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document"style="width:100vw; max-width: 1450px" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="portal_asistencia_title" class="modal-title">Solicitar Ausencia</h3>
+                <h4 id="portal_asistencia_enable" class=""></h4>
+            </div>
+            <div class="modal-body">
+                <div id="cliente_form_body" class="box-body">
+
+                    <div id="id_div" class="form-group">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input id="id" type="text" class="form-control" disabled="disabled">
+                            <label for="id" class="form-label">portal_asistencias ID</label>
+                        </div>
+                    </div>
+{#                    <div class="row clearfix">#}
+{#                        <div class="col-sm-6">#}
+{#                            <div class="form-line">#}
+{#                                <label class="form-label">Nombre</label>#}
+{#                                <input id="nombre" name="Nombre" class=" form-control" readonly>#}
+{#                            </div>#}
+{#                            <input type="hidden" id="pnombre" value="{{nombrepersona}}">#}
+{#                            <input type="hidden" id="pid" value="{{idpersona}}">#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    </br>#}
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <button id="startbutton">Tomar photo</button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                {% if 'portal_asistencia_insert' in privileges %}
+                    <button id="insert" type="button" class="btn bg-page-own waves-effect">Guardar <i class="material-icons">save</i></button>
+                {% end %}
+                {% if 'portal_asistencia_update' in privileges %}
+                    <button id="update" type="button" class="btn bg-page-own waves-effect">Modificar <i class="material-icons">refresh</i></button>
+                {% end %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

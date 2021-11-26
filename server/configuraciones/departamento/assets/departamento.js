@@ -22,6 +22,13 @@ $('#new').click(function () {
     $('#nombre').val('')
     $('#fkpais').val('')
     $('#fkpais').selectpicker('refresh')
+    
+    // var latitud = -16.2901535;
+    // var longitud = -63.5886536;
+    // localStorage.setItem('latitud',latitud);
+    // localStorage.setItem('longitud',longitud);
+    
+    // funcion_nuevo()
 
     verif_inputs('')
     validationInputSelects("form")
@@ -39,6 +46,8 @@ $('#insert').click(function () {
         objeto = JSON.stringify({
             'nombre': $('#nombre').val(),
             'fkpais': $('#fkpais').val()
+            // 'latitud': localStorage.getItem("latitud"),
+            // 'longitud':localStorage.getItem("longitud")
         })
         ajax_call('departamento_insert', {
             object: objeto,
@@ -74,6 +83,10 @@ function attach_edit() {
             $('#nombre').val(self.nombre)
             $('#fkpais').val(self.fkpais)
             $('#fkpais').selectpicker('refresh')
+            // localStorage.setItem('latitud',self.latitud)
+            // localStorage.setItem('longitud',self.longitud)
+            
+            // funcion_actualizar()
 
             clean_form()
             verif_inputs('')
@@ -93,7 +106,9 @@ $('#update').click(function () {
         objeto = JSON.stringify({
             'id': parseInt($('#id').val()),
             'nombre': $('#nombre').val(),
-            'fkpais': $('#fkpais').val()
+            'fkpais': $('#fkpais').val(),
+            // 'latitud':localStorage.getItem("latitud"),
+            // 'longitud':localStorage.getItem("longitud")
         })
         ajax_call('departamento_update', {
             object: objeto,

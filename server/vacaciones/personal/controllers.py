@@ -37,12 +37,17 @@ class V_personalController(CrudController):
         '/v_personal_delete': {'POST': 'delete'},
         '/v_personal_importar': {'POST': 'importar'},
         '/v_personal_historico': {'POST': 'historico'},
-        '/v_personal_disponible': {'POST': 'disponible'}
+        '/v_personal_disponible': {'POST': 'disponible'},
+        '/v_personal_dias': {'POST': 'dias'},
+        '/v_personal_obtener': {'POST': 'obtener'},
+        '/v_personal_reporte_total': {'POST': 'reporte_total'}
 
     }
 
     def get_extra_data(self):
         aux = super().get_extra_data()
+        aux['admin'] = PersonaManager(self.db).get_employees_tree()
+        aux['personal'] = PersonaManager(self.db).listar_todo()
 
         return aux
 
@@ -97,15 +102,23 @@ class V_personalController(CrudController):
     def disponible(self):
         self.set_session()
         diccionary = json.loads(self.get_argument("object"))
-        fkpersona = diccionary['fkpersona']
-        fechai = diccionary['fechai']
-        fechaf = diccionary['fechaf']
 
-        respuesta = V_personalManager(self.db).disponibilidad(fkpersona,fechai,fechaf)
+        respuesta = V_personalManager(self.db).disponibilidad(diccionary)
+
         if respuesta['respuesta']:
-            self.respond(message=respuesta['mensaje'], success=respuesta['respuesta'], tipo=respuesta['tipo'])
+            self.respond(message=respuesta['mensaje'], success=respuesta['respuesta'], tipo=respuesta['tipo'], response=respuesta['lista_personas'])
         else:
-            self.respond(message=respuesta['mensaje'], success=respuesta['respuesta'], tipo=respuesta['tipo'])
+            self.respond(message=respuesta['mensaje'], success=respuesta['respuesta'], tipo=respuesta['tipo'], response=respuesta['lista_personas'])
+
+    def dias(self):
+        self.set_session()
+        diccionary = json.loads(self.get_argument("object"))
+
+        respuesta = V_personalManager(self.db).dias(diccionary)
+        if respuesta['respuesta']:
+            self.respond(message=respuesta['mensaje'], success=respuesta['respuesta'], tipo=respuesta['tipo'], response=respuesta['fechaf'])
+        else:
+            self.respond(message=respuesta['mensaje'], success=respuesta['respuesta'], tipo=respuesta['tipo'], response=respuesta['fechaf'])
 
     def historico(self):
         self.set_session()
@@ -125,7 +138,7 @@ class V_personalController(CrudController):
 
         lista_historico = V_historicoManager(self.db).obtener_historico(diccionary['fkpersona'])
         persona = PersonaManager(self.db).obtener_persona(diccionary['fkpersona'])
-        v_persona = V_personalManager(self.db).obtener_x_personal(diccionary['fkpersona'])
+        v_persona = V_personalManager(self.db).obtener_vacacion_disponible(diccionary['fkpersona'])
 
         for x in lista_historico:
 
@@ -176,11 +189,90 @@ class V_personalController(CrudController):
                 "" + detalle + "" \
                 "<tr color='#ffffff' >" \
                 "   <td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>TOTAL DIAS VACACIONES: </strong></td>" \
-                "   <td colspan='15' scope='colgroup'align='left'><font>" + str(v_persona.dias) + "</font></td>" \
+                "   <td colspan='15' scope='colgroup'align='left'><font>" + str(v_persona['dias']) + "</font></td>" \
                 "</tr>" \
                 "</table>"
 
         nombre = "Historico-vacaciones.pdf"
+
+        report.html_to_pdf(html, nombre)
+        self.respond('/resources/downloads/' + nombre)
+
+    def obtener(self):
+        self.set_session()
+        us = self.get_user()
+
+        data = json.loads(self.get_argument("object"))
+
+        respuesta = V_personalManager(self.db).obtener_vacacion_disponible(data['idpersona'])
+        self.respond(message="", success=True, tipo="",
+                     response=respuesta['dias'])
+        self.db.close()
+
+
+    def reporte_total(self):
+        self.set_session()
+        diccionary = json.loads(self.get_argument("object"))
+        objetoempresa = EmpresaManager(self.db).obtener_empresa()
+        detalle = ""
+
+        if objetoempresa:
+            if objetoempresa.foto1:
+                logoempresa = objetoempresa.foto1
+            else:
+                logoempresa = "/resources/images/sinImagen.jpg"
+        else:
+            logoempresa = "/resources/images/sinImagen.jpg"
+
+        html = "<meta http-equiv='Content-Type' content='text/html'; charset='utf-8' />" \
+               "<style>" \
+               ".border-own { border-left: 0px; border-right: 0px; }" \
+               ".border-own-l { border-right: 0px; }" \
+               ".border-own-r { border-left: 0px; }" \
+               "table th { background-color: #1976d2; color: white; }" \
+               "@page {size: letter portrait; margin: 1cm; @frame footer_frame {-pdf-frame-content: footer_content; left: 50pt; width: 512pt; top: 772pt; height: 20pt; }}" \
+               "</style>" \
+               "<div class='container' style='font-size: 12px'>" \
+               "<div class='row'>" \
+               "<div class='col-md-4'>" \
+               "<img src='../server/common" + logoempresa + "' width='auto' height='75'>" \
+                "</div>" \
+                "</div>" \
+                "</div>" \
+                "<div class='container' style='font-size: 12px'>" \
+                "<div class='row'>" \
+                "<div class='col-md-4'>" \
+                "<h6 align='center'>REPORTE INFORMACION DE SALDOS VACACIONES</h6>" \
+                "</div>" \
+                "</div>" \
+                "</div>"
+
+        repetidos = set(diccionary['personas_arbol']).intersection(diccionary['personas'])
+
+        for rep in repetidos:
+            diccionary['personas'].remove(rep)
+
+        for per in diccionary['personas']:
+            diccionary['personas_arbol'].append(per)
+
+        personas_lista = set(diccionary['personas_arbol'])
+
+        for per in personas_lista:
+
+            detalle += V_personalManager(self.db).crear_reporte(per, diccionary)
+
+        html += "<table align='center' style='padding: 4px; border: 1px solid grey' width='100%'>" \
+                "<tr style='font-size: 11px'>" \
+                "<th colspan='2' scope='colgroup'>NOMBRE </th>" \
+                "<th colspan='1' scope='colgroup'>GESTION </th>" \
+                "<th colspan='1' scope='colgroup'>SALDO VACACIONES </th>" \
+                "<th colspan='1' scope='colgroup'>VACACIONES TOMADAS </th>" \
+                "<th colspan='1' scope='colgroup'>VACACIONES RECHAZADAS </th>" \
+                "</tr>" \
+                "" + detalle + "" \
+                               "</table>"
+
+        nombre = "Reporte_Totales.pdf"
 
         report.html_to_pdf(html, nombre)
         self.respond('/resources/downloads/' + nombre)

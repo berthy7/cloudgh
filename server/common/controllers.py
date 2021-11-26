@@ -80,10 +80,17 @@ class SuperController(RequestHandler):
         self.post()
 
     def write_error(self, status_code, **kwargs):
+        data_emp = self.get_data_empress()
         self.render("common/views/error.html",
                     error_code=status_code,
-                    message=kwargs.get('message', 'Internal Server Error'),
-                    url_redirect='/')
+                    message=kwargs.get('message', 'Error interno del servidor'),
+                    url_redirect='/', empresalogo=data_emp)
+
+    def get_data_empress(self):
+        from server.configuraciones.empresa.managers import EmpresaGlobalManager
+        data_emp = EmpresaGlobalManager().get_data_empress()
+
+        return data_emp
 
 
 class MethodDispatcher(SuperController):
@@ -213,11 +220,13 @@ class CrudController(MethodDispatcher):
 
 class Error404Handler(RequestHandler):
     def prepare(self):
+        from server.configuraciones.empresa.managers import EmpresaGlobalManager
+        data_emp = EmpresaGlobalManager().get_data_empress()
         self.set_status(404)
         self.render("common/views/error.html",
                     error_code='404',
-                    message="This page doesn't exist",
-                    url_redirect='/')
+                    message="Página no encontrada",
+                    url_redirect='/', empresalogo=data_emp)
 
 
 class ApiController(MethodDispatcher):

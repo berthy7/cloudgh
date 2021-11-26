@@ -16,6 +16,7 @@ class Marcaciones(Serializable, Base):
     codigo = Column(Integer, nullable=False)
     time = Column(DateTime)
     fkdispositivo = Column(Integer, ForeignKey('ASISTENCIA.cb_dispositivos_lectores.id'), nullable=True)
+    sucursal = Column(Integer, nullable=True)
 
     enabled = Column(Boolean, default=True)
 

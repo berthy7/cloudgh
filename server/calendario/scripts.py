@@ -12,11 +12,11 @@ def insertions():
 
         calendario_m = session.query(Modulo).filter(Modulo.name == 'calendario').first()
         if calendario_m is None:
-            calendario_m = Modulo(title='Calendario', name='calendario', icon='calendario.ico')
+            calendario_m = Modulo(title='Calendario', name='calendario', icon='calendar.png')
 
         feriado_m = session.query(Modulo).filter(Modulo.name == 'feriado').first()
         if feriado_m is None:
-            feriado_m = Modulo(title='Feriados', route='/feriado', name='feriado', icon='libre.ico')
+            feriado_m = Modulo(title='Feriados', route='/feriado', name='feriado', icon='libre.png')
 
         calendario_m.children.append(feriado_m)
 
@@ -54,7 +54,7 @@ def insertions():
         feriado_m.children.append(delete_feriado)
         feriado_m.children.append(imprimir_feriado)
 
-        admin_role = session.query(Rol).filter(Rol.nombre == 'ADMINISTRADOR').first()
+        admin_role = session.query(Rol).filter(Rol.nombre == 'SUPER ADMINISTRADOR').first()
 
         ###Modulos de Operaciones
 
