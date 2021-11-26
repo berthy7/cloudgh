@@ -198,25 +198,28 @@ class PersonaManager(SuperManager):
                                     row[indices['SUCURSAL']].value is not None:
                         query = self.db.query(Empleado).filter(Empleado.codigo == row[indices['CODIGO']].value).filter(Persona.ci == str(row[indices['CI']].value)).all()
                         if not query:
-                            # print(type(row[indices['FECHA_NACIMIENTO']].value))
-                            # print(type(row[indices['FECHA_INGRESO_NOM']].value))
-                            # print(type(row[indices['FECHA_VENCIMIENTO']].value))
                             print(str(row[indices['CODIGO']].value))
 
-                            if str(row[indices['CODIGO']].value) == "2014":
-                                print("entro")
+                            fechaNacimiento = datetime.strptime(row[indices['FECHA_NACIMIENTO']].value, '%d/%m/%Y')
+                            fechaIngreso = datetime.strptime(row[indices['FECHA_INGRESO_NOM']].value, '%d/%m/%Y')
+
+                            if row[indices['FECHA_VENCIMIENTO']].value == "":
+                                fechaFin = None
+                            else:
+                                fechaFin = datetime.strptime(row[indices['FECHA_VENCIMIENTO']].value, '%d/%m/%Y')
+
                             empl = Empleado(codigo=row[indices['CODIGO']].value,email=row[indices['CORREO']].value)
                             persona = Persona(nombres=row[indices['NOMBRE']].value,
                                               apellidopaterno=row[indices['APELLIDO_P']].value,
                                               apellidomaterno=row[indices['APELLIDO_M']].value,
                                               sexo=row[indices['SEXO']].value.title(),
                                               ci=row[indices['CI']].value,
-                                              fechanacimiento=row[indices['FECHA_NACIMIENTO']].value,
+                                              fechanacimiento=fechaNacimiento,
                                               )
                             contra = Contrato(
                                 nroContrato=row[indices['CODIGO']].value,
-                                fechaIngreso=row[indices['FECHA_INGRESO_NOM']].value,
-                                fechaFin=row[indices['FECHA_VENCIMIENTO']].value,
+                                fechaIngreso=fechaIngreso,
+                                fechaFin=fechaFin,
                                 tipo=row[indices['CONTRATO_PLAZO']].value)
 
                             if EmpresaManager(self.db).obtener_x_nombre(row[indices['EMPRESA']].value.title()) is None:
