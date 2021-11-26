@@ -80,6 +80,8 @@ def create_app():
     puerto = config['Server']['port']
     vaciar_puerto(puerto)
 
+    port = int(os.getenv('PORT', puerto))
+
     # if sys.platform == 'win32':
     #     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -87,7 +89,7 @@ def create_app():
     Thread(target=launch_schedule).start()
     app = Application(get_handlers(), **settings, default_handler_class=Error404Handler)
 
-    app.listen(int(config['Server']['port']), config['Server']['address'])
+    app.listen(port, config['Server']['address'])
     print('running server on  http://'+config['Server']['address']+':'+config['Server']['port'])
     #app.listen(int(config['Server']['port']), socket.gethostbyname(socket.gethostname()))
     #print('running server on  http://'+socket.gethostbyname(socket.gethostname())+':'+config['Server']['port'])
