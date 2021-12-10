@@ -5,6 +5,10 @@ var gb_msg = '';
 var gb_ret = 0;
 var datos_elem = [];
 
+var fechahoy = new Date();
+var hoy = fechahoy.getDate()+"/"+(fechahoy.getMonth()+1) +"/"+fechahoy.getFullYear()
+document.getElementById("fecharetiroForzado").value=hoy
+
 $(document).ready(function () {
     $('#data_table').DataTable();
 });
@@ -331,38 +335,37 @@ function item_is_empty(items){
 function get_empleado() {
     data = [];
     var object_inputs = $('.empleado');
-
-     console.log(object_inputs[0].value);
-    console.log(object_inputs[1].value);
-    console.log(object_inputs[2].value);
-    console.log(object_inputs[4].value);
-    console.log(object_inputs[6].value);
-    console.log(object_inputs[8].value);
-    console.log(object_inputs[10].value);
-    console.log(object_inputs[12].value);
-    console.log(object_inputs[14].value);
-    console.log(object_inputs[16].value);
-    console.log(object_inputs[28].value);
-
-
+    
     h0 = object_inputs[0].value;
     h1 = object_inputs[1].value;
-    h4 = object_inputs[2].value;
-    h5 = object_inputs[4].value;
-    h6 = object_inputs[6].value;
-    h7 = object_inputs[8].value;
-    h8 = object_inputs[10].value;
-    h9 = object_inputs[12].value;
-    h10 = object_inputs[14].value;
-    h11 = object_inputs[16].value;
-    h12 = object_inputs[28].value;
+    h2 = object_inputs[2].value;
+    h3 = object_inputs[4].value;
+    h4 = object_inputs[6].value;
+    h5 = object_inputs[8].value;
+    h6 = object_inputs[10].value;
+    h7 = object_inputs[12].value;
+    h8 = object_inputs[14].value;
+    h9 = object_inputs[16].value;
+    h10 = object_inputs[18].value;
+    
+    console.log("" +object_inputs[0].value);
+    console.log("" +object_inputs[1].value);
+    console.log("" +object_inputs[2].value);
+    console.log("" +object_inputs[4].value);
+    console.log("" +object_inputs[6].value);
+    console.log("" +object_inputs[8].value);
+    console.log("" +object_inputs[10].value);
+    console.log("" +object_inputs[12].value);
+    console.log("" +object_inputs[14].value);
+    console.log("" +object_inputs[16].value);
+    console.log("" +object_inputs[18].value);
 
     //items = [h1, h2, h3, h4, h5, h6, h7, h8, h9, h10];
-    items = [h4];
-    if (item_is_empty(items)) {
-        gb_msg+= 'datos administrativos';
-        return;
-    }
+    // items = [h4];
+    // if (item_is_empty(items)) {
+    //     gb_msg+= 'datos administrativos';
+    //     return;
+    // }
 
         data.push((function get_items(h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10) {
             if (h0 ==''){
@@ -425,62 +428,36 @@ function get_contrato() {
     h5 = object_inputs[6].value;
     h6 = object_inputs[7].value;
     h7 = object_inputs[8].value;
-    h8 = object_inputs[9].value;
 
-    items = [h1, h2, h3, h4];
+    data.push((function get_items(h1, h2, h3, h4, h5, h6, h7) {
 
-    if (item_is_empty(items)) {
-        if(gb_msg != '') gb_msg+= ' contrato';
-        else gb_msg+= 'contrato';
-        return;
-    }
-    if(h0 == ''){
-        data.push((function get_items(h1, h2, h3, h4, h5, h6, h7, h8) {
-            return {
-                'nroContrato': h1,
-                'tipo':h2,
-                'sueldo':h3,
-                'fechaIngreso':h4,
-                'fechaFin':h5,
-                'fechaForzado':h6,
-                'descripcion':h7,
-                'enabled': h8
-            }
-        })(
-            object_inputs[1].value,
-            object_inputs[3].value,
-            object_inputs[4].value,
-            !['None', null, ""].includes(object_inputs[5].value)? object_inputs[5].value+' 00:00:00': null,
-            !['None', null, ""].includes(object_inputs[6].value)? object_inputs[6].value+' 00:00:00': null,
-            !['None', null, ""].includes(object_inputs[7].value)? object_inputs[7].value+' 00:00:00': null,
-            object_inputs[8].value,
-            object_inputs[9].value === 'true'? true: false
-        ))
-    }else{
-        data.push((function get_items(h0, h1, h2, h3, h4, h5, h6, h7, h8) {
-            return {
-                'id': h0,
-                'nroContrato': h1,
-                'tipo':h2,
-                'sueldo':h3,
-                'fechaIngreso':h4,
-                'fechaFin':h5,
-                'fechaForzado':h6,
-                'descripcion':h7,
-                'enabled': h8
-            }
-        })(
-            object_inputs[0].value,
-            object_inputs[1].value,
-            object_inputs[3].value,
-            object_inputs[4].value,
-            !['None', null, ""].includes(object_inputs[5].value)? object_inputs[5].value+' 00:00:00': null,
-            !['None', null, ""].includes(object_inputs[6].value)? object_inputs[6].value+' 00:00:00': null,
-            !['None', null, ""].includes(object_inputs[7].value)? object_inputs[7].value+' 00:00:00': null,
-            object_inputs[8].value,
-            object_inputs[9].value === 'true'? true: false
-        ))
-    }
+           if (h0 =='' ){
+                   return {
+                    'nroContrato': h1,
+                    'tipo':h2,
+                    'sueldo':h3,
+                    'fechaIngreso':h4,
+                    'fechaFin':h5,
+                    'fechaForzado':h6,
+                    'descripcion':h7
+                }
+
+
+         }else{
+                return {
+                    'id': h0,
+                    'nroContrato': h1,
+                    'tipo':h2,
+                    'sueldo':h3,
+                    'fechaIngreso':h4,
+                    'fechaFin':h5,
+                    'fechaForzado':h6,
+                    'descripcion':h7
+                }
+        }
+
+    })(h1, h2, h3, h4, h5, h6, h7
+    ))
 
     return data
 }
@@ -1895,6 +1872,7 @@ $('#close-contrato').click(function () {
     $('#close-contrato').hide()
 });
 
+
 $('#insert-contrato').click(function () {
     var table = $('#table_contrato').DataTable();
     table.clear().draw();
@@ -1931,7 +1909,6 @@ $('#insert-contrato').click(function () {
     $('#content-contrato').hide()
     table.order([0, 'desc']).draw()
 });
-
 function clean_dtcontrato(){
     $('#nrocontrato').val('')
     $('#sueldo').val('')
@@ -2133,6 +2110,39 @@ $('#submit_form').on('submit', function (e) {
     } else {
         swal('Error de datos.', notvalid, 'error')
     }
+})
+
+$('#insertRetiroForzado').click(function () {
+
+
+    swal({
+        title: "¿Desea dar de baja los datos de la persona?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#1565c0",
+        cancelButtonColor: "#F44336",
+        confirmButtonText: "Aceptar",
+        cancelButtonText: "Cancelar"
+    }).then(function () {
+
+        objeto = JSON.stringify({
+            'idNombre': $('#idPersonalRetiro').val(),
+            'fechaForzado': $('#fecharetiroForzado').val(),
+            'descripcion': $('#motivoRetiro').val()
+        })
+        ajax_call('persona_retiro', {
+            object: objeto,
+            _xsrf: getCookie("_xsrf")
+        }, null, function () {
+            setTimeout(function () {
+                window.location = main_route
+            }, 2000);
+        })
+        $('#modal-retiro').modal('hide')
+
+    })
+
+
 })
 
 $('#importar_excel').click(function () {
@@ -2500,27 +2510,22 @@ attach_edit()
 
 function attach_edit2() {
     $('.delete').click(function () {
-        id = parseInt(JSON.parse($(this).attr('data-json')))
-        enabled = false
-        swal({
-            title: "¿Desea dar de baja al persona?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#1565c0",
-            cancelButtonColor: "#F44336",
-            confirmButtonText: "Aceptar",
-            cancelButtonText: "Cancelar"
-        }).then(function () {
-            ajax_call("{{privileges['persona_delete'].route}}", {
-                id: id,
-                enabled: enabled,
-                _xsrf: getCookie("_xsrf")
-            }, null, function () {
-                setTimeout(function () {
-                    window.location = main_route
-                }, 2000);
-            })
+
+        obj = JSON.stringify({
+            'id': parseInt(JSON.parse($(this).attr('data-json')))
         })
+
+        ajax_call_get('persona_update', {
+            _xsrf: getCookie("_xsrf"),
+            object: obj
+        }, function (response) {
+            var self = response;
+            $('#idPersonalRetiro').val(self.id)
+            $('#nombrePersonalRetiro').val(self.fullname)
+            $('#modal-retiro').modal('show')
+
+        })
+
     })
 }
 attach_edit2()
@@ -2589,29 +2594,34 @@ $('#reporte-xls').click(function () {
 })
 
 
-$('.delete').click(function () {
-    id = parseInt(JSON.parse($(this).attr('data-json')))
-    enabled = false
-    swal({
-        title: "¿Desea dar de baja los datos de la persona?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#1565c0",
-        cancelButtonColor: "#F44336",
-        confirmButtonText: "Aceptar",
-        cancelButtonText: "Cancelar"
-    }).then(function () {
-        ajax_call('persona_delete', {
-            id: id,
-            enabled: enabled,
-            _xsrf: getCookie("_xsrf")
-        }, null, function () {
-            setTimeout(function () {
-                window.location = main_route
-            }, 2000);
-        })
-    })
-})
+// $('.delete').click(function () {
+//     id = parseInt(JSON.parse($(this).attr('data-json')))
+//     enabled = false
+//
+//
+//     swal({
+//         title: "¿Desea dar de baja los datos de la persona?",
+//         type: "warning",
+//         showCancelButton: true,
+//         confirmButtonColor: "#1565c0",
+//         cancelButtonColor: "#F44336",
+//         confirmButtonText: "Aceptar",
+//         cancelButtonText: "Cancelar"
+//     }).then(function () {
+//         ajax_call('persona_delete', {
+//             id: id,
+//             enabled: enabled,
+//             _xsrf: getCookie("_xsrf")
+//         }, null, function () {
+//             setTimeout(function () {
+//                 window.location = main_route
+//             }, 2000);
+//         })
+//     })
+//
+//
+//
+// })
 
 validationKeyup("form")
 validationSelectChange("form")

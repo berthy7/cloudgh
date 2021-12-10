@@ -20,9 +20,11 @@
                 </div>
             {% end %}
             {% if 'persona_delete' in privileges %}
-                <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">
-                    <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
-                </div>
+                {% if c.enabled %}
+                    <div id="delete" data-json="{{c.id}}" class="caja-icono delete" title="Eliminar">
+                        <img src="/resources/iconos/eliminar.ico" class="icono-table"/>
+                    </div>
+                {% end %}
             {% end %}
         </div>
     </td>

@@ -129,14 +129,25 @@ class PersonaManager(SuperManager):
     def insert(self, objeto):
         objeto.fechanacimiento = datetime.strptime(objeto.fechanacimiento, '%d/%m/%Y')
         for contra in objeto.contrato:
+
+            if contra.sueldo == "":
+                contra.sueldo = None
+
+
             if contra.fechaFin:
-                contra.fechaFin = datetime.strptime(contra.fechaFin, '%d/%m/%Y %H:%M:%S')
+                contra.fechaFin = datetime.strptime(contra.fechaFin, '%d/%m/%Y')
+            else:
+                contra.fechaFin = None
 
             if contra.fechaIngreso:
-                contra.fechaIngreso = datetime.strptime(contra.fechaIngreso, '%d/%m/%Y %H:%M:%S')
+                contra.fechaIngreso = datetime.strptime(contra.fechaIngreso, '%d/%m/%Y')
+            else:
+                contra.fechaIngreso = None
 
             if contra.fechaForzado:
-                contra.fechaForzado = datetime.strptime(contra.fechaForzado, '%d/%m/%Y %H:%M:%S')
+                contra.fechaForzado = datetime.strptime(contra.fechaForzado, '%d/%m/%Y')
+            else:
+                contra.fechaForzado = None
 
         fecha = BitacoraManager(self.db).fecha_actual()
 
@@ -155,15 +166,17 @@ class PersonaManager(SuperManager):
         super().insert(b)
         return a
 
-    def delete(self, id, user, ip):
-        x = self.db.query(self.entity).filter(self.entity.id == id).one()
+    def retiro(self, diccionary):
+        x = self.db.query(self.entity).filter(self.entity.id == diccionary['idNombre']).one()
         x.enabled = False
-        c = self.db.query(Contrato).filter(Contrato.enabled == True).filter(Contrato.fkpersona == id).one()
+        c = self.db.query(Contrato).filter(Contrato.enabled == True).filter(Contrato.fkpersona == diccionary['idNombre']).one()
         if c:
             c.enabled = False
+            c.fechaForzado = datetime.strptime(diccionary['fechaForzado'], '%d/%m/%Y')
+            c.descripcion = diccionary['descripcion']
 
         fecha = BitacoraManager(self.db).fecha_actual()
-        b = Bitacora(fkusuario=user, ip=ip, accion="Eliminó Persona.", fecha=fecha,tabla="rrhh_persona", identificador=id)
+        b = Bitacora(fkusuario=diccionary['user'], ip=diccionary['ip'], accion="Eliminó Persona.", fecha=fecha,tabla="rrhh_persona", identificador=diccionary['idNombre'])
         super().insert(b)
         a = self.db.merge(x)
         self.db.commit()

@@ -107,3 +107,60 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="modal-retiro">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="title-form" class="modal-title">Retiro de Personal</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row clearfix">
+                    <div class="col-sm-6">
+                        <div class="form-group form-float">
+                            <label for="nombrePersonalRetiro" class="form-label">Nombre Personal</label>
+                            <div class="form-line">
+                                <input id="idPersonalRetiro" type="hidden" class="form-control " readonly>
+                                <input id="nombrePersonalRetiro" type="text" class="form-control " readonly>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-sm-4">
+                        <label class="form-label">Fecha Retiro Forzado</label>
+                           <div class="form-group">
+                                <div class="form-line success">
+
+                                    <input id="fecharetiroForzado" type="text" class="form-control datei">
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-sm-6">
+                        <div class="form-group form-float">
+                            <label  class="form-label">Motivo retiro</label>
+                            <div class="form-line">
+
+                                <input id="motivoRetiro" type="text" class="form-control " >
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                                <button type="button" class="btn bg-orange waves-effect" data-dismiss="modal">
+                    <i class="material-icons">close</i> Cerrar
+                </button>
+                <button id="insertRetiroForzado" type="button" class="btn bg-page-own waves-effect">Guardar<i class="material-icons">save</i></button>
+
+
+            </div>
+        </div>
+    </div>
+</div>

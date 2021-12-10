@@ -26,6 +26,7 @@ class PersonaController(CrudController):
         '/persona_listvig': {'POST': 'list_vigente'},
         '/persona_listcon': {'POST': 'list_concluido'},
         '/persona_validcont': {'POST': 'validar_contrato'},
+        '/persona_retiro': {'POST': 'retiro'}
     }
 
     def importar(self):
@@ -47,6 +48,20 @@ class PersonaController(CrudController):
             else:
                 self.respond(message='Formato de Archivo no aceptado¡¡', success=False)
         self.db.close()
+
+    def retiro(self):
+        self.set_session()
+        diccionary = json.loads(self.get_argument("object"))
+
+        diccionary['user'] = self.get_user_id()
+        diccionary['ip'] = self.request.remote_ip
+
+        result = PersonaManager(self.db).retiro(diccionary)
+
+        if result:
+            self.respond(success=True, message='Baja Realizada Correctamente.')
+        else:
+            self.respond(success=False, message='ERROR 403')
 
     def get_extra_data(self):
         aux = super().get_extra_data()
@@ -202,8 +217,6 @@ class PersonaController(CrudController):
             new_contrato = None
             upd_contrato = None
             if diccionary['contrato']:
-                if diccionary['contrato'][0]['enabled'] is False:
-                    diccionary['enabled'] = False
 
                 if 'id' not in diccionary['contrato'][0]:
                     new_contrato = diccionary['contrato'][0]
@@ -239,35 +252,25 @@ class PersonaController(CrudController):
             objeto = self.manager(self.db).entity(**diccionary)
             result = PersonaManager(self.db).update(objeto)
             if result:
-                dic_cont = dict()
                 if new_contrato:
-                    dic_cont['fkpersona'] = result.id
-                    dic_cont['user'] = user
-                    dic_cont['ip'] = ip
-                    dic_cont['nroContrato'] = new_contrato['nroContrato']
-                    dic_cont['tipo'] = new_contrato['tipo']
-                    dic_cont['sueldo'] = new_contrato['sueldo']
 
-                    dic_cont['fechaIngreso'] = new_contrato['fechaIngreso']
+                    dic_cont = dict(fkpersona=result.id,user=user,ip=ip,nroContrato=new_contrato['nroContrato'],tipo=new_contrato['tipo'],
+                                    sueldo=new_contrato['sueldo'] if new_contrato['sueldo'] != "" else None
+                                    ,fechaIngreso=new_contrato['fechaIngreso'] if new_contrato['fechaIngreso'] != "" else None,fechaFin=new_contrato['fechaFin'] if new_contrato['fechaFin'] != "" else None)
 
-                    dic_cont['fechaFin'] = new_contrato['fechaFin']
-                    dic_cont['enabled'] = new_contrato['enabled']
 
                     objeto_cont = ContratoManager(self.db).entity(**dic_cont)
                     ContratoManager(self.db).insert(objeto_cont)
                 else:
-                    dic_cont['fkpersona'] = result.id
-                    dic_cont['user'] = user
-                    dic_cont['ip'] = ip
-                    dic_cont['id'] = upd_contrato['id']
-                    dic_cont['nroContrato'] = upd_contrato['nroContrato']
-                    dic_cont['tipo'] = upd_contrato['tipo']
-                    dic_cont['sueldo'] = upd_contrato['sueldo']
-                    dic_cont['fechaIngreso'] = upd_contrato['fechaIngreso']
-                    dic_cont['fechaFin'] = upd_contrato['fechaFin']
-                    dic_cont['fechaForzado'] = upd_contrato['fechaForzado']
-                    dic_cont['descripcion'] = upd_contrato['descripcion']
-                    dic_cont['enabled'] = upd_contrato['enabled']
+
+                    dic_cont = dict(id=upd_contrato['id'],fkpersona=result.id, user=user, ip=ip, nroContrato=upd_contrato['nroContrato'],
+                                    tipo=upd_contrato['tipo'], sueldo=upd_contrato['sueldo'] if upd_contrato['sueldo'] != "" else None
+                                    , fechaIngreso=upd_contrato['fechaIngreso'] if upd_contrato['fechaIngreso'] != "" else None,
+                                    fechaFin=upd_contrato['fechaFin'] if upd_contrato['fechaFin'] != "" else None,fechaForzado=upd_contrato['fechaForzado'] if upd_contrato['fechaForzado'] != "" else None,
+                                    descripcion=upd_contrato['descripcion'])
+
+
+
                     objeto_cont = ContratoManager(self.db).entity(**dic_cont)
                     ContratoManager(self.db).update(objeto_cont)
 
