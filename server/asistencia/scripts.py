@@ -323,4 +323,4 @@ def asistencia_schedule():
         with transaction() as db:
             AsistenciaManager(db).crear_horarios(fecha_zona, fecha_zona,None)
 
-    schedule.every().day.at("12:09").do(crear_horarios)
+    schedule.every().day.at("00:05").do(crear_horarios)

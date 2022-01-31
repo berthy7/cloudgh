@@ -11,27 +11,41 @@ class LectoresManager(SuperManager):
     def __init__(self, db):
         super().__init__(Lectores, db)
 
-    def ws_listar_dispositivos(self):
+    def ws_listar_dispositivos(self,dispositivos):
+        switch_estado = {
+            "Conectado": True,
+            "Desconectado": False
+        }
+
+        for dispo in dispositivos['estadoDispositivos']:
+            print("Dispositivo "+ dispo[1] +" Estado: "+str(dispo[2]))
+            print("Cantidad Marcaciones : " + str(dispo[3]))
+            super().update(Lectores(id=dispo[0],estado=switch_estado[dispo[2]]))
+
         return self.db.query(self.entity).filter(self.entity.enabled == True).filter(self.entity.tipo == "A").all()
 
     def ws_insertRegistros_biometricos(self, marcaciones):
         for marcacion in marcaciones['marcaciones']:
+            try:
+                marcacion[2] = datetime.strptime(marcacion[2], '%d/%m/%Y %H:%M:%S')
+            except Exception as ex:
+                print(ex)
+                print("Marcaciones otro formato : " + marcacion[2])
 
-            marcacion[1] = datetime.strptime(marcacion[1], '%Y-%m-%d %H:%M:%S')
 
             # print("llegaron marcaciones: " + str(marcacion[1]))
 
-            respuesta = self.db.query(Marcaciones).filter(Marcaciones.time == marcacion[1]).filter(Marcaciones.codigo == marcacion[0]).filter(
-                Marcaciones.fkdispositivo == marcaciones['iddispositivo']).first()
+            respuesta = self.db.query(Marcaciones).filter(Marcaciones.time == marcacion[2]).filter(Marcaciones.codigo == marcacion[1]).filter(
+                Marcaciones.fkdispositivo == marcacion[0]).first()
 
             if not respuesta:
                 print("registro marcacion")
-                dispositivo = LectoresManager(self.db).obtener_dispositivo(marcaciones['iddispositivo'])
+                dispositivo = LectoresManager(self.db).obtener_dispositivo(marcacion[0])
 
-                object = Marcaciones(codigo=marcacion[0], time=marcacion[1],
-                                     fkdispositivo=marcaciones['iddispositivo'])
+                object = Marcaciones(codigo=marcacion[1], time=marcacion[2],
+                                     fkdispositivo=marcacion[0])
 
-                AsistenciaManager(self.db).insertar_marcaciones(marcacion[1], marcacion[0],dispositivo)
+                AsistenciaManager(self.db).insertar_marcaciones(marcacion[2], marcacion[1],dispositivo)
 
                 self.db.add(object)
 
@@ -111,7 +125,11 @@ class LectoresManager(SuperManager):
 
     def preparar_dispositivos(self):
         dispositivos = self.db.query(Lectores).filter(Lectores.tipo == "A").filter(Lectores.enabled == True).all()
-        print("extraccion de dispositivo")
+        print("extraccion de dispositivos")
+
+        super().insert(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(), registro="extraccion de dispositivos"))
+
+
         for dispositivo in dispositivos:
             # print("inicio del hilo de extraccion")
 
@@ -128,11 +146,21 @@ class LectoresManager(SuperManager):
 
             zk = zklib.ZKLib(dispositivo.ip, dispositivo.puerto)
             print('Extrayendo marcaciones Ip: ', dispositivo.ip)
+            super().insert(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(),
+                                               registro='Extrayendo marcaciones Ip: '+ dispositivo.ip))
             ret = zk.connect()
             if ret:
                 print('Conectado  Ip: ', dispositivo.ip)
+
+                self.db.merge(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(),
+                                                   registro='Conectado  Ip: ' + dispositivo.ip))
+
+
                 marcaciones = zk.getAttendance()
                 print("cantidad de marcaciones: " + str(len(marcaciones)))
+
+                self.db.merge(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(),
+                                                  registro="cantidad de marcaciones: " + str(len(marcaciones))))
                 if marcaciones:
                     for marcacion in marcaciones:
                         aux = marcacion[2]
@@ -141,24 +169,41 @@ class LectoresManager(SuperManager):
                         if not query:
                             print("marcacion: " + str(aux) + " " + str(dispositivo.ip) + " " + str(marcacion[0]))
 
+                            self.db.merge(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(),
+                                                              registro="marcacion: " + str(aux) + " " + str(dispositivo.ip) + " " + str(marcacion[0])))
+
                             self.db.add(Marcaciones(time=aux, fkdispositivo=dispositivo.id, codigo=marcacion[0]))
                             AsistenciaManager(self.db).insertar_marcaciones(aux,marcacion[0],dispositivo)
                     # print("cantidad de marcaciones: " + str(len(marcaciones)))
                     print('Inicio del Commit')
+                    self.db.merge(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(),
+                                                      registro='Inicio del Guardado de marcaciones'))
+
                     self.db.commit()
 
                 print('Marcaciones Guardadas Correctamente: ', dispositivo.ip)
+                self.db.merge(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(),
+                                                  registro='Marcaciones Guardadas Correctamente: '+dispositivo.ip))
+
 
                 zk.clearAttendance()
                 print('Marcaciones Eliminadas del Dispositivo: ', dispositivo.ip)
+                self.db.merge(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(),
+                                                  registro='Marcaciones Eliminadas del Dispositivo: ' + dispositivo.ip))
+
                 zk.getTime()
                 zk.enableDevice()
                 zk.disconnect()
                 print('Terminaron las marcaciones ', dispositivo.ip)
+                self.db.merge(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(),
+                                                  registro='Terminaron las marcaciones: ' + dispositivo.ip))
+                self.db.commit()
                 m = 'Marcaciones Extraidas Correctamente '+ str(dispositivo.ip)
                 return dict(estado=True, mensaje=m)
             else:
                 print('No se puede conectar con el dispositivo: ', dispositivo.ip)
+                super().insert(BitacoraMarcaciones(fecha=BitacoraManager(self.db).fecha_actual(),
+                                                   registro='No se puede conectar con el dispositivo: ' + dispositivo.ip))
                 m = 'No se puede conectar con el dispositivo ' + str(dispositivo.ip)
                 return dict(estado=False, mensaje=m)
         except Exception as e:

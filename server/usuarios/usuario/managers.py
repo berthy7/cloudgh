@@ -15,6 +15,8 @@ from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.styles import Font
 from openpyxl.styles import Border, Side
+from ...notificaciones.correo.models import ServidorCorreo
+from ...notificaciones.correo.managers import CorreoManager
 
 class UsuarioManager(SuperManager):
 
@@ -135,13 +137,31 @@ class UsuarioManager(SuperManager):
                 return dict(respuesta=False, Mensaje="Ingrese otro Nombre de usuario")
 
         else:
+            correos = []
+            server = self.db.query(ServidorCorreo).filter(ServidorCorreo.enabled == True).filter(
+                ServidorCorreo.id == 1).first()
+
+            contraseña = usuario.password
+
+
             usuario.password = hashlib.sha512(usuario.password.encode()).hexdigest()
             codigo = self.get_random_string()
             Usuario.codigo = codigo
             fecha = BitacoraManager(self.db).fecha_actual()
             b = Bitacora(fkusuario=usuario.user_id, ip=usuario.ip, accion="Se registró un usuario.", fecha=fecha)
             super().insert(b)
-            u = super().insert(usuario)
+            super().insert(usuario)
+
+            correos.append(usuario.username)
+            asunto = 'Contraseña Cloudgh'
+            cuerpo = "Se le ha creado usuario para el Sistema Cloudgh" + "\n" + "Credenciales: "  + \
+                     "\n" + "\n" + "Usuario: " + str(usuario.username) + \
+                     "\n" + "Contraseña: " + str(contraseña) + \
+                     "\n" + "\n" + "Saludos"
+
+            CorreoManager(self.db).funcion_email(server, correos, asunto, cuerpo)
+
+
             return dict(respuesta=True, Mensaje="Insertado Correctamente")
         
     def registrar_usuarios(self, usuarios):
@@ -153,21 +173,38 @@ class UsuarioManager(SuperManager):
                 print("La persona "+user.persona.fullname+" ya tiene usuario")
                
             else:
+
                 persona = self.db.query(Persona).filter(Persona.id == usuario['id_persona']).first()
-                password = "personal2021"
+                usuario = self.db.query(Usuario).filter(Usuario.username == persona.empleado[0].email).first()
 
-                if persona.empleado[0].email:
-                    correo = persona.empleado[0].email
-                else:
-                    correo = persona.nombres
-                
-                diccionary_user = Usuario(username=correo, password= password, fkrol=usuarios['fkrol'], fkpersona=persona.id)
+                if usuario == None:
 
-                diccionary_user.password = hashlib.sha512(diccionary_user.password.encode()).hexdigest()
-                fecha = BitacoraManager(self.db).fecha_actual()
-                b = Bitacora(fkusuario=usuarios['user'], ip=usuarios['ip'], accion="Se creo el usuario: "+ diccionary_user.username, fecha=fecha)
-                super().insert(b)
-                super().insert(diccionary_user)
+
+                    if persona.empleado[0].email:
+                        correo = persona.empleado[0].email
+
+                        correos = []
+                        server = self.db.query(ServidorCorreo).filter(ServidorCorreo.enabled == True).filter(
+                            ServidorCorreo.id == 1).first()
+                        password = random.randrange(99999)
+                        contraseña = password
+
+                        diccionary_user = Usuario(username=correo, password= str(password), fkrol=usuarios['fkrol'], fkpersona=persona.id,autenticacion=False)
+
+                        diccionary_user.password = hashlib.sha512(diccionary_user.password.encode()).hexdigest()
+                        fecha = BitacoraManager(self.db).fecha_actual()
+                        b = Bitacora(fkusuario=usuarios['user'], ip=usuarios['ip'], accion="Se creo el usuario: "+ diccionary_user.username, fecha=fecha)
+                        super().insert(b)
+                        super().insert(diccionary_user)
+
+                        correos.append(diccionary_user.username)
+                        asunto = 'Contraseña Cloudgh'
+                        cuerpo = "Se le ha creado usuario para el Sistema Cloudgh" + "\n" + "Credenciales: " + \
+                                 "\n" + "\n" + "Usuario: " + str(diccionary_user.username) + \
+                                 "\n" + "Contraseña: " + str(contraseña) + \
+                                 "\n" + "\n" + "Saludos"
+
+                        CorreoManager(self.db).funcion_email(server, correos, asunto, cuerpo)
 
 
     def update(self, usuario):

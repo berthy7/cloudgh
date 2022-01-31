@@ -169,7 +169,7 @@ class PersonaManager(SuperManager):
     def retiro(self, diccionary):
         x = self.db.query(self.entity).filter(self.entity.id == diccionary['idNombre']).one()
         x.enabled = False
-        c = self.db.query(Contrato).filter(Contrato.enabled == True).filter(Contrato.fkpersona == diccionary['idNombre']).one()
+        c = self.db.query(Contrato).filter(Contrato.enabled == True).filter(Contrato.fkpersona == diccionary['idNombre']).first()
         if c:
             c.enabled = False
             c.fechaForzado = datetime.strptime(diccionary['fechaForzado'], '%d/%m/%Y')
@@ -211,7 +211,6 @@ class PersonaManager(SuperManager):
                                     row[indices['SUCURSAL']].value is not None:
                         query = self.db.query(Empleado).filter(Empleado.codigo == row[indices['CODIGO']].value).filter(Persona.ci == str(row[indices['CI']].value)).all()
                         if not query:
-                            print(str(row[indices['CODIGO']].value))
 
                             fechaNacimiento = datetime.strptime(row[indices['FECHA_NACIMIENTO']].value, '%d/%m/%Y')
                             fechaIngreso = datetime.strptime(row[indices['FECHA_INGRESO_NOM']].value, '%d/%m/%Y')
@@ -551,7 +550,6 @@ class PersonaManager(SuperManager):
         c = 0
         for dataper in self.db.query(Persona).filter(Persona.enabled == True).filter(Persona.id == id):
             #list[c] = dict(id=dataper.ValorParametro.id, nombre=dataper.ValorParametro.nombre, valor=dataper.ValorParametro.valor)
-            print(dataper)
             c = c + 1
         return list
 

@@ -106,7 +106,7 @@ def dispositivos_schedule():
             LectoresManager(db).preparar_dispositivos()
 
     schedule.every().day.at("04:00").do(extraer_marcaciones)
-    schedule.every().day.at("09:00").do(extraer_marcaciones)
-    schedule.every().day.at("15:00").do(extraer_marcaciones)
-    schedule.every().day.at("22:00").do(extraer_marcaciones)
+    # schedule.every().day.at("09:00").do(extraer_marcaciones)
+    # schedule.every().day.at("15:00").do(extraer_marcaciones)
+    # schedule.every().day.at("22:00").do(extraer_marcaciones)
 

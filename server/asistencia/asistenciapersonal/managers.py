@@ -86,7 +86,7 @@ class AsistenciaManager(SuperManager):
 
                 asignacion = self.db.query(Asignacion).filter(Asignacion.fkpersona == fkpersona).all()
             else:
-                asignacion = self.db.query(Asignacion).all()
+                asignacion = self.db.query(Asignacion).join(Persona).filter(Persona.enabled).all()
 
 
             # contador = 1
@@ -260,9 +260,7 @@ class AsistenciaManager(SuperManager):
 
         contador = 1
         for x in objeto:
-            print(str(contador))
             contador = contador + 1
-            print(x.fecha)
             if x.mentrada is None:
                 marcaciones = MarcacionesManager(self.db).obtener_marcaciones(x.codigo,x.fecha,x.fecha)
 
@@ -314,8 +312,8 @@ class AsistenciaManager(SuperManager):
 
     def actualizar_marcacion_entrada(self,horario,marca,dispositivo):
         retraso = None
-        idempresa= horario.persona.empleado[0].sucursal.empresa.id
-        politica_empresa = self.db.query(Politicas).filter(Politicas.fkempresa == idempresa).first()
+
+        politica_empresa = self.db.query(Politicas).filter(Politicas.fkempresa == 1778).first()
         politica = ""
 
         if politica_empresa:
@@ -345,7 +343,6 @@ class AsistenciaManager(SuperManager):
 
     def actualizar_marcacion_salida(self,horario,marca,dispositivo):
         extra = None
-        idempresa= horario.persona.empleado[0].sucursal.empresa.id
 
         if marca.time() > horario.salida.time():
             extra = marca - timedelta(hours=horario.salida.hour, minutes=horario.salida.minute,
@@ -354,7 +351,6 @@ class AsistenciaManager(SuperManager):
         horario.msalida = marca
         horario.extra = extra
         if horario.observacion == "Falta":
-
             if horario.persona.empleado[0].fksucursal== dispositivo.fksucursal:
                 horario.observacion = ""
             else:
@@ -536,7 +532,6 @@ class AsistenciaManager(SuperManager):
 
 
         while contador < len(horarios):
-            print(str(contador))
             vacaciontotal = 0
             totalfaltas = 0
             for fechadia in lista_fechas:
@@ -858,8 +853,6 @@ class AsistenciaManager(SuperManager):
 
         if len(trabajototal_cadena) < 8:
             trabajototal = "0" + trabajototal
-
-        print(trabajototal)
 
         html += "" \
             "<table style='padding: 4px; border: 1px solid grey' width='100%'>" \

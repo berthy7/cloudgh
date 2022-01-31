@@ -5,6 +5,18 @@ $(document).ready(function () {
     $('.error').addClass("error-own");
 });
 
+$('#see-pass').mousedown(function(){
+    $("#ic-pass").css("color", "lightgrey");
+    $("#password").prop("type", "text");
+    $("#ic-pass").html("visibility");
+});
+
+$("#see-pass").mouseup(function(){
+    $("#ic-pass").css("color", "grey");
+    $("#password").prop("type", "password");
+    $("#ic-pass").html("visibility_off");
+});
+
 $('.dd').nestable({
     group:'categories',
     maxDepth:0,
@@ -131,6 +143,36 @@ $('#new').click(function () {
     $('#form').modal('show')
 })
 
+$('#fkpersona').change(function () {
+    obj = JSON.stringify({
+        'id': parseInt(JSON.parse($('#fkpersona').val())),
+        '_xsrf': getCookie("_xsrf")
+    })
+
+    ruta = "persona_obtener_id";
+
+    $.ajax({
+        method: "POST",
+        url: ruta,
+        data: {_xsrf: getCookie("_xsrf"), object: obj},
+        async: false
+    }).done(function (response) {
+
+        response = JSON.parse(response)
+
+        $('#username').val(response.response.empleado[0].email)
+        $('#username').parent().addClass('focused')
+
+        $('#password').val(response.message)
+        $('#password').parent().addClass('focused')
+
+        validationInputSelects("form")
+
+
+    })
+
+});
+
 
 $('#insert').click(function () {
     notvalid = validationInputSelectsWithReturn("form");
@@ -246,30 +288,30 @@ function attach_edit() {
         })
     })
 
-    $('.password').click(function () {
-        obj = JSON.stringify({
-            'id': parseInt(JSON.parse($(this).attr('data-json')))
-        })
-        ajax_call_get('usuario_update',{
-            _xsrf: getCookie("_xsrf"),
-            object: obj
-        },function(response){
-            var self = response;
-
-            $('#id_usuario').val(self.id)
-            $('#new_pass').val('')
-            $('#new_rpass').val('')
-            $('#new_pass').parent().addClass('focused')
-            $('#new_rpass').parent().addClass('focused')
-
-
-            clean_form()
-            verif_inputs('')
-            $('#id_div').hide()
-            $('#close').show()
-            $('#modificar_password').modal('show')
-        })
-    })
+    // $('.password').click(function () {
+    //     obj = JSON.stringify({
+    //         'id': parseInt(JSON.parse($(this).attr('data-json')))
+    //     })
+    //     ajax_call_get('usuario_update',{
+    //         _xsrf: getCookie("_xsrf"),
+    //         object: obj
+    //     },function(response){
+    //         var self = response;
+    //
+    //         $('#id_usuario').val(self.id)
+    //         $('#new_pass').val('')
+    //         $('#new_rpass').val('')
+    //         $('#new_pass').parent().addClass('focused')
+    //         $('#new_rpass').parent().addClass('focused')
+    //
+    //
+    //         clean_form()
+    //         verif_inputs('')
+    //         $('#id_div').hide()
+    //         $('#close').show()
+    //         $('#modificar_password').modal('show')
+    //     })
+    // })
 
 
 }

@@ -438,8 +438,6 @@ class V_solicitudController(CrudController):
 
         nombre = "Papeleta-Vacacion.pdf"
 
-        print("punto 4: ")
-
         report.html_to_pdf(html, nombre)
 
         self.respond('/resources/downloads/' + nombre)

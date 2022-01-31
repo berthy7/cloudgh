@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Boolean, DateTime, Sequence
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger,Sequence,Boolean
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -21,3 +21,16 @@ class Marcaciones(Serializable, Base):
     enabled = Column(Boolean, default=True)
 
     dispositivo = relationship('Lectores')
+
+
+
+class BitacoraMarcaciones(Serializable, Base):
+    way = {}
+
+    __tablename__ = 'cb_dispositivos_bitacora'
+    __table_args__ = ({"schema": "ASISTENCIA"})
+
+    id = Column(BigInteger, Sequence('id'), primary_key=True)
+    fecha = Column(DateTime, nullable=True)
+    registro = Column(String(200), nullable=True)
+

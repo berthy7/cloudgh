@@ -5,7 +5,7 @@ from server.common.controllers import CrudController
 import os.path
 import uuid
 import json
-
+import random
 
 class PersonaController(CrudController):
 
@@ -308,7 +308,10 @@ class PersonaController(CrudController):
         self.set_session()
         diccionary = json.loads(self.get_argument("object"))
         indicted_object = PersonaManager(self.db).obtener_persona(diccionary['id'])
-        self.respond(indicted_object.get_dict(), message='Operacion exitosa!')
+
+        password = random.randrange(99999)
+
+        self.respond(indicted_object.get_dict(), message=password)
         self.db.close()
 
     def delete(self):

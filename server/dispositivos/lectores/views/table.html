@@ -6,6 +6,21 @@
     <td>{{ c.descripcion}}</td>
     <td>{{ c.fksucursal}}</td>
 
+    <td>
+        {% if c.estado%}
+            <div>
+                <i class="Medium material-icons icon-cog">check_circle</i>
+            </div>
+        {% else %}
+            <div>
+                <i class="Medium material-icons icon-cog-red">clear</i>
+            </div>
+        {% end %}
+
+
+    </td>
+
+
     <td align="center">
         <div class="contenedor">
         {% if 'lectores_update' in privileges %}

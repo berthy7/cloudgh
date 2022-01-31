@@ -346,7 +346,6 @@ class V_solicitudGestionManager(SuperManager):
         return self.db.query(self.entity).filter(self.entity.enabled == True).order_by(self.entity.id.asc()).all()
 
     def obtener_x_solicitud(self, idSolicitud):
-        print(str(idSolicitud))
 
         return self.db.query(self.entity).filter(self.entity.fksolicitud == idSolicitud).filter(
             self.entity.enabled == True).all()

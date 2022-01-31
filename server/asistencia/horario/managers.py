@@ -54,7 +54,6 @@ class SemanalManager(SuperManager):
                 list_hora = {}
                 ch = 0
 
-                print(x.id)
                 for horario in detalle.dia.hora:
                     aux = horario.entrada.strftime("%H:%M") + " - " + horario.salida.strftime("%H:%M")
 

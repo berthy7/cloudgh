@@ -75,7 +75,7 @@ class AsistenciaController(CrudController):
                 for per in diccionary['personas']:
                     ins_manager.crear_horarios(fechainicio, fechafin, per)
         else:
-            asignaciones = self.db.query(Asignacion).filter(Asignacion.fkperiodo == diccionary['fkperiodo']).all()
+            asignaciones = self.db.query(Asignacion).join(Persona).filter(Asignacion.fkperiodo == diccionary['fkperiodo']).filter(Persona.enabled).all()
 
             for per in asignaciones:
                 ins_manager.crear_horarios(fechainicio, fechafin, per.fkpersona)
@@ -133,7 +133,6 @@ class AsistenciaController(CrudController):
                 ins_manager.asignar_marcaciones(fechainicio, fechafin, per.fkpersona)
 
         if len(diccionary['personas']) == 0:
-            print("todas las personas")
             ins_manager.asignar_marcaciones(fechainicio, fechafin, None)
 
         else:

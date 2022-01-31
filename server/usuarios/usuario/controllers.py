@@ -80,7 +80,6 @@ class UsuarioController(CrudController):
         diccionary = json.loads(self.get_argument("object"))
         diccionary['user_id'] = self.get_user_id()
         diccionary['ip'] = self.request.remote_ip
-        print(diccionary)
         objeto = self.manager(self.db).entity(**diccionary)
         respuesta = UsuarioManager(self.db).insert(objeto)
         if respuesta['respuesta']:

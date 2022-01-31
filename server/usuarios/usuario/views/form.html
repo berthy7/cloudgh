@@ -16,22 +16,34 @@
                             <label for="id" class="form-label">Usuario ID</label>
                         </div>
                     </div>
+                    <label>Personal</label>
+                    <select id="fkpersona" class="form-control">
+                    {% for per in personal %}
+                        <option value="{{per.id}}">{{per.fullname}}</option>
+                    {% end %}
+                    </select>
+                    </br>
+                    </br>
 
                     <div class="form-group form-float">
+                         <label for="username" class="form-label">Nombre de usuario</label>
                         <div class="form-line">
                             <input id="username" name="usuario" type="text" class="form-control" required>
-                            <label for="username" class="form-label">Nombre de usuario</label>
+
                         </div>
                     </div>
 
-                    <div id="pass">
-                        <div class="form-group form-float">
+                    <div class="input-group">
+                        <label for="password" class="form-label">Contraseña</label>
                             <div class="form-line">
-                                <input id="password" name="password" type="password" class="form-control password" required>
-                                <label for="password" class="form-label">Contraseña</label>
+                                <input id="password" type="password" class="form-control" name="password" placeholder="Ingrese...">
+
                             </div>
+                            <span class="input-group-addon" id="see-pass" style="cursor: pointer;" title="Mostrar">
+                                <i class="material-icons" style="color: grey" id="ic-pass">visibility_off</i>
+
+                            </span>
                         </div>
-                    </div>
 
                     <label for="role_id">Rol</label>
                     <select id="role_id" class="form-control" required>
@@ -41,12 +53,6 @@
                     </select>
                     </br>
                     </br>
-                    <label>Personal</label>
-                    <select id="fkpersona" class="form-control">
-                    {% for per in personal %}
-                        <option value="{{per.id}}">{{per.fullname}}</option>
-                    {% end %}
-                    </select>
                     </br>
                     </br>
                     <div class="row clearfix">

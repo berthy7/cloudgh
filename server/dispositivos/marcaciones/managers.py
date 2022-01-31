@@ -154,7 +154,6 @@ class MarcacionesManager(SuperManager):
 
             list[c] = dict(id=x.id,codigo=x.codigo, nombre=nombrepersona, fecha=x.time.strftime("%d/%m/%Y"), hora=x.time.strftime("%H:%M:%S"), dispositivo=dispositivo)
             c = c + 1
-            print(str(c))
 
         return list
 
@@ -184,15 +183,12 @@ class MarcacionesManager(SuperManager):
                 cont = 1
                 for row in ws.iter_rows(min_row=2):
 
-                    print(row[indices['ID']].value  + row[indices['Fecha']].value)
-
                     date_time = datetime.strptime(str(row[indices['Fecha']].value), '%d/%m/%Y %H:%M')
 
                     marc = Marcaciones(codigo=int(row[indices['ID']].value), time=date_time)
 
                     self.db.add(marc)
                     # self.db.flush()
-                    print(str(cont))
                     cont = cont + 1
 
                 print("inicio commit")
@@ -243,9 +239,6 @@ class MarcacionesManager(SuperManager):
                     self.db.add(marc)
                     # self.db.flush()
                     cont = cont + 1
-                    print(str(cont))
-
-
 
                     # fecha_ingreso = fecha_final = None
                     # fecha_ingreso = datetime.strptime(line[4], '%d/%m/%Y')
@@ -310,7 +303,6 @@ class MarcacionesManager(SuperManager):
                     self.db.add(marc)
                     # self.db.flush()
                     cont = cont + 1
-                    print(str(cont))
 
 
                 try:

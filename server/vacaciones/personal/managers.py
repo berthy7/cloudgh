@@ -304,25 +304,24 @@ class V_personalManager(SuperManager):
                 # n = self.db.query(V_personal).filter(V_personal.fkpersona == perso).first()
                 n = V_personalManager(self.db).obtener_vacacion_disponible(perso)
                 persona = self.db.query(Persona).filter(Persona.id == perso).first()
-                print(n['dias'])
 
                 if n:
                     if decimal.Decimal(n['dias']) != 0:
                         if cant_dias <= decimal.Decimal(n['dias']):
-                            print("")
+                            pass
                             # return dict(mensaje="", respuesta=True, tipo="")
                         else:
                             if persona.id in lista_sin_vacacion_autorizados:
-                                print("")
+                                pass
                             else:
                                 lista_sin_vacacion.append(dict(id=persona.id,nombre=persona.fullname+" dias disponibles: "+n['dias']))
                     else:
                         if persona.id in lista_sin_vacacion_autorizados:
-                            print("")
+                            pass
                         else:
                             lista_sin_vacacion.append(dict(id=persona.id, nombre=persona.fullname+" dias disponibles: "+n['dias']))
                 else:
-                    print("")
+                    pass
                     lista_sin_vacacion.append(persona.fullname)
                     # return dict(mensaje="No tiene vacacion disponible", respuesta=False, tipo="error")
 

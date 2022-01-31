@@ -48,11 +48,12 @@ class ApiCloudghController(ApiController):
         try:
             self.set_session()
             print('listar_dispositivos')
-            json.loads(self.request.body.decode('utf-8'))
+            data = json.loads(self.request.body.decode('utf-8'))
+            x = ast.literal_eval(data)
             arraT = self.manager(self.db).get_page(1, 10, None, None, True)
             resp = []
 
-            arraT['objeto'] = LectoresManager(self.db).ws_listar_dispositivos()
+            arraT['objeto'] = LectoresManager(self.db).ws_listar_dispositivos(x)
             for item in arraT['objeto']:
                 obj_dict = item.get_dict()
                 resp.append(obj_dict)
@@ -66,10 +67,9 @@ class ApiCloudghController(ApiController):
 
     def marcaciones_dispositivo(self):
         self.set_session()
-        print('marcaciones_dispositivo')
         data = json.loads(self.request.body.decode('utf-8'))
         x = ast.literal_eval(data)
-        print("ws marcaciones dispositivo " + str(x['iddispositivo']))
+        # print("ws marcaciones dispositivo " + str(x['iddispositivo']))
 
         LectoresManager(self.db).ws_insertRegistros_biometricos(x)
         self.respond(success=True, message='Insertado correctamente.')
