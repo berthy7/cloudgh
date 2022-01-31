@@ -160,6 +160,26 @@ class PersonaManager(SuperManager):
     def update(self, objeto):
         fecha = BitacoraManager(self.db).fecha_actual()
         objeto.fechanacimiento = datetime.strptime(objeto.fechanacimiento, '%d/%m/%Y')
+        for contra in objeto.contrato:
+
+            if contra.sueldo == "":
+                contra.sueldo = None
+
+
+            if contra.fechaFin:
+                contra.fechaFin = datetime.strptime(contra.fechaFin, '%d/%m/%Y')
+            else:
+                contra.fechaFin = None
+
+            if contra.fechaIngreso:
+                contra.fechaIngreso = datetime.strptime(contra.fechaIngreso, '%d/%m/%Y')
+            else:
+                contra.fechaIngreso = None
+
+            if contra.fechaForzado:
+                contra.fechaForzado = datetime.strptime(contra.fechaForzado, '%d/%m/%Y')
+            else:
+                contra.fechaForzado = None
 
         a = super().update(objeto)
         b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Modifico Persona.", fecha=fecha,tabla="rrhh_persona", identificador=a.id)

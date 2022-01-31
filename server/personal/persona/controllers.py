@@ -256,9 +256,25 @@ class PersonaController(CrudController):
 
                     dic_cont = dict(fkpersona=result.id,user=user,ip=ip,nroContrato=new_contrato['nroContrato'],tipo=new_contrato['tipo'],
                                     sueldo=new_contrato['sueldo'] if new_contrato['sueldo'] != "" else None
-                                    ,fechaIngreso=new_contrato['fechaIngreso'] if new_contrato['fechaIngreso'] != "" else None,fechaFin=new_contrato['fechaFin'] if new_contrato['fechaFin'] != "" else None)
+                                    ,fechaIngreso=new_contrato['fechaIngreso'] if new_contrato['fechaIngreso'] != "" else None,
+                                    fechaFin=new_contrato['fechaFin'] if new_contrato['fechaFin'] != "" else None,
+                                    fechaForzado=new_contrato['fechaForzado'] if new_contrato[
+                                                                                     'fechaForzado'] != "" else None)
 
+                    if dic_cont['fechaIngreso']:
+                        dic_cont['fechaIngreso']= datetime.strptime(dic_cont['fechaIngreso'], '%d/%m/%Y')
+                    else:
+                        dic_cont['fechaIngreso'] = None
 
+                    if dic_cont['fechaFin']:
+                        dic_cont['fechaFin'] = datetime.strptime(dic_cont['fechaFin'], '%d/%m/%Y')
+                    else:
+                        dic_cont['fechaFin'] = None
+
+                    if dic_cont['fechaForzado']:
+                        dic_cont['fechaForzado'] = datetime.strptime(dic_cont['fechaForzado'], '%d/%m/%Y')
+                    else:
+                        dic_cont['fechaForzado'] = None
                     objeto_cont = ContratoManager(self.db).entity(**dic_cont)
                     ContratoManager(self.db).insert(objeto_cont)
                 else:
@@ -266,12 +282,31 @@ class PersonaController(CrudController):
                     dic_cont = dict(id=upd_contrato['id'],fkpersona=result.id, user=user, ip=ip, nroContrato=upd_contrato['nroContrato'],
                                     tipo=upd_contrato['tipo'], sueldo=upd_contrato['sueldo'] if upd_contrato['sueldo'] != "" else None
                                     , fechaIngreso=upd_contrato['fechaIngreso'] if upd_contrato['fechaIngreso'] != "" else None,
-                                    fechaFin=upd_contrato['fechaFin'] if upd_contrato['fechaFin'] != "" else None,fechaForzado=upd_contrato['fechaForzado'] if upd_contrato['fechaForzado'] != "" else None,
+                                    fechaFin=upd_contrato['fechaFin'] if upd_contrato['fechaFin'] != "" else None,
+                                    fechaForzado=upd_contrato['fechaForzado'] if upd_contrato['fechaForzado'] != "" else None,
                                     descripcion=upd_contrato['descripcion'])
 
 
 
+
+
+                    if dic_cont.fechaIngreso:
+                        dic_cont.fechaIngreso = datetime.strptime(dic_cont.fechaIngreso, '%d/%m/%Y')
+                    else:
+                        dic_cont.fechaIngreso = None
+
+                    if dic_cont.fechaFin:
+                        dic_cont.fechaFin = datetime.strptime(dic_cont.fechaFin, '%d/%m/%Y')
+                    else:
+                        dic_cont.fechaFin = None
+
+                    if dic_cont.fechaForzado:
+                        dic_cont.fechaForzado = datetime.strptime(dic_cont.fechaForzado, '%d/%m/%Y')
+                    else:
+                        dic_cont.fechaForzado = None
+
                     objeto_cont = ContratoManager(self.db).entity(**dic_cont)
+
                     ContratoManager(self.db).update(objeto_cont)
 
                 self.respond(success=True, message='Modificado Correctamente.')
